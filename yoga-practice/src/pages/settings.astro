@@ -1,0 +1,31 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import SettingsRow from "@ai-outfitter/ui/astro/SettingsRow.astro";
+import Layout from "../components/Layout.astro";
+import { defaultTarget, SYNC_DAYS } from "../lib/practice";
+---
+<Layout title="Settings" description="Your weekly target and where sessions come from." page="settings">
+  <Section id="target-heading" title="Weekly target">
+    <SettingsRow title="Target">
+      <p>A week counts toward your streak when you reach either number. It starts at {defaultTarget.sessions} sessions or {defaultTarget.minutes} minutes; weeks run Monday to Sunday in your time zone.</p>
+      <form id="target-form" class="form-row">
+        <label>Sessions a week <input name="sessions" type="number" min="1" max="14" step="1" required disabled /></label>
+        <label>Minutes a week <input name="minutes" type="number" min="10" max="1200" step="5" required disabled /></label>
+        <Button type="submit" id="target-save" disabled>Save target</Button>
+      </form>
+    </SettingsRow>
+  </Section>
+  <Section id="health-heading" title="Apple Health">
+    <SettingsRow title="Connection">
+      <p id="health">Checking the connection…</p>
+    </SettingsRow>
+    <SettingsRow title="What a sync reads">
+      <p>Each sync reads the last {SYNC_DAYS} days again: yoga, mind and body, pilates and flexibility workouts and mindful sessions become sessions, once each (the newest 1,000 of a kind), with their heart rate and energy. Tag their style and intensity afterwards. Resting heart rate and heart rate variability readings feed the recovery trend on Progress. A session you delete is not brought back.</p>
+    </SettingsRow>
+    <SettingsRow title="Access">
+      <p>This is your personal app: only you open it. It reads your own Apple Health import, as you, and never writes to it or holds its data beyond the sessions and readings above.</p>
+    </SettingsRow>
+  </Section>
+</Layout>
+<script>import "../scripts/settings.ts";</script>

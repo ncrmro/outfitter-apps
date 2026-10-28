@@ -1,0 +1,37 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import ManagedAppLayout from "@ai-outfitter/ui/astro/ManagedAppLayout.astro";
+import "../strength.css";
+
+interface Props {
+  title: string;
+  description: string;
+  page: "today" | "history" | "progress" | "settings";
+}
+const { title, description, page } = Astro.props;
+// Relative links, so the app also works when it is served under a path prefix.
+---
+<ManagedAppLayout
+  name="Strength 5x5"
+  {title}
+  {description}
+  active={page === "settings" ? "settings" : "home"}
+  settingsHref="./settings"
+  sidebarLinks={[
+    { label: "Today", href: "./", active: page === "today" },
+    { label: "History", href: "./history", active: page === "history" },
+    { label: "Progress", href: "./progress", active: page === "progress" },
+  ]}
+>
+  <Button slot="header-actions" id="sync" variant="secondary" hidden disabled>Sync from Apple Health</Button>
+  <slot />
+</ManagedAppLayout>
+<script>
+  import { organizationOriginForAppHost } from "@ai-outfitter/server/hosts";
+  import "../scripts/sync.ts";
+  // The sidebar's Organization link, when this host is an organization app host.
+  const link = document.getElementById("org") as HTMLAnchorElement | null;
+  const origin = organizationOriginForAppHost("strength-five", location);
+  if (link && origin) link.href = origin;
+  else if (link) link.hidden = true;
+</script>

@@ -1,0 +1,990 @@
+{
+  "description": "The demo's API responses: five synthetic weeks of sessions and Apple Health data (tests/helpers/fixtures.ts), computed by the app's own code. Regenerate with scripts/demo-fixtures.ts; a unit test checks it.",
+  "responses": {
+    "today": {
+      "now": 1792177200000,
+      "canEdit": false,
+      "next": {
+        "sequence": 16,
+        "workout": "B",
+        "lifts": [
+          {
+            "lift": "squat",
+            "name": "Squat",
+            "sets": 5,
+            "reps": 5,
+            "weightKg": 62.5,
+            "failures": 0
+          },
+          {
+            "lift": "press",
+            "name": "Overhead press",
+            "sets": 5,
+            "reps": 5,
+            "weightKg": 42.5,
+            "failures": 0
+          },
+          {
+            "lift": "deadlift",
+            "name": "Deadlift",
+            "sets": 1,
+            "reps": 5,
+            "weightKg": 95,
+            "failures": 0
+          }
+        ]
+      },
+      "last": {
+        "date": "2026-10-16",
+        "workout": "A"
+      },
+      "bodyweight": {
+        "current": {
+          "measuredAt": 1791615600000,
+          "kg": 83.7
+        },
+        "series": [
+          {
+            "measuredAt": 1785567600000,
+            "kg": 81.6
+          },
+          {
+            "measuredAt": 1786172400000,
+            "kg": 81.85
+          },
+          {
+            "measuredAt": 1786777200000,
+            "kg": 82.1
+          },
+          {
+            "measuredAt": 1787382000000,
+            "kg": 82.35
+          },
+          {
+            "measuredAt": 1787986800000,
+            "kg": 82.6
+          },
+          {
+            "measuredAt": 1788591600000,
+            "kg": 82.85
+          },
+          {
+            "measuredAt": 1789196400000,
+            "kg": 83.1
+          },
+          {
+            "measuredAt": 1789801200000,
+            "kg": 83.35
+          },
+          {
+            "measuredAt": 1790406000000,
+            "kg": 83.6
+          },
+          {
+            "measuredAt": 1791010800000,
+            "kg": 83.45
+          },
+          {
+            "measuredAt": 1791615600000,
+            "kg": 83.7
+          }
+        ]
+      }
+    },
+    "sessions": {
+      "sessions": [
+        {
+          "id": "session-15",
+          "sequence": 15,
+          "workout": "A",
+          "date": "2026-10-16",
+          "performedAt": 1792173600000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 56,
+            "energyKcal": 344,
+            "heartRateAverage": 122,
+            "heartRateMax": 152,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 60,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 45,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 47.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-14",
+          "sequence": 14,
+          "workout": "B",
+          "date": "2026-10-14",
+          "performedAt": 1792000800000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 52,
+            "energyKcal": 338,
+            "heartRateAverage": 121,
+            "heartRateMax": 158,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 57.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 40,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 90,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-13",
+          "sequence": 13,
+          "workout": "A",
+          "date": "2026-10-12",
+          "performedAt": 1791828000000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 48,
+            "energyKcal": 332,
+            "heartRateAverage": 120,
+            "heartRateMax": 157,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 55,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 42.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 45,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-12",
+          "sequence": 12,
+          "workout": "B",
+          "date": "2026-10-09",
+          "performedAt": 1791568800000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 60,
+            "energyKcal": 326,
+            "heartRateAverage": 119,
+            "heartRateMax": 156,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 52.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "down"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 37.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 85,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-11",
+          "sequence": 11,
+          "workout": "A",
+          "date": "2026-10-07",
+          "performedAt": 1791396000000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 56,
+            "energyKcal": 320,
+            "heartRateAverage": 118,
+            "heartRateMax": 155,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 60,
+              "reps": [
+                5,
+                4,
+                4,
+                3,
+                3
+              ],
+              "succeeded": false,
+              "change": "same"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 40,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 42.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-10",
+          "sequence": 10,
+          "workout": "B",
+          "date": "2026-10-05",
+          "performedAt": 1791223200000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 52,
+            "energyKcal": 314,
+            "heartRateAverage": 122,
+            "heartRateMax": 154,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 60,
+              "reps": [
+                5,
+                5,
+                5,
+                4,
+                3
+              ],
+              "succeeded": false,
+              "change": "same"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 35,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 80,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-9",
+          "sequence": 9,
+          "workout": "A",
+          "date": "2026-10-02",
+          "performedAt": 1790964000000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 48,
+            "energyKcal": 308,
+            "heartRateAverage": 121,
+            "heartRateMax": 153,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 60,
+              "reps": [
+                5,
+                5,
+                4,
+                3,
+                3
+              ],
+              "succeeded": false,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 37.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "same"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 40,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-8",
+          "sequence": 8,
+          "workout": "B",
+          "date": "2026-09-30",
+          "performedAt": 1790791200000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 60,
+            "energyKcal": 302,
+            "heartRateAverage": 120,
+            "heartRateMax": 152,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 57.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 32.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 75,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-7",
+          "sequence": 7,
+          "workout": "A",
+          "date": "2026-09-28",
+          "performedAt": 1790618400000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 56,
+            "energyKcal": 296,
+            "heartRateAverage": 119,
+            "heartRateMax": 158,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 55,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 37.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                4
+              ],
+              "succeeded": false,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 37.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-6",
+          "sequence": 6,
+          "workout": "B",
+          "date": "2026-09-25",
+          "performedAt": 1790359200000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 52,
+            "energyKcal": 290,
+            "heartRateAverage": 118,
+            "heartRateMax": 157,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 52.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 30,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 70,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-5",
+          "sequence": 5,
+          "workout": "A",
+          "date": "2026-09-23",
+          "performedAt": 1790186400000,
+          "health": {
+            "activity": "functional-strength-training",
+            "durationMinutes": 48,
+            "energyKcal": 284,
+            "heartRateAverage": 122,
+            "heartRateMax": 156,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 50,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 35,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 35,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-4",
+          "sequence": 4,
+          "workout": "B",
+          "date": "2026-09-21",
+          "performedAt": 1790013600000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 60,
+            "energyKcal": 278,
+            "heartRateAverage": 121,
+            "heartRateMax": 155,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 47.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 27.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 65,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-3",
+          "sequence": 3,
+          "workout": "A",
+          "date": "2026-09-18",
+          "performedAt": 1789754400000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 56,
+            "energyKcal": 272,
+            "heartRateAverage": 120,
+            "heartRateMax": 154,
+            "source": "<img src=x onerror=alert(1)> Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 45,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 32.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 32.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            }
+          ]
+        },
+        {
+          "id": "session-2",
+          "sequence": 2,
+          "workout": "B",
+          "date": "2026-09-16",
+          "performedAt": 1789581600000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 52,
+            "energyKcal": 266,
+            "heartRateAverage": 119,
+            "heartRateMax": 153,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 42.5,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "up"
+            },
+            {
+              "lift": "press",
+              "name": "Overhead press",
+              "weightKg": 25,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "first"
+            },
+            {
+              "lift": "deadlift",
+              "name": "Deadlift",
+              "weightKg": 60,
+              "reps": [
+                5
+              ],
+              "succeeded": true,
+              "change": "first"
+            }
+          ]
+        },
+        {
+          "id": "session-1",
+          "sequence": 1,
+          "workout": "A",
+          "date": "2026-09-14",
+          "performedAt": 1789408800000,
+          "health": {
+            "activity": "traditional-strength-training",
+            "durationMinutes": 48,
+            "energyKcal": 260,
+            "heartRateAverage": 118,
+            "heartRateMax": 152,
+            "source": "Apple Watch"
+          },
+          "lifts": [
+            {
+              "lift": "squat",
+              "name": "Squat",
+              "weightKg": 40,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "first"
+            },
+            {
+              "lift": "bench",
+              "name": "Bench press",
+              "weightKg": 30,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "first"
+            },
+            {
+              "lift": "row",
+              "name": "Barbell row",
+              "weightKg": 30,
+              "reps": [
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "succeeded": true,
+              "change": "first"
+            }
+          ]
+        }
+      ]
+    },
+    "weights": {
+      "afterSessions": 15,
+      "weights": [
+        {
+          "lift": "squat",
+          "name": "Squat",
+          "weightKg": 62.5
+        },
+        {
+          "lift": "bench",
+          "name": "Bench press",
+          "weightKg": 47.5
+        },
+        {
+          "lift": "row",
+          "name": "Barbell row",
+          "weightKg": 50
+        },
+        {
+          "lift": "press",
+          "name": "Overhead press",
+          "weightKg": 42.5
+        },
+        {
+          "lift": "deadlift",
+          "name": "Deadlift",
+          "weightKg": 95
+        }
+      ]
+    },
+    "health": {
+      "connected": true,
+      "lastSyncedAt": 1792177200000
+    }
+  }
+}

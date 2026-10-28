@@ -1,0 +1,21 @@
+---
+import Layout from "../components/Layout.astro";
+---
+<Layout title="History" description="Every session with its weights and reps, and the Apple Health workout from the same day." page="history">
+  <p id="sessions-empty" class="muted" hidden>No sessions yet. Log your first one on Today.</p>
+  <ol id="sessions" class="sessions" aria-label="Sessions"></ol>
+  <template id="session-template">
+    <li class="panel session">
+      <div class="panel-heading">
+        <h2 data-title></h2>
+        <span class="muted" data-sequence></span>
+      </div>
+      <table class="session-lifts">
+        <thead><tr><th scope="col">Lift</th><th scope="col">Weight</th><th scope="col">Reps</th></tr></thead>
+        <tbody data-lifts></tbody>
+      </table>
+      <p class="session-health" data-health hidden></p>
+    </li>
+  </template>
+</Layout>
+<script>import "../scripts/history.ts";</script>

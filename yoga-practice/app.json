@@ -1,0 +1,59 @@
+{
+  "id": "outfitter/yoga-practice",
+  "version": "0.1.0",
+  "runtime": "cloudflare-workers-for-platforms",
+  "dataLocation": "installation-database",
+  "modes": {
+    "demo": {
+      "capabilities": []
+    },
+    "operational": {
+      "capabilities": [
+        "workflow.host",
+        "workflow.yoga-health-sync.start",
+        "connector.apple-health.workouts.list",
+        "connector.apple-health.samples.list"
+      ]
+    }
+  },
+  "catalog": {
+    "access": "admin-only",
+    "personal": true,
+    "operational": {
+      "slug": "yoga-practice",
+      "name": "Yoga practice",
+      "description": "A log of your yoga sessions, a weekly target and streak, and your resting heart rate and HRV beside them, with sessions from Apple Health."
+    },
+    "demo": {
+      "slug": "yoga-practice",
+      "name": "Yoga practice",
+      "description": "Six weeks of synthetic yoga practice with a weekly target, streak and recovery trend."
+    },
+    "presentation": {
+      "outcome": "Practice yoga every week: three sessions or two hours.",
+      "connectors": [
+        "Apple Health · your own import: yoga, mindfulness and pilates workouts, resting heart rate and HRV, read only"
+      ],
+      "steps": [
+        [
+          "Log a session",
+          "Add the date, minutes, style, intensity, focus areas and a note, or edit and delete one later."
+        ],
+        [
+          "Sync from Apple Health",
+          "Yoga, mind and body, pilates and flexibility workouts and mindful sessions become sessions once each; tag their style afterwards."
+        ],
+        [
+          "Keep the streak",
+          "See minutes this week against your target, how many weeks in a row you met it and how your practice splits by style."
+        ],
+        [
+          "Watch recovery",
+          "Weekly practice minutes beside your average resting heart rate and heart rate variability."
+        ]
+      ],
+      "access": "A personal app: only you, its owner, see and change your sessions. It reads your Apple Health import through your own grant and never writes to it. Demo data is synthetic and read-only."
+    },
+    "cover": "catalog/cover.svg"
+  }
+}

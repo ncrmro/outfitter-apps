@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-labelledby="title desc">
+  <title id="title">Yoga practice</title>
+  <desc id="desc">A seated figure on a mat beside a week of practice bars rising toward a target line.</desc>
+  <rect width="800" height="480" rx="36" fill="#efeee8"/>
+  <rect x="96" y="332" width="300" height="28" rx="14" fill="#b0c992"/>
+  <circle cx="246" cy="150" r="30" fill="#30372b"/>
+  <path d="M246 186v86M246 212l-62 34M246 212l62 34M176 300c40-22 100-22 140 0" fill="none" stroke="#30372b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="456" y="96" width="248" height="288" rx="28" fill="#fffefa" stroke="#d8dccf" stroke-width="4"/>
+  <path d="M480 180h200" stroke="#9aa48d" stroke-width="4" stroke-dasharray="10 10"/>
+  <rect x="496" y="250" width="28" height="104" rx="8" fill="#9aa48d"/>
+  <rect x="544" y="210" width="28" height="144" rx="8" fill="#9aa48d"/>
+  <rect x="592" y="168" width="28" height="186" rx="8" fill="#60734d"/>
+  <rect x="640" y="190" width="28" height="164" rx="8" fill="#60734d"/>
+</svg>

@@ -1,0 +1,63 @@
+{
+  "id": "outfitter/strength-five",
+  "version": "0.1.0",
+  "runtime": "cloudflare-workers-for-platforms",
+  "dataLocation": "installation-database",
+  "modes": {
+    "demo": {
+      "capabilities": []
+    },
+    "operational": {
+      "capabilities": [
+        "workflow.host",
+        "workflow.strength-health-sync.start",
+        "connector.apple-health.workouts.list",
+        "connector.apple-health.samples.list"
+      ]
+    }
+  },
+  "catalog": {
+    "access": "admin-only",
+    "personal": true,
+    "operational": {
+      "slug": "strength-five",
+      "name": "Strength 5x5",
+      "description": "Squat, bench, row, press and deadlift five sets of five, with the next weight worked out for you."
+    },
+    "demo": {
+      "slug": "strength-five",
+      "name": "Strength 5x5",
+      "description": "Demo: five weeks of synthetic 5x5 sessions, a deload and Apple Health workouts, read-only."
+    },
+    "presentation": {
+      "outcome": "Get stronger every session with a simple 5x5 barbell program.",
+      "connectors": [
+        "Apple Health · your own import: strength workouts and body mass, read only"
+      ],
+      "steps": [
+        [
+          "Set your starting weights",
+          "The empty 20 kg bar for most lifts and 40 kg for the deadlift, or your own."
+        ],
+        [
+          "Train A, then B",
+          "A is squat, bench press and barbell row; B is squat, overhead press and deadlift. Three sessions a week suits most people."
+        ],
+        [
+          "Tap each set",
+          "At the gym, tap a set for five reps or tap again for fewer, then save the session."
+        ],
+        [
+          "Let the weights follow",
+          "Every set of five adds 2.5 kg next time (5 kg on the deadlift); three failed sessions in a row take 10% off."
+        ],
+        [
+          "Bring in Apple Health",
+          "Sync to see each session's duration, energy and heart rate, and your bodyweight trend."
+        ]
+      ],
+      "access": "Your own app: only you log sessions, set weights and sync. It reads your strength workouts and body mass through your Apple Health grant and never changes Health data; it works without one. Demo data is synthetic and read-only."
+    },
+    "cover": "catalog/cover.svg"
+  }
+}

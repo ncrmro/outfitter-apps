@@ -1,0 +1,48 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import SettingsRow from "@ai-outfitter/ui/astro/SettingsRow.astro";
+import Layout from "../components/Layout.astro";
+import { BAR_KG, DELOAD, FAILS_BEFORE_DELOAD, incrementFor, type Lift, liftNames, lifts, MAX_KG, REPS, STEP_KG, setsFor, workouts } from "../lib/program";
+import { SYNC_DAYS } from "../lib/views";
+
+// The program's rules, written out from lib/program.ts.
+const name = (lift: Lift) => liftNames[lift].toLowerCase();
+const series = (items: string[]) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} and ${items.at(-1)}` : items[0]);
+const workoutText = Object.entries(workouts)
+  .map(([workout, names]) => `${workout}: ${series(names.map((lift) => `${name(lift)} ${setsFor(lift)}×${REPS}`))}.`).join(" ");
+const otherSteps = lifts.filter((lift) => incrementFor(lift) !== STEP_KG).map((lift) => `${name(lift)} ${incrementFor(lift)} kg`);
+const window = SYNC_DAYS === 365 ? "the last year" : `the last ${SYNC_DAYS} days`;
+---
+<Layout title="Settings" description="Your weights, the program's rules and Apple Health." page="settings">
+  <Section id="weights-section" title="Weights">
+    <form id="weights" class="weights">
+      <p id="weights-intro">Set the weight each lift starts from. After that, the app works out the next weight from your sessions.</p>
+      <div class="weights-grid">
+        {lifts.map((lift) => (
+          <label>{liftNames[lift]} (kg)
+            <input type="number" name={lift} min={BAR_KG} max={MAX_KG} step={STEP_KG} inputmode="decimal" required disabled />
+          </label>
+        ))}
+      </div>
+      <Button type="submit" id="save-weights" disabled>Save weights</Button>
+    </form>
+  </Section>
+  <Section id="program" title="Program">
+    <SettingsRow title="Workouts">
+      <p>{workoutText} Alternate A and B; three sessions a week, with a rest day between, suits most people.</p>
+    </SettingsRow>
+    <SettingsRow title="Progression">
+      <p>When every set of a lift makes five reps, it goes up {STEP_KG} kg next time{otherSteps.length ? ` (${otherSteps.join(", ")})` : ""}. Otherwise you repeat the weight. After {FAILS_BEFORE_DELOAD} missed sessions in a row, it drops {DELOAD * 100}%, rounded down to {STEP_KG} kg.</p>
+    </SettingsRow>
+  </Section>
+  <Section id="health-section" title="Apple Health">
+    <SettingsRow title="Connection">
+      <p id="health">Checking the connection…</p>
+    </SettingsRow>
+    <SettingsRow title="What the app reads">
+      <p>Each sync reads your traditional and functional strength training workouts and body mass readings from {window}, read again on every sync. Sessions show the workout from the same day: its duration, energy and heart rate. The app never changes Health data, and it works without it.</p>
+    </SettingsRow>
+  </Section>
+</Layout>
+<script>import "../scripts/settings.ts";</script>

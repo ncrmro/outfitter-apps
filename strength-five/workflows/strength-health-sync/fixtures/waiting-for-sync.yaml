@@ -1,0 +1,7 @@
+workflow: strength-health-sync
+origin: synthetic
+inputs: {}
+records: {}
+expect:
+  sync: ready
+  run: running

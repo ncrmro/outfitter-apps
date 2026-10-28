@@ -1,0 +1,47 @@
+version: beta
+id: strength-health-sync
+summary: Read the member's strength workouts and body mass from Apple Health into Strength 5x5.
+actors: {}
+triggers:
+  - on: manual
+steps:
+  # The app fills this step through the workflow host and collects only counts.
+  - id: sync
+    inputs:
+      days:
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 3650
+          description: Days of Apple Health history each sync reads, back from now
+        default: 365
+    outputs:
+      health:
+        connector: health
+        record: health.synced
+        schema:
+          type: object
+          properties:
+            workouts:
+              type: integer
+              minimum: 0
+              description: Strength workouts read
+            samples:
+              type: integer
+              minimum: 0
+              description: Body mass readings read
+            skipped:
+              type: integer
+              minimum: 0
+              description: Records the app could not read and left out
+            truncated:
+              type: boolean
+              description: A read stopped at the page cap and left older records unread
+          required:
+            - workouts
+            - samples
+            - skipped
+            - truncated
+          additionalProperties: false
+outputs:
+  health: sync.outputs.health

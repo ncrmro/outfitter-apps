@@ -1,0 +1,57 @@
+version: beta
+id: yoga-health-sync
+summary: Import yoga, mindfulness and recovery readings from the member's Apple Health into Yoga practice.
+actors: {}
+triggers:
+  - on: manual
+steps:
+  # The app fills this step through the workflow host and collects only counts.
+  - id: import
+    inputs:
+      days:
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description: Days of Apple Health records each sync reads, back from now
+        default: 90
+    outputs:
+      imported:
+        connector: health
+        record: health.imported
+        schema:
+          type: object
+          properties:
+            workouts:
+              type: integer
+              minimum: 0
+              description: Yoga, mind and body, pilates and flexibility workouts read
+            mindful:
+              type: integer
+              minimum: 0
+              description: Mindful sessions read
+            sessions:
+              type: integer
+              minimum: 0
+              description: Sessions new to the app
+            readings:
+              type: integer
+              minimum: 0
+              description: Resting heart rate and HRV readings new to the app
+            skipped:
+              type: integer
+              minimum: 0
+              description: Records the app could not read and left out
+            truncated:
+              type: boolean
+              description: A read stopped at the page cap and left older records unread
+          required:
+            - workouts
+            - mindful
+            - sessions
+            - readings
+            - skipped
+            - truncated
+          additionalProperties: false
+outputs:
+  imported: import.outputs.imported

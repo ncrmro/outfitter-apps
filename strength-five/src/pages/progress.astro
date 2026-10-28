@@ -1,0 +1,8 @@
+---
+import Layout from "../components/Layout.astro";
+---
+<Layout title="Progress" description="Each lift's working weight, session by session. A dip is a deload after three missed sessions." page="progress">
+  <p id="progress-empty" class="muted" hidden>No sessions yet. Each lift's weight shows here once you log one.</p>
+  <ul id="progress" class="progress-grid" aria-label="Lifts"></ul>
+</Layout>
+<script>import "../scripts/progress.ts";</script>

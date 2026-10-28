@@ -1,0 +1,54 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Layout from "../components/Layout.astro";
+import { focusAreas, focusLabels, intensities, intensityLabels, styleLabels, styles } from "../lib/practice";
+---
+<Layout title="Practice" description="Your yoga sessions, newest first, and this week against your target." page="practice">
+  <Button slot="header-actions" id="add" hidden>Add session</Button>
+  <dl id="week" class="tiles" aria-label="This week"></dl>
+  <p id="health-hint" class="muted" hidden></p>
+  <p id="sessions-empty" class="muted" hidden>No sessions yet. Add one, or sync from Apple Health.</p>
+  <ol id="sessions" class="session-list" aria-label="Sessions"></ol>
+  <template id="session-template">
+    <li class="session">
+      <div class="session-heading">
+        <h2 data-title></h2>
+        <span class="muted" data-date></span>
+      </div>
+      <p data-tags></p>
+      <p class="muted" data-health hidden></p>
+      <p class="session-note" data-note hidden></p>
+      <div class="session-actions" data-actions hidden>
+        <Button data-edit variant="secondary">Edit</Button>
+        <Button data-delete variant="secondary">Delete</Button>
+      </div>
+    </li>
+  </template>
+  <dialog id="session-dialog" slot="overlays" class="session-dialog" aria-labelledby="session-dialog-title">
+    <form id="session-form" method="dialog">
+      <h2 id="session-dialog-title">Add session</h2>
+      <div class="form-row">
+        <label>Date <input name="date" type="date" required /></label>
+        <label>Minutes <input name="minutes" type="number" min="1" max="600" step="1" required /></label>
+      </div>
+      <div class="form-row">
+        <label>Style
+          <select name="style">{styles.map((style) => <option value={style}>{styleLabels[style]}</option>)}</select>
+        </label>
+        <label>Intensity
+          <select name="intensity" required>{intensities.map((intensity) => <option value={intensity}>{intensityLabels[intensity]}</option>)}</select>
+        </label>
+      </div>
+      <fieldset class="focus-areas">
+        <legend>Focus</legend>
+        {focusAreas.map((focus) => <label><input type="checkbox" name="focus" value={focus} /> {focusLabels[focus]}</label>)}
+      </fieldset>
+      <label>Note <textarea name="note" rows="3" maxlength="280"></textarea></label>
+      <div class="dialog-actions">
+        <Button id="session-cancel" variant="secondary">Cancel</Button>
+        <Button type="submit">Save</Button>
+      </div>
+    </form>
+  </dialog>
+</Layout>
+<script>import "../scripts/practice.ts";</script>

@@ -1,0 +1,37 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Layout from "../components/Layout.astro";
+---
+<Layout title="Today" description="Your next workout and its weights. Tap a set when you make five reps; tap again for fewer." page="today">
+  <section class="panel" aria-labelledby="next-heading">
+    <div class="panel-heading">
+      <h2 id="next-heading">Next workout</h2>
+      <span class="muted" id="next-meta"></span>
+    </div>
+    <ol id="lifts" class="lifts" aria-label="Lifts"></ol>
+    <div class="save-row">
+      <label class="session-date">Date <input type="date" id="session-date" /></label>
+      <Button id="save" disabled>Save session</Button>
+    </div>
+    <p class="muted" id="save-note"></p>
+  </section>
+  <section class="panel" aria-labelledby="bodyweight-heading">
+    <div class="panel-heading">
+      <h2 id="bodyweight-heading">Bodyweight</h2>
+      <span class="bodyweight-now" id="bodyweight-now"></span>
+    </div>
+    <div id="bodyweight-chart"></div>
+    <p class="muted" id="bodyweight-note"></p>
+  </section>
+  <template id="lift-template">
+    <li class="lift">
+      <div class="lift-heading">
+        <h3 data-name></h3>
+        <span class="lift-weight" data-weight></span>
+      </div>
+      <p class="muted lift-note" data-note></p>
+      <div class="sets" role="group" data-sets></div>
+    </li>
+  </template>
+</Layout>
+<script>import "../scripts/today.ts";</script>

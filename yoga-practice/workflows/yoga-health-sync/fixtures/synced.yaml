@@ -1,0 +1,15 @@
+workflow: yoga-health-sync
+origin: synthetic
+inputs:
+  import.inputs.days: 90
+records:
+  import.outputs.imported:
+    workouts: 14
+    mindful: 4
+    sessions: 18
+    readings: 84
+    skipped: 0
+    truncated: false
+expect:
+  import: done
+  run: complete

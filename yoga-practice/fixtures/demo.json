@@ -1,0 +1,448 @@
+{
+  "description": "The demo's API responses: six weeks of synthetic Apple Health records after the demo scenario in tests/helpers/fixtures.ts, computed by the app's own code. Regenerate with scripts/demo-fixtures.ts; a unit test checks it.",
+  "responses": {
+    "sessions": {
+      "now": 1792609200000,
+      "canEdit": false,
+      "sessions": [
+        {
+          "id": "manual-2",
+          "source": "manual",
+          "practicedAt": 1792584000000,
+          "durationMinutes": 40,
+          "style": "yin",
+          "intensity": "gentle",
+          "note": "",
+          "activity": null,
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": null,
+          "healthSource": null,
+          "revision": 1,
+          "focus": [
+            "hips",
+            "hamstrings"
+          ]
+        },
+        {
+          "id": "demo-hk-mindful-3",
+          "source": "health-mindful",
+          "practicedAt": 1792530000000,
+          "durationMinutes": 12,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "mindful-session",
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": null,
+          "healthSource": "Synthetic Breathe",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-13",
+          "source": "health-workout",
+          "practicedAt": 1792393200000,
+          "durationMinutes": 45,
+          "style": "vinyasa",
+          "intensity": "moderate",
+          "note": "Monday class.",
+          "activity": "yoga",
+          "heartRateAverage": 97,
+          "heartRateMax": 125,
+          "energyKcal": 144,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "breath"
+          ]
+        },
+        {
+          "id": "manual-1",
+          "source": "manual",
+          "practicedAt": 1792324800000,
+          "durationMinutes": 30,
+          "style": "restorative",
+          "intensity": "gentle",
+          "note": "Bolster and blocks before bed.",
+          "activity": null,
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": null,
+          "healthSource": null,
+          "revision": 1,
+          "focus": [
+            "back",
+            "breath"
+          ]
+        },
+        {
+          "id": "demo-hk-workout-12",
+          "source": "health-workout",
+          "practicedAt": 1792227600000,
+          "durationMinutes": 30,
+          "style": "hatha",
+          "intensity": "moderate",
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 95,
+          "heartRateMax": 123,
+          "energyKcal": 96,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "hamstrings",
+            "back"
+          ]
+        },
+        {
+          "id": "demo-hk-workout-11",
+          "source": "health-workout",
+          "practicedAt": 1792087200000,
+          "durationMinutes": 40,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "mind-and-body",
+          "heartRateAverage": 84,
+          "heartRateMax": 112,
+          "energyKcal": 128,
+          "healthSource": "Synthetic Watch",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-10",
+          "source": "health-workout",
+          "practicedAt": 1791874800000,
+          "durationMinutes": 60,
+          "style": "vinyasa",
+          "intensity": "strong",
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 102,
+          "heartRateMax": 130,
+          "energyKcal": 192,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "shoulders",
+            "balance"
+          ]
+        },
+        {
+          "id": "demo-hk-mindful-2",
+          "source": "health-mindful",
+          "practicedAt": 1791752400000,
+          "durationMinutes": 10,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "mindful-session",
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": null,
+          "healthSource": "Synthetic Breathe",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-9",
+          "source": "health-workout",
+          "practicedAt": 1791547200000,
+          "durationMinutes": 20,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "flexibility",
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": 64,
+          "healthSource": "Synthetic Watch",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-8",
+          "source": "health-workout",
+          "practicedAt": 1791396000000,
+          "durationMinutes": 30,
+          "style": "yin",
+          "intensity": "gentle",
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 90,
+          "heartRateMax": 118,
+          "energyKcal": 96,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "hips"
+          ]
+        },
+        {
+          "id": "demo-hk-workout-7",
+          "source": "health-workout",
+          "practicedAt": 1791183600000,
+          "durationMinutes": 45,
+          "style": "vinyasa",
+          "intensity": "moderate",
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 99,
+          "heartRateMax": 127,
+          "energyKcal": 144,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "hamstrings"
+          ]
+        },
+        {
+          "id": "demo-hk-workout-6",
+          "source": "health-workout",
+          "practicedAt": 1790874000000,
+          "durationMinutes": 50,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "pilates",
+          "heartRateAverage": 112,
+          "heartRateMax": 140,
+          "energyKcal": 160,
+          "healthSource": "Synthetic Watch",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-5",
+          "source": "health-workout",
+          "practicedAt": 1790665200000,
+          "durationMinutes": 75,
+          "style": "power",
+          "intensity": "strong",
+          "note": "Long flow, held crow for 5 breaths.",
+          "activity": "yoga",
+          "heartRateAverage": 104,
+          "heartRateMax": 132,
+          "energyKcal": 240,
+          "healthSource": "Mat Flow <img src=x onerror=alert(1)>",
+          "revision": 2,
+          "focus": [
+            "back",
+            "balance"
+          ]
+        },
+        {
+          "id": "demo-hk-mindful-1",
+          "source": "health-mindful",
+          "practicedAt": 1790456400000,
+          "durationMinutes": 15,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "mindful-session",
+          "heartRateAverage": null,
+          "heartRateMax": null,
+          "energyKcal": null,
+          "healthSource": "Synthetic Breathe",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-4",
+          "source": "health-workout",
+          "practicedAt": 1790186400000,
+          "durationMinutes": 45,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 98,
+          "heartRateMax": 126,
+          "energyKcal": 144,
+          "healthSource": "Synthetic Watch",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-3",
+          "source": "health-workout",
+          "practicedAt": 1789974000000,
+          "durationMinutes": 60,
+          "style": "vinyasa",
+          "intensity": "moderate",
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 101,
+          "heartRateMax": 129,
+          "energyKcal": 192,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "shoulders"
+          ]
+        },
+        {
+          "id": "demo-hk-workout-2",
+          "source": "health-workout",
+          "practicedAt": 1789754400000,
+          "durationMinutes": 30,
+          "style": "other",
+          "intensity": null,
+          "note": "",
+          "activity": "yoga",
+          "heartRateAverage": 92,
+          "heartRateMax": 120,
+          "energyKcal": 96,
+          "healthSource": "Synthetic Watch",
+          "revision": 1,
+          "focus": []
+        },
+        {
+          "id": "demo-hk-workout-1",
+          "source": "health-workout",
+          "practicedAt": 1789455600000,
+          "durationMinutes": 45,
+          "style": "hatha",
+          "intensity": "gentle",
+          "note": "Slow start; tight hips.",
+          "activity": "yoga",
+          "heartRateAverage": 96,
+          "heartRateMax": 124,
+          "energyKcal": 144,
+          "healthSource": "Synthetic Watch",
+          "revision": 2,
+          "focus": [
+            "hips",
+            "breath"
+          ]
+        }
+      ]
+    },
+    "overview": {
+      "now": 1792609200000,
+      "timeZone": "UTC",
+      "target": {
+        "sessions": 3,
+        "minutes": 120
+      },
+      "thisWeek": {
+        "sessions": 3,
+        "minutes": 97,
+        "met": true
+      },
+      "streak": 5,
+      "byStyle": [
+        {
+          "style": "vinyasa",
+          "sessions": 4,
+          "minutes": 210
+        },
+        {
+          "style": "hatha",
+          "sessions": 2,
+          "minutes": 75
+        },
+        {
+          "style": "yin",
+          "sessions": 2,
+          "minutes": 70
+        },
+        {
+          "style": "restorative",
+          "sessions": 1,
+          "minutes": 30
+        },
+        {
+          "style": "power",
+          "sessions": 1,
+          "minutes": 75
+        },
+        {
+          "style": "other",
+          "sessions": 8,
+          "minutes": 222
+        }
+      ],
+      "weeks": [
+        {
+          "start": 1788134400000,
+          "sessions": 0,
+          "minutes": 0,
+          "met": false,
+          "restingHeartRate": null,
+          "hrv": null
+        },
+        {
+          "start": 1788739200000,
+          "sessions": 0,
+          "minutes": 0,
+          "met": false,
+          "restingHeartRate": null,
+          "hrv": null
+        },
+        {
+          "start": 1789344000000,
+          "sessions": 2,
+          "minutes": 75,
+          "met": false,
+          "restingHeartRate": 57.7,
+          "hrv": 41.9
+        },
+        {
+          "start": 1789948800000,
+          "sessions": 3,
+          "minutes": 120,
+          "met": true,
+          "restingHeartRate": 56.9,
+          "hrv": 43.6
+        },
+        {
+          "start": 1790553600000,
+          "sessions": 2,
+          "minutes": 125,
+          "met": true,
+          "restingHeartRate": 56.6,
+          "hrv": 45.4
+        },
+        {
+          "start": 1791158400000,
+          "sessions": 4,
+          "minutes": 105,
+          "met": true,
+          "restingHeartRate": 55.7,
+          "hrv": 47.1
+        },
+        {
+          "start": 1791763200000,
+          "sessions": 4,
+          "minutes": 160,
+          "met": true,
+          "restingHeartRate": 54.7,
+          "hrv": 48.9
+        },
+        {
+          "start": 1792368000000,
+          "sessions": 3,
+          "minutes": 97,
+          "met": true,
+          "restingHeartRate": 54.3,
+          "hrv": 50
+        }
+      ]
+    },
+    "settings": {
+      "target": {
+        "sessions": 3,
+        "minutes": 120
+      },
+      "lastSyncedAt": 1792609200000
+    },
+    "health": {
+      "connected": true,
+      "lastSyncedAt": 1792609200000
+    }
+  }
+}

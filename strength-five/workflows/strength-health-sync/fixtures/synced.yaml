@@ -1,0 +1,13 @@
+workflow: strength-health-sync
+origin: synthetic
+inputs:
+  sync.inputs.days: 365
+records:
+  sync.outputs.health:
+    workouts: 15
+    samples: 11
+    skipped: 0
+    truncated: false
+expect:
+  sync: done
+  run: complete

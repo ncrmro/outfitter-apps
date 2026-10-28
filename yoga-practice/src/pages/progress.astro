@@ -1,0 +1,21 @@
+---
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import Layout from "../components/Layout.astro";
+---
+<Layout title="Progress" description="Weekly minutes against your target, with your resting heart rate and HRV beside them." page="progress">
+  <dl id="week" class="tiles" aria-label="This week"></dl>
+  <Section id="weekly-heading" title="Weekly minutes">
+    <div id="chart" class="chart"></div>
+    <div class="table-scroll">
+      <table id="weeks" class="weeks">
+        <caption class="visually-hidden">Practice and recovery by week</caption>
+        <thead><tr><th scope="col">Week of</th><th scope="col">Sessions</th><th scope="col">Minutes</th><th scope="col">Resting HR</th><th scope="col">HRV</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </Section>
+  <Section id="styles-heading" title="By style">
+    <ul id="by-style" class="by-style"></ul>
+  </Section>
+</Layout>
+<script>import "../scripts/progress.ts";</script>

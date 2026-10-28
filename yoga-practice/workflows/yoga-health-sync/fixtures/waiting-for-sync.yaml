@@ -1,0 +1,7 @@
+workflow: yoga-health-sync
+origin: synthetic
+inputs: {}
+records: {}
+expect:
+  import: ready
+  run: running

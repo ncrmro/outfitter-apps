@@ -1,0 +1,180 @@
+/* Only what this app adds to the shared frame; colors come from shared tokens.
+   Built for a phone at the gym: big set buttons, one column. */
+
+.panel {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.panel-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.ui-content .panel h2,
+.ui-content .panel h3,
+.ui-content .panel p {
+  margin: 0;
+}
+
+.lifts,
+.sessions,
+.progress-grid {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lift {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.lift-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lift-weight,
+.bodyweight-now {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* A set: a round button at least 56px across, easy to hit between sets. */
+.ui-content button.set {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.ui-content button.set--done {
+  border-color: var(--action);
+  background: var(--action);
+  color: var(--on-action);
+}
+
+.ui-content button.set--short {
+  border-color: var(--warning);
+  background: var(--surface);
+}
+
+.save-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px 16px;
+}
+
+.ui-content .save-row .ui-button {
+  min-height: 48px;
+  flex: 1 1 160px;
+  max-width: 360px;
+}
+
+.ui-content .session-date {
+  display: grid;
+  gap: 4px;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+}
+
+.chart-line {
+  fill: none;
+  stroke: var(--action);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-dot {
+  fill: var(--action);
+}
+
+.session-lifts {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.session-lifts th,
+.session-lifts td {
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-lifts thead th {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.session-lifts .lift-missed td:last-child {
+  color: var(--error);
+}
+
+.ui-content .session-health {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.progress-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.progress-grid .panel {
+  margin: 0;
+}
+
+.weights {
+  display: grid;
+  gap: 16px;
+}
+
+.weights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.ui-content .weights-grid input {
+  min-height: 44px;
+  font-size: 1.1rem;
+}

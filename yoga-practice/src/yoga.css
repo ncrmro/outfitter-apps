@@ -1,0 +1,163 @@
+/* Only what this app adds to the shared frame; colors come from shared tokens. */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.tile,
+.session {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.tile dt {
+  font-weight: 600;
+}
+
+.tile dd {
+  margin: 0;
+}
+
+.tile-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.session-list,
+.by-style {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.session-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.session-dialog h2 {
+  margin: 0;
+}
+
+.ui-content .session h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.ui-content .session p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.session-actions,
+.dialog-actions,
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 16px;
+}
+
+.session-actions[hidden] {
+  display: none;
+}
+
+.session-dialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.session-dialog::backdrop {
+  background: var(--scrim);
+}
+
+.session-dialog form {
+  display: grid;
+  gap: 14px;
+}
+
+.session-dialog label,
+.form-row label {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 140px;
+}
+
+.focus-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.focus-areas legend {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.session-dialog .focus-areas label {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+}
+
+.chart .bar {
+  fill: var(--border);
+}
+
+.chart .bar--met {
+  fill: var(--accent);
+}
+
+.chart .target-line {
+  stroke: var(--text);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.chart .axis {
+  fill: var(--muted);
+  font-size: 9px;
+}
+
+.weeks {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.weeks th,
+.weeks td {
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}

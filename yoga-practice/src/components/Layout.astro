@@ -10,7 +10,7 @@ interface Props {
 }
 const { title, description, page } = Astro.props;
 // Relative links, so the app also works when it is served under a path prefix.
-// Page actions go in the intro: the header stays in place across pages.
+// The Sync button persists across pages, keeping the listener its script set.
 ---
 <ManagedAppLayout
   name="Yoga practice"
@@ -24,7 +24,7 @@ const { title, description, page } = Astro.props;
     { label: "Progress", href: "./progress", active: page === "progress" },
   ]}
 >
-  <Button slot="header-actions" id="sync" variant="secondary" hidden disabled>Sync from Apple Health</Button>
+  <Button slot="header-actions" id="sync" data-astro-transition-persist="sync" variant="secondary" hidden disabled>Sync from Apple Health</Button>
   <slot name="intro-actions" slot="intro-actions" />
   <slot />
   <slot name="overlays" slot="overlays" />

@@ -24,7 +24,7 @@ const { title, description, page } = Astro.props;
     { label: "Progress", href: "./progress", active: page === "progress" },
   ]}
 >
-  <Button slot="header-actions" id="sync" variant="secondary" hidden disabled>Sync from Apple Health</Button>
+  <Button slot="header-actions" id="sync" data-astro-transition-persist="sync" variant="secondary" hidden disabled>Sync from Apple Health</Button>
   <slot />
 </ManagedAppLayout>
 <script>

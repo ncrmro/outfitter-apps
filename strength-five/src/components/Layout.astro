@@ -13,6 +13,7 @@ const { title, description, page } = Astro.props;
 ---
 <ManagedAppLayout
   name="Strength 5x5"
+  navigation
   {title}
   {description}
   active={page === "settings" ? "settings" : "home"}

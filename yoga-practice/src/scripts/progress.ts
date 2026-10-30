@@ -1,3 +1,4 @@
+import { onPageLoad } from "@ai-outfitter/ui/page";
 import { type Overview, styleLabels, type Week } from "../lib/practice";
 import { errorText, loadOverview, notice } from "./data";
 import { weekText, weekTiles } from "./format";
@@ -49,18 +50,22 @@ function row(week: Week, timeZone: string) {
   return tr;
 }
 
-try {
-  const overview = await loadOverview();
-  weekTiles(document.getElementById("week") as HTMLElement, overview);
-  (document.getElementById("chart") as HTMLElement).replaceChildren(chart(overview));
-  (document.querySelector("#weeks tbody") as HTMLElement).replaceChildren(...[...overview.weeks].reverse().map((week) => row(week, overview.timeZone)));
-  const byStyle = document.getElementById("by-style") as HTMLUListElement;
-  byStyle.replaceChildren(...overview.byStyle.map(({ style, sessions, minutes }) => {
-    const item = document.createElement("li");
-    item.textContent = `${styleLabels[style]}: ${sessions} ${sessions === 1 ? "session" : "sessions"}, ${minutes} min`;
-    return item;
-  }));
-  if (!overview.byStyle.length) byStyle.replaceChildren(Object.assign(document.createElement("li"), { textContent: "No sessions yet." }));
-} catch (error) {
-  notice(errorText(error, "Could not load your progress."));
-}
+onPageLoad(async () => {
+  const chartRoot = document.getElementById("chart");
+  if (!chartRoot) return;
+  try {
+    const overview = await loadOverview();
+    weekTiles(document.getElementById("week") as HTMLElement, overview);
+    chartRoot.replaceChildren(chart(overview));
+    (document.querySelector("#weeks tbody") as HTMLElement).replaceChildren(...[...overview.weeks].reverse().map((week) => row(week, overview.timeZone)));
+    const byStyle = document.getElementById("by-style") as HTMLUListElement;
+    byStyle.replaceChildren(...overview.byStyle.map(({ style, sessions, minutes }) => {
+      const item = document.createElement("li");
+      item.textContent = `${styleLabels[style]}: ${sessions} ${sessions === 1 ? "session" : "sessions"}, ${minutes} min`;
+      return item;
+    }));
+    if (!overview.byStyle.length) byStyle.replaceChildren(Object.assign(document.createElement("li"), { textContent: "No sessions yet." }));
+  } catch (error) {
+    notice(errorText(error, "Could not load your progress."));
+  }
+});

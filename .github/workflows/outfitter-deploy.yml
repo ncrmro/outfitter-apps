@@ -8,7 +8,7 @@ on:
     branches: [main]
   workflow_dispatch:
 
-concurrency: { group: outfitter-deploy, cancel-in-progress: true }
+concurrency: { group: "outfitter-deploy-${{ github.ref }}", cancel-in-progress: true }
 
 jobs:
   deploy:

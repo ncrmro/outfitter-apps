@@ -1,0 +1,23 @@
+name: Deploy to Outfitter
+
+# Outfitter builds and installs this commit for every app installed from this
+# repository (see the webapp docs/app-repositories.md). Its build runs each
+# app's checks and tests before installing.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: { group: outfitter-deploy, cancel-in-progress: true }
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: { id-token: write }
+    steps:
+      - name: Deploy
+        run: |
+          token=$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://ai-outfitter.com" | jq -r .value)
+          curl -fsS -X POST -H "Authorization: Bearer $token" -H "Content-Type: application/json" \
+            -d "{}" https://ai-outfitter.com/api/app-repositories/deploy

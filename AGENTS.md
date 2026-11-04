@@ -1,22 +1,23 @@
-# Outfitter apps
+# Personal Outfitter apps
 
-- This repository pilots independent app CI, releases and deployment. Keep app
-  behavior changes separate from workflow work; do not extract platform code here.
-- Each top-level directory with `app.json` is one app. Its workflows, fixtures,
-  tests and migrations remain app-owned. Root Health helpers are shared inputs.
-- Run `npm test` and `npm run check` before pushing workflow changes. These require
-  Node 24 and no dependency installation. Validate Actions files with actionlint.
-- `Package contract` checks validate metadata, not app behavior. Full validation
-  uses the manual `App toolchain` workflow until the public SDK/tooling exists.
-  Never label a contract-only pass as an app test/build pass.
-- Use conventional commits. Keep app versions independent and synchronize each
-  app's `package.json` and `app.json` through release-please. Do not publish major
-  versions or use breaking-change commits without explicit authorization.
-- Changes to shared Health helpers select both apps. To release shared behavior
-  changes, include an app-local release note (`release-notes.md`) for each affected
-  app in the conventional fix/feature commit so release-please sees both paths.
-- Production deployment requests and release automation are opt-in repository
-  settings. A 202 response means queued work, not successful deployment.
-- Private toolchain access belongs only in the manually dispatched workflow's
-  `toolchain` environment. Never run private checkout credentials in public PR
-  workflows or upload private platform source as an artifact.
+Keep app source, domain tests, fixtures, owned workflows, migrations and release
+metadata here. Shared CI scripts and reusable workflows belong in
+`ai-outfitter/apps`; do not copy them back here. `.outfitter/apps.json` describes
+app paths, shared Health inputs and validation mode. Shared workflow references
+are pinned commits and Dependabot proposes upgrades.
+
+The current SDK is private: metadata validation does not run app tests or builds.
+Use the optional manual App toolchain workflow with a reviewed source SHA and
+private credentials in the protected `toolchain` environment for full validation.
+Never expose those credentials to public PR checks. Change validation to scripts
+only after published SDK dependencies and a root npm lockfile are available.
+
+Keep app versions independent and synchronize package/app versions through
+release-please. Do not publish major versions or use breaking-change commits
+without explicit authorization. Shared behavior changes require app-local
+release-notes.md entries in each affected app's conventional fix/feature commit.
+
+Deployment and releases are opt-in repository settings. The destination may be
+SaaS or self-hosted; a queued request does not establish activation. Avoid enabling
+the older broad deployment PR alongside this pipeline. Validate workflow YAML
+with actionlint and use the pinned central Action for package checks.

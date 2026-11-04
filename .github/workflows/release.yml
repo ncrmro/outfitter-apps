@@ -1,23 +1,14 @@
 name: App releases
-
 on:
-  workflow_call:
-
+  push:
+    branches: [main]
 permissions:
   contents: write
   issues: write
   pull-requests: write
-
-concurrency:
-  group: app-releases
-  cancel-in-progress: false
-
 jobs:
-  release-please:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+  release:
+    if: vars.OUTFITTER_RELEASES_ENABLED == 'true'
+    uses: ai-outfitter/apps/.github/workflows/release.yml@d76e0082c4dc4706b1f150ce2b1629693af73f4b
+    secrets:
+      release-token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}

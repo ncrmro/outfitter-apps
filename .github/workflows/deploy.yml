@@ -1,36 +1,18 @@
-name: Deploy selected apps
-
+name: Deployment
 on:
   workflow_call:
     inputs:
       apps:
-        description: JSON array of affected app slugs
-        type: string
         required: true
-
+        type: string
 permissions:
   contents: read
   id-token: write
-
 jobs:
   deploy:
-    name: Request deployment (${{ matrix.app }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    strategy:
-      fail-fast: false
-      matrix:
-        app: ${{ fromJSON(inputs.apps) }}
-    concurrency:
-      group: deploy-${{ matrix.app }}
-      cancel-in-progress: false
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: node scripts/deploy.mjs "$APP"
-        env:
-          APP: ${{ matrix.app }}
+    uses: ai-outfitter/apps/.github/workflows/deploy.yml@d76e0082c4dc4706b1f150ce2b1629693af73f4b
+    with:
+      apps: ${{ inputs.apps }}
+      destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}
+      environment: outfitter
+      runner: ${{ vars.OUTFITTER_DEPLOY_RUNNER || 'ubuntu-latest' }}

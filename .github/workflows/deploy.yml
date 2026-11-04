@@ -1,0 +1,36 @@
+name: Deploy selected apps
+
+on:
+  workflow_call:
+    inputs:
+      apps:
+        description: JSON array of affected app slugs
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Request deployment (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(inputs.apps) }}
+    concurrency:
+      group: deploy-${{ matrix.app }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/deploy.mjs "$APP"
+        env:
+          APP: ${{ matrix.app }}

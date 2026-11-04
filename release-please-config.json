@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "separate-pull-requests": true,
+  "include-component-in-tag": true,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "bootstrap-sha": "673a015efeb7281cabdd36c501cca12b70686cce",
+  "packages": {
+    "strength-five": {
+      "release-type": "node",
+      "component": "strength-five",
+      "extra-files": [
+        { "type": "json", "path": "app.json", "jsonpath": "$.version" }
+      ]
+    },
+    "yoga-practice": {
+      "release-type": "node",
+      "component": "yoga-practice",
+      "extra-files": [
+        { "type": "json", "path": "app.json", "jsonpath": "$.version" }
+      ]
+    }
+  }
+}

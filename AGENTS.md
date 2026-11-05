@@ -9,7 +9,9 @@ are pinned commits and Dependabot proposes upgrades.
 The current SDK is private: metadata validation does not run app tests or builds.
 Use the optional manual App toolchain workflow with a reviewed source SHA and
 private credentials in the protected `toolchain` environment for full validation.
-Never expose those credentials to public PR checks. Change validation to scripts
+Automatic private-SDK preview builds are limited to same-repository PRs with both
+author and triggering actor explicitly trusted by the caller. Forks and untrusted
+authors do not receive SDK access. Change validation to scripts
 only after published SDK dependencies and a root npm lockfile are available.
 
 Keep app versions independent and synchronize package/app versions through

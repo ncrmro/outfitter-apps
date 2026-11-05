@@ -73,16 +73,17 @@ explicitly enabled. No app behavior or platform code is changed by these wrapper
 
 ## Pull-request preview environments
 
-The **App PR previews** workflow calls the shared publisher and posts a verified,
-read-only app URL on the PR. While SDK dependencies are private, run it manually
-with the PR number after reviewing its current head; it builds only affected
-apps through the pinned private toolchain. This is not automatic publishing of
-unreviewed PR code. After SDK publication, the same publisher can use ordinary
-pull-request builds with each app's `preview:build` script and a root lockfile.
+The **App PR previews** workflow automatically builds and publishes changed apps
+on same-repository PRs authored and triggered by `ncrmro`. It posts verified,
+read-only URLs on the PR. The caller explicitly allowlists this identity in the
+shared workflow; forks and other authors do not receive private-SDK access.
+A reviewed manual dispatch remains available. Each app keeps a stable hostname
+for the PR; source updates replace it after checks/tests/demo packaging pass.
 
 Preview hosting is configured in separate `preview-build` and `preview-publish`
 environments. The first holds a repository-read-only SDK SSH key; the second
 holds the Cloudflare preview credential. Build code never receives the hosting
-credential. Previews contain synthetic fixtures, no customer sessions, installed
-data or platform APIs. Closed PRs automatically clean up their preview Workers.
-These URLs are separate from SaaS/self-hosted installation deployment.
+credential. The private toolchain is pinned by `OUTFITTER_TOOLCHAIN_SHA`. Previews
+contain synthetic fixtures, no customer sessions, installed data or platform APIs.
+Closed PRs automatically clean up their preview Workers. These URLs are separate
+from SaaS/self-hosted installation deployment.

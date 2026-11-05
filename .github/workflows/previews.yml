@@ -13,11 +13,12 @@ permissions:
   pull-requests: write
 jobs:
   previews:
-    if: github.event_name == 'workflow_dispatch' || github.event.action == 'closed'
-    uses: ai-outfitter/apps/.github/workflows/preview.yml@b8f6f3b07dbce1ab2996b0248f376ca3da7bbe6e
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && (github.event.action == 'closed' || (github.actor == 'ncrmro' && github.event.pull_request.user.login == 'ncrmro')))
+    uses: ai-outfitter/apps/.github/workflows/preview.yml@f6fb6c5d5195c76b4b29cc8512a8994f4bde9f91
     with:
       pull-request: ${{ fromJSON(format('{0}', github.event.pull_request.number || inputs.pull_request)) }}
       build-mode: toolchain
+      trusted-build-actors: '["ncrmro"]'
       toolchain-sha: ${{ vars.OUTFITTER_TOOLCHAIN_SHA }}
     secrets:
       OUTFITTER_TOOLCHAIN_SSH_KEY: ${{ secrets.OUTFITTER_TOOLCHAIN_SSH_KEY }}

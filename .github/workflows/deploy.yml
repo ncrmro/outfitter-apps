@@ -10,7 +10,7 @@ permissions:
   id-token: write
 jobs:
   deploy:
-    uses: ai-outfitter/apps/.github/workflows/deploy.yml@d76e0082c4dc4706b1f150ce2b1629693af73f4b
+    uses: ai-outfitter/apps/.github/workflows/deploy.yml@12f97d71314c70e7c974290958093f5a8cddd6a2
     with:
       apps: ${{ inputs.apps }}
       destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}

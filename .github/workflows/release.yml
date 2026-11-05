@@ -9,6 +9,6 @@ permissions:
 jobs:
   release:
     if: vars.OUTFITTER_RELEASES_ENABLED == 'true'
-    uses: ai-outfitter/apps/.github/workflows/release.yml@12f97d71314c70e7c974290958093f5a8cddd6a2
+    uses: ai-outfitter/apps/.github/workflows/release.yml@c00a16233a232e1d56a92f18960c3014dce5262d
     secrets:
-      release-token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+      release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

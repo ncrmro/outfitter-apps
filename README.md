@@ -30,16 +30,19 @@ and set `validation: scripts` to execute app commands in ordinary PR CI.
 
 ## Independent releases
 
-Set `OUTFITTER_RELEASES_ENABLED=true` to let the separate main-push release
-workflow create release-please PRs. Keep `release-please-config.json`,
+Release automation is enabled with `OUTFITTER_RELEASES_ENABLED=true`. The
+main-push workflow creates and updates release-please PRs for changed apps. Keep `release-please-config.json`,
 `.release-please-manifest.json`, app versions and changelogs here. Components have
 independent versions and tags, for example `strength-five-v0.1.1`. Release PRs
-update both package.json and app.json; owned workflows keep their own declared
-versions. These are GitHub source releases, not npm SDK publication.
+update `package.json`, `app.json` and `.release-please-manifest.json` together.
+When a release PR merges, release-please automatically creates the component tag
+and GitHub release. Owned workflows retain their own declared versions; this does
+not publish SDK packages to npm.
 
-Pass `RELEASE_PLEASE_TOKEN` (GitHub App or PAT); otherwise the caller explicitly
-passes `github.token`, which requires repository permission to create PRs and may
-not trigger follow-up workflows. Nothing auto-merges. Root shared behavior
+Optionally supply `RELEASE_PLEASE_TOKEN` (GitHub App or PAT). Otherwise the shared
+runner job resolves the repository's generated token using the caller's declared
+write permissions. GitHub Actions is allowed to create release PRs. Changes made
+using the generated token do not trigger follow-up PR workflows. Nothing auto-merges. Root shared behavior
 changes need app-local release-notes.md entries in each affected app's conventional
 fix/feature commit so release-please sees those component paths.
 
@@ -68,8 +71,9 @@ environment and URL.
 
 This replaces the broad deployment approach proposed in
 [PR #2](https://github.com/ncrmro/outfitter-apps/pull/2). Do not enable both.
-Release, deployment and private-toolchain credentials remain unconfigured until
-explicitly enabled. No app behavior or platform code is changed by these wrappers.
+Release automation and preview credentials are configured. Main-branch
+installation deployment remains a separate opt-in setting. No app behavior or
+platform code is changed by these wrappers.
 
 ## Pull-request preview environments
 

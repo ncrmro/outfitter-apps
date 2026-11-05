@@ -11,5 +11,6 @@
     "check",
     "test",
     "build"
-  ]
+  ],
+  "sdkSha": "4e6db215a47811bffa20fdd78d48e4a1a2bc22d5"
 }

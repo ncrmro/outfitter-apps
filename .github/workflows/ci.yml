@@ -13,16 +13,16 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   apps:
-    uses: ai-outfitter/apps/.github/workflows/check.yml@ac0dddcb951210ddbb1a86c3fb559d52883dba19
+    uses: ai-outfitter/apps/.github/workflows/check.yml@ca2922e739148effb8e366a39dd46f812ad1d348
     with:
       config-path: .outfitter/apps.json
-      sdk-sha: ac0dddcb951210ddbb1a86c3fb559d52883dba19
   deploy:
     needs: apps
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true' && vars.OUTFITTER_DEPLOY_ENABLED == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true'
     permissions:
       contents: read
       id-token: write
-    uses: ./.github/workflows/deploy.yml
+    uses: ai-outfitter/apps/.github/workflows/deploy.yml@ca2922e739148effb8e366a39dd46f812ad1d348
     with:
       apps: ${{ needs.apps.outputs.apps }}
+      destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}

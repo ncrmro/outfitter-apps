@@ -17,7 +17,7 @@ SDK. The stable `CI gate` records those results.
 
 ## Local development
 
-Check out public `ai-outfitter/apps` at the `sdk-sha` pinned in `.github/workflows/ci.yml`
+Check out public `ai-outfitter/apps` at the `sdkSha` pinned in `.outfitter/apps.json`
 into `.outfitter-sdk`, then run `npm ci`. The root workspaces include those public
 packages and app-owned workflows; package-lock.json pins the complete dependency
 graph. Run `npm run check --workspace @ai-outfitter/app-strength-five` or the app's
@@ -28,8 +28,7 @@ No private webapp checkout or SSH key is needed by these workflows.
 
 ## Independent releases
 
-Release automation is enabled with `OUTFITTER_RELEASES_ENABLED=true`. The
-main-push workflow creates and updates release-please PRs for changed apps. Keep `release-please-config.json`,
+The main-push workflow creates and updates release-please PRs for changed apps. Keep `release-please-config.json`,
 `.release-please-manifest.json`, app versions and changelogs here. Components have
 independent versions and tags, for example `strength-five-v0.1.1`. Release PRs
 update `package.json`, `app.json` and `.release-please-manifest.json` together.
@@ -44,34 +43,34 @@ using the generated token do not trigger follow-up PR workflows. Nothing auto-me
 changes need app-local release-notes.md entries in each affected app's conventional
 fix/feature commit so release-please sees those component paths.
 
-## Automatic deployment to SaaS or self-hosted Outfitter
+## Automatic deployment to Outfitter
 
-Set `OUTFITTER_DEPLOY_ENABLED=true` to request deployments after successful
-main-push checks. The wrapper calls the central per-app deployment matrix with
-GitHub OIDC; it does not store a platform deployment token. Deployment follows
-checked main commits, independently of source releases.
+After selected app checks pass on a main-branch push, CI calls the shared deploy
+workflow with GitHub OIDC. SaaS at `https://ai-outfitter.com` is the default.
+There is no deployment enablement flag or platform deployment secret. Releases
+are independent of deployment; merging an app change is enough to request it.
 
-| Repository setting | Value |
-| --- | --- |
-| `OUTFITTER_URL` | SaaS default `https://ai-outfitter.com`, or self-hosted HTTPS origin |
-| `OUTFITTER_DEPLOY_RUNNER` | Default `ubuntu-latest`, or a runner label that can reach a private destination |
-| Environment `outfitter` | Caller-owned deployment protection rules |
+One-time setup in SaaS:
 
-The destination must enroll this GitHub app repository and configure its GitHub
-integration and operational build/runtime provider. Older installations may need
-Update once to record repository claims. The platform verifies caller repository
-ID, default-branch SHA and installer authority; OIDC audience is the destination
-origin. Queue acceptance is not completed deployment—inspect installation history
-for build/activation results. Self-hosted operational runtime work remains in
-[webapp #589](https://github.com/ai-outfitter/webapp/pull/589); a custom URL alone
-does not configure it. For two destinations, add a second thin caller with its own
-environment and URL.
+1. Open [Apps](https://ai-outfitter.com/apps#app-repositories) in your personal
+   account, add `ncrmro/outfitter-apps`, and install Strength and Yoga. Authorize
+   GitHub repository access when requested. Existing installs created before CI
+   deployments need Update once to record their repository and installer.
+2. Merge a checked app change to main. Outfitter verifies the GitHub job's
+   repository and commit, builds that exact revision, and updates its existing
+   installations when successful. Inspect installation history for activation.
 
-This replaces the broad deployment approach proposed in
-[PR #2](https://github.com/ncrmro/outfitter-apps/pull/2). Do not enable both.
-Release automation and preview credentials are configured. Main-branch
-installation deployment remains a separate opt-in setting. No app behavior or
-platform code is changed by these wrappers.
+The platform requires the installing member's current repository and account
+permissions. CI cannot create arbitrary installations in another user's account.
+A missing enrollment fails the deployment job with setup guidance. Accepted
+build/install requests are reported as queued, rather than as active deployments.
+
+For a self-hosted instance later, set `OUTFITTER_URL` to its HTTPS origin. The
+same OIDC audience and API contract apply. The runner must reach that host;
+WireGuard access and the self-hosted runtime will be configured separately.
+No deployment-runner override or WireGuard workflow is needed for SaaS.
+The caller grants `id-token: write` only to the deployment job; app checks and
+preview builds receive no deployment credentials.
 
 ## Pull-request preview environments
 

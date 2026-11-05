@@ -70,3 +70,19 @@ This replaces the broad deployment approach proposed in
 [PR #2](https://github.com/ncrmro/outfitter-apps/pull/2). Do not enable both.
 Release, deployment and private-toolchain credentials remain unconfigured until
 explicitly enabled. No app behavior or platform code is changed by these wrappers.
+
+## Pull-request preview environments
+
+The **App PR previews** workflow calls the shared publisher and posts a verified,
+read-only app URL on the PR. While SDK dependencies are private, run it manually
+with the PR number after reviewing its current head; it builds only affected
+apps through the pinned private toolchain. This is not automatic publishing of
+unreviewed PR code. After SDK publication, the same publisher can use ordinary
+pull-request builds with each app's `preview:build` script and a root lockfile.
+
+Preview hosting is configured in separate `preview-build` and `preview-publish`
+environments. The first holds a repository-read-only SDK SSH key; the second
+holds the Cloudflare preview credential. Build code never receives the hosting
+credential. Previews contain synthetic fixtures, no customer sessions, installed
+data or platform APIs. Closed PRs automatically clean up their preview Workers.
+These URLs are separate from SaaS/self-hosted installation deployment.

@@ -1,5 +1,7 @@
 name: App PR previews
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
     inputs:
       pull_request:
@@ -11,6 +13,7 @@ permissions:
   pull-requests: write
 jobs:
   previews:
+    if: github.event_name == 'workflow_dispatch'
     uses: ai-outfitter/apps/.github/workflows/preview.yml@705c6a99910624753a7fdbf324521b31ca04bc2b
     with:
       pull-request: ${{ inputs.pull_request }}

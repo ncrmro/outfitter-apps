@@ -5,7 +5,7 @@
     ".astro/types.d.ts",
     "src/**/*",
     "fixtures/**/*.json",
-    "../../../packages/ui/src/astro/**/*.astro",
+    "../.outfitter-sdk/packages/ui/src/astro/**/*.astro",
     "tests/**/*.ts",
     "scripts/**/*.ts",
     "playwright.config.ts"

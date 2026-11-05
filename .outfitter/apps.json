@@ -6,7 +6,7 @@
     "apple-health.ts",
     "apple-health-test-host.ts"
   ],
-  "validation": "metadata",
+  "validation": "scripts",
   "commands": [
     "check",
     "test",

@@ -10,23 +10,21 @@ and validation mode. Thin workflows call shared tooling at a reviewed commit;
 Dependabot proposes upgrades without rebuilding every consumer automatically.
 No generic scripts or tooling tests are copied into this repository.
 
-The Check workflow selects affected apps, follows local package dependencies,
-and fans shared Health changes out to both apps. Its stable `CI gate` validates
-metadata only while the SDK remains private. It does not certify app tests or
-builds. Validation provenance artifacts record each selected app, source SHA,
-tooling SHA and mode. Domain test commands remain in each app's package.json.
+The Check workflow selects affected apps, follows local workflow dependencies,
+and fans shared Health changes out to both apps. Every selected app runs its
+checks, unit/integration tests, and both build modes with `npm ci` and the public
+SDK. The stable `CI gate` records those results.
 
-## Full app validation
+## Local development
 
-The optional manual App toolchain workflow requires a reviewed full `source_sha`,
-repository variable `OUTFITTER_TOOLCHAIN_SHA` (a full private webapp commit), and
-a read-only `OUTFITTER_TOOLCHAIN_TOKEN` in a protected `toolchain` environment.
-Configure required reviewers before granting access. It runs the centralized
-legacy adapter in a disposable checkout, including app checks, unit/integration
-tests, both package modes and browser tests. Do not trigger private credentials
-on unreviewed PR code. This adapter's installation is not fully reproducible
-from source pins alone. When the SDK becomes public, add locked dependencies
-and set `validation: scripts` to execute app commands in ordinary PR CI.
+Check out public `ai-outfitter/apps` at the `sdk-sha` pinned in `.github/workflows/ci.yml`
+into `.outfitter-sdk`, then run `npm ci`. The root workspaces include those public
+packages and app-owned workflows; package-lock.json pins the complete dependency
+graph. Run `npm run check --workspace @ai-outfitter/app-strength-five` or the app's
+`test`, `build`, and `test:e2e` commands. The same works for Yoga Practice.
+`outfitter-app-build` produces `.outfitter/packages/<mode>.json` within each app;
+`preview:build` produces the read-only demo consumed by shared preview publication.
+No private webapp checkout or SSH key is needed by these workflows.
 
 ## Independent releases
 
@@ -77,17 +75,12 @@ platform code is changed by these wrappers.
 
 ## Pull-request preview environments
 
-The **App PR previews** workflow automatically builds and publishes changed apps
-on same-repository PRs authored and triggered by `ncrmro`. It posts verified,
-read-only URLs on the PR. The caller explicitly allowlists this identity in the
-shared workflow; forks and other authors do not receive private-SDK access.
-A reviewed manual dispatch remains available. Each app keeps a stable hostname
-for the PR; source updates replace it after checks/tests/demo packaging pass.
+Same-repository PRs automatically check and test selected apps, then publish
+separate read-only synthetic demo previews. Build jobs use the pinned public SDK
+and receive no hosting token. Publication validates the artifact's source before
+uploading, reports a URL per app and verifies the served commit SHA. Closing the
+PR removes its preview Workers.
 
-Preview hosting is configured in separate `preview-build` and `preview-publish`
-environments. The first holds a repository-read-only SDK SSH key; the second
-holds the Cloudflare preview credential. Build code never receives the hosting
-credential. The private toolchain is pinned by `OUTFITTER_TOOLCHAIN_SHA`. Previews
-contain synthetic fixtures, no customer sessions, installed data or platform APIs.
-Closed PRs automatically clean up their preview Workers. These URLs are separate
-from SaaS/self-hosted installation deployment.
+Only `CLOUDFLARE_API_TOKEN` in the `preview-publish` environment and repository
+variable `OUTFITTER_PREVIEW_ACCOUNT_ID` are required for preview hosting.
+Previews contain no customer sessions, installed data or platform APIs.

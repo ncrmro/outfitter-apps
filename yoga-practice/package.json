@@ -7,14 +7,15 @@
     "./manifest": "./app.json"
   },
   "scripts": {
-    "build": "cd ../../.. && node --import tsx scripts/build-apps.mjs yoga-practice --mode demo && node --import tsx scripts/build-apps.mjs yoga-practice --mode operational",
+    "build": "outfitter-app-build",
     "check": "astro check",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "node --import tsx --test tests/*.unit.test.ts",
     "pretest:integration": "node --import tsx scripts/prepare-tests.ts",
     "test:integration": "node --import tsx --test tests/*.integration.test.ts",
     "pretest:e2e": "node --import tsx scripts/prepare-tests.ts",
-    "test:e2e": "playwright test --config playwright.config.ts"
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "preview:build": "outfitter-app-build --mode demo --output dist/preview.json"
   },
   "dependencies": {
     "@ai-outfitter/app-sdk": "0.1.0",
@@ -34,13 +35,14 @@
     "@playwright/test": "^1.63.0",
     "@types/node": "^26.6.3",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@ai-outfitter/app-build": "0.1.0"
   },
   "outfitter": {
     "kind": "app",
     "inputs": [
-      "catalog/outfitter-apps/apple-health.ts",
-      "catalog/outfitter-apps/apple-health-test-host.ts"
+      "apple-health.ts",
+      "apple-health-test-host.ts"
     ]
   }
 }

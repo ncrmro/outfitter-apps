@@ -6,13 +6,12 @@ metadata here. Shared CI scripts and reusable workflows belong in
 app paths, shared Health inputs and validation mode. Shared workflow references
 are pinned commits and Dependabot proposes upgrades.
 
-The current SDK is private: metadata validation does not run app tests or builds.
-Use the optional manual App toolchain workflow with a reviewed source SHA and
-private credentials in the protected `toolchain` environment for full validation.
-Automatic private-SDK preview builds are limited to same-repository PRs with both
-author and triggering actor explicitly trusted by the caller. Forks and untrusted
-authors do not receive SDK access. Change validation to scripts
-only after published SDK dependencies and a root npm lockfile are available.
+The SDK and app builder live in public `ai-outfitter/apps/packages/*`. CI checks
+out that repo at the reviewed sdk-sha into `.outfitter-sdk`; npm workspaces and
+the root lockfile resolve those public packages. Use scripts validation for app
+checks, unit/integration tests and both builds. App-test prepares app-local
+`.outfitter/packages/<mode>.json` outputs through the portable builder. Do not
+reintroduce private webapp source, deploy keys or the legacy toolchain adapter.
 
 Keep app versions independent and synchronize package/app versions through
 release-please. Do not publish major versions or use breaking-change commits

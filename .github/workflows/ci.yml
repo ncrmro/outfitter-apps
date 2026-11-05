@@ -13,9 +13,10 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   apps:
-    uses: ai-outfitter/apps/.github/workflows/check.yml@12f97d71314c70e7c974290958093f5a8cddd6a2
+    uses: ai-outfitter/apps/.github/workflows/check.yml@ac0dddcb951210ddbb1a86c3fb559d52883dba19
     with:
       config-path: .outfitter/apps.json
+      sdk-sha: ac0dddcb951210ddbb1a86c3fb559d52883dba19
   deploy:
     needs: apps
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true' && vars.OUTFITTER_DEPLOY_ENABLED == 'true'

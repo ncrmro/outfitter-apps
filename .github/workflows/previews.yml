@@ -14,7 +14,7 @@ permissions:
 jobs:
   previews:
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && (github.event.action == 'closed' || (github.actor == 'ncrmro' && github.event.pull_request.user.login == 'ncrmro')))
-    uses: ai-outfitter/apps/.github/workflows/preview.yml@f6fb6c5d5195c76b4b29cc8512a8994f4bde9f91
+    uses: ai-outfitter/apps/.github/workflows/preview.yml@34607bb23d7a134973c60cc6a5787fcc3d9f3874
     with:
       pull-request: ${{ fromJSON(format('{0}', github.event.pull_request.number || inputs.pull_request)) }}
       build-mode: toolchain

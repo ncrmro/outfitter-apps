@@ -1,0 +1,21 @@
+name: App PR previews
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Reviewed pull request number (builds its current head)
+        required: true
+        type: number
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  previews:
+    uses: ai-outfitter/apps/.github/workflows/preview.yml@705c6a99910624753a7fdbf324521b31ca04bc2b
+    with:
+      pull-request: ${{ inputs.pull_request }}
+      build-mode: toolchain
+      toolchain-sha: ${{ vars.OUTFITTER_TOOLCHAIN_SHA }}
+    secrets:
+      OUTFITTER_TOOLCHAIN_SSH_KEY: ${{ secrets.OUTFITTER_TOOLCHAIN_SSH_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

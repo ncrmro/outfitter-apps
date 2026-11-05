@@ -1,0 +1,15 @@
+{
+  "appGlobs": [
+    "*"
+  ],
+  "sharedInputs": [
+    "apple-health.ts",
+    "apple-health-test-host.ts"
+  ],
+  "validation": "metadata",
+  "commands": [
+    "check",
+    "test",
+    "build"
+  ]
+}

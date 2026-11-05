@@ -1,0 +1,14 @@
+name: App releases
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+jobs:
+  release:
+    if: vars.OUTFITTER_RELEASES_ENABLED == 'true'
+    uses: ai-outfitter/apps/.github/workflows/release.yml@12f97d71314c70e7c974290958093f5a8cddd6a2
+    secrets:
+      release-token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}

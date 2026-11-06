@@ -18,10 +18,14 @@ release-please. Do not publish major versions or use breaking-change commits
 without explicit authorization. Shared behavior changes require app-local
 release-notes.md entries in each affected app's conventional fix/feature commit.
 
-Successful main-branch app checks automatically request deployment through
-GitHub OIDC. SaaS is the default; OUTFITTER_URL can select a self-hosted origin.
-Releases run on main without enablement flags. Connect the source repository
-and install apps once in Outfitter; later CI updates those installations. A queued
-request does not establish activation. Keep the shared deployment call directly
-in CI rather than adding a wrapper or a second deployment pipeline. Validate workflow YAML
-with actionlint and use the pinned central Action for package checks.
+Release-please component releases notify Outfitter through GitHub OIDC using the
+shared release workflow. `.outfitter/apps.json` declares personal update targets.
+The server records releases and requests; only its scheduled tick dispatches
+hosted builds and activation. Outfitter does not poll GitHub releases. Ordinary
+main pushes do not deploy apps; CI build outputs are validation, not production
+artifacts. SaaS is the default; OUTFITTER_URL can select a self-hosted origin.
+Keep versions/manifests/tags in release-please and do not add enablement flags.
+Connect the source repository and install apps once; server authority checks
+remain mandatory. Registration/queue acceptance does not establish activation.
+PR previews stay in this repository's Actions/Cloudflare pipeline and never call
+Outfitter. Validate workflows with actionlint and pin central tooling commits.

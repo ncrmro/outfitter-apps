@@ -62,7 +62,7 @@ One-time setup in SaaS:
 
 The platform requires the installing member's current repository and account
 permissions. CI cannot create arbitrary installations in another user's account.
-A missing enrollment fails the deployment job with setup guidance. Accepted
+Apps without subscribed installations report nothing to update. Accepted
 build/install requests are reported as queued, rather than as active deployments.
 
 For a self-hosted instance later, set `OUTFITTER_URL` to its HTTPS origin. The

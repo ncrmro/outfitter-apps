@@ -22,7 +22,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: ai-outfitter/apps/.github/workflows/deploy.yml@ca2922e739148effb8e366a39dd46f812ad1d348
+    uses: ai-outfitter/apps/.github/workflows/deploy.yml@9cc6a63e9f73d44d7bc904f36abd44dc6a79b2e0
     with:
       apps: ${{ needs.apps.outputs.apps }}
       destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}

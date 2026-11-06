@@ -15,7 +15,7 @@ permissions:
   id-token: write
 jobs:
   release:
-    uses: ai-outfitter/apps/.github/workflows/release.yml@42ed4400f9740ed68c4864a55b3dfc5d0fd6f64a
+    uses: ai-outfitter/apps/.github/workflows/release.yml@223e954a1b7a1cbdbb6bc6520de15f792b4d6590
     with:
       destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}
       releases: ${{ inputs.releases || '' }}

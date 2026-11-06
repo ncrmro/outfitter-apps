@@ -1,13 +1,10 @@
+import { onPageLoad } from "@ai-outfitter/ui/page";
 import type { HealthMatch, SessionLiftView, SessionView } from "../lib/views";
 import { errorText, loadSessions, notice } from "./data";
 import { day, kg } from "./format";
 
 // History: each session, newest first. Health text (the source device or app)
 // is set only with textContent, so markup in it is shown, never run.
-
-const list = document.getElementById("sessions") as HTMLOListElement;
-const empty = document.getElementById("sessions-empty") as HTMLElement;
-const template = document.getElementById("session-template") as HTMLTemplateElement;
 
 const changes: Record<SessionLiftView["change"], string> = { up: "", same: "", first: "", down: " · deload" };
 
@@ -33,29 +30,37 @@ function healthText(health: HealthMatch) {
   return `Apple Health: ${parts.join(" · ")} · from ${health.source}`;
 }
 
-function item(session: SessionView) {
-  const node = template.content.firstElementChild?.cloneNode(true) as HTMLLIElement;
-  (node.querySelector("[data-title]") as HTMLElement).textContent = `Workout ${session.workout} · ${day(session.date)}`;
-  (node.querySelector("[data-sequence]") as HTMLElement).textContent = `Session ${session.sequence}`;
-  (node.querySelector("[data-lifts]") as HTMLElement).replaceChildren(...session.lifts.map(liftRow));
-  const health = node.querySelector("[data-health]") as HTMLElement;
-  if (session.health) {
-    health.hidden = false;
-    health.textContent = healthText(session.health);
+onPageLoad(async (signal) => {
+  const root = document.getElementById("sessions");
+  if (!root) return;
+  const list = root as HTMLOListElement;
+  const empty = document.getElementById("sessions-empty") as HTMLElement;
+  const template = document.getElementById("session-template") as HTMLTemplateElement;
+
+  function item(session: SessionView) {
+    const node = template.content.firstElementChild?.cloneNode(true) as HTMLLIElement;
+    (node.querySelector("[data-title]") as HTMLElement).textContent = `Workout ${session.workout} · ${day(session.date)}`;
+    (node.querySelector("[data-sequence]") as HTMLElement).textContent = `Session ${session.sequence}`;
+    (node.querySelector("[data-lifts]") as HTMLElement).replaceChildren(...session.lifts.map(liftRow));
+    const health = node.querySelector("[data-health]") as HTMLElement;
+    if (session.health) {
+      health.hidden = false;
+      health.textContent = healthText(session.health);
+    }
+    return node;
   }
-  return node;
-}
 
-async function refresh() {
-  const { sessions } = await loadSessions();
-  list.replaceChildren(...sessions.map(item));
-  empty.hidden = sessions.length > 0;
-}
+  async function refresh() {
+    const { sessions } = await loadSessions();
+    list.replaceChildren(...sessions.map(item));
+    empty.hidden = sessions.length > 0;
+  }
 
-document.addEventListener("health-synced", () => void refresh());
+  document.addEventListener("health-synced", () => void refresh(), { signal });
 
-try {
-  await refresh();
-} catch (error) {
-  notice(errorText(error, "Could not load sessions."));
-}
+  try {
+    await refresh();
+  } catch (error) {
+    notice(errorText(error, "Could not load sessions."));
+  }
+});

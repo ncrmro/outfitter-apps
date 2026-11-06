@@ -12,5 +12,9 @@
     "test",
     "build"
   ],
-  "sdkSha": "52adcbeae4dd8ea20ee8e02e84b4a34fbfe410e8"
+  "sdkSha": "52adcbeae4dd8ea20ee8e02e84b4a34fbfe410e8",
+  "releaseTargets": {
+    "strength-five": [{"target": "personal/strength-five"}],
+    "yoga-practice": [{"target": "personal/yoga-practice"}]
+  }
 }

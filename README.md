@@ -46,34 +46,58 @@ using the generated token do not trigger follow-up PR workflows. Nothing auto-me
 changes need app-local release-notes.md entries in each affected app's conventional
 fix/feature commit so release-please sees those component paths.
 
-## Automatic deployment to Outfitter
+## Release notifications and scheduled updates
 
-After selected app checks pass on a main-branch push, CI calls the shared deploy
-workflow with GitHub OIDC. SaaS at `https://ai-outfitter.com` is the default.
-There is no deployment enablement flag or platform deployment secret. Releases
-are independent of deployment; merging an app change is enough to request it.
+After release-please publishes an app's component release, the shared release
+workflow notifies Outfitter through GitHub OIDC. It registers the version and
+immutable source commit and requests `personal/strength-five` or
+`personal/yoga-practice` updates according to `.outfitter/apps.json`.
+Ordinary main pushes no longer request production deployment. App checks and
+builds validate changes; their artifacts are not production deployment inputs.
+
+Outfitter does not poll repositories for releases. Notifications only register
+releases and update requests; the server's scheduled tick separately dispatches
+isolated builds and activates successful packages. A build starts when an
+existing installation needs the release or someone first installs it. Successful
+packages are cached and failed builds leave the active installation running.
 
 One-time setup in SaaS:
 
 1. Open [Apps](https://ai-outfitter.com/apps#app-repositories) in your personal
-   account, add `ncrmro/outfitter-apps`, and install Strength and Yoga. Authorize
-   GitHub repository access when requested. Existing installs created before CI
-   deployments need Update once to record their repository and installer.
-2. Merge a checked app change to main. Outfitter verifies the GitHub job's
-   repository and commit, builds that exact revision, and updates its existing
-   installations when successful. Inspect installation history for activation.
+   account, authorize GitHub repository access, add `ncrmro/outfitter-apps`, and
+   install Strength and Yoga. Older installs may need Update once to establish
+   their repository and installer binding.
+2. Merge a checked app change and then its release-please PR. The release workflow
+   records the new version and personal update requests. Inspect Outfitter's
+   release receipts and installation history for build and activation results.
 
-The platform requires the installing member's current repository and account
-permissions. CI cannot create arbitrary installations in another user's account.
-Apps without subscribed installations report nothing to update. Accepted
-build/install requests are reported as queued, rather than as active deployments.
+Scopes select authorized existing owners; they do not grant account access.
+If more than one personal binding matches, add that source's `repositoryId` to
+its `releaseTargets` entry. Organization updates use `org/<app-slug>` and an
+explicit source binding when ambiguous. `platform` publication requires a
+separately registered publisher; this repository cannot request it by changing
+its configuration.
 
-For a self-hosted instance later, set `OUTFITTER_URL` to its HTTPS origin. The
-same OIDC audience and API contract apply. The runner must reach that host;
-WireGuard access and the self-hosted runtime will be configured separately.
-No deployment-runner override or WireGuard workflow is needed for SaaS.
-The caller grants `id-token: write` only to the deployment job; app checks and
-preview builds receive no deployment credentials.
+If a notification fails after a release was created, rerun the failed notification
+job. Alternatively manually run this repository's **App releases** workflow on
+`main` with its `releases` input set to an existing release, for example:
+
+```json
+[{"app":"yoga-practice","tag":"yoga-practice-v0.1.1","commit":"FULL_RELEASE_COMMIT_SHA","targets":[{"target":"personal/yoga-practice"}]}]
+```
+
+Use the full commit referenced by that published tag. Retrying is idempotent and
+does not create a version or run a build in Actions. Run recovery from this repo,
+not the central tooling repo, so OIDC retains this repository's identity.
+Registration/queue acceptance is not completed activation. No platform deployment
+secret or enablement flag is required; only notification jobs get `id-token: write`.
+
+SaaS at `https://ai-outfitter.com` is the default. For self-hosting later,
+`OUTFITTER_URL` selects the HTTPS origin and OIDC audience; WireGuard reachability
+and self-hosted runtime setup remain separate work.
+
+See the [release architecture](https://github.com/ai-outfitter/webapp/blob/main/docs/architecture/app-releases.md).
+Deploy platform support before merging this workflow crossover.
 
 ## Pull-request preview environments
 

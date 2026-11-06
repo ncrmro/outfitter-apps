@@ -2,12 +2,22 @@ name: App releases
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      releases:
+        description: JSON array of existing releases to notify again
+        required: true
+        type: string
 permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 jobs:
   release:
-    uses: ai-outfitter/apps/.github/workflows/release.yml@c00a16233a232e1d56a92f18960c3014dce5262d
+    uses: ai-outfitter/apps/.github/workflows/release.yml@42ed4400f9740ed68c4864a55b3dfc5d0fd6f64a
+    with:
+      destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}
+      releases: ${{ inputs.releases || '' }}
     secrets:
       release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

@@ -10,7 +10,7 @@
     ".outfitter-sdk/packages/*"
   ],
   "devDependencies": {
-    "@ai-outfitter/app-build": "0.1.0",
+    "@ai-outfitter/app-build": "0.1.1",
     "typescript": "^6.0.3",
     "tsx": "^4.23.15"
   }

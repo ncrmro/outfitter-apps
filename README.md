@@ -36,6 +36,9 @@ When a release PR merges, release-please automatically creates the component tag
 and GitHub release. Owned workflows retain their own declared versions; this does
 not publish SDK packages to npm.
 
+Release-please refreshes open component PRs after other releases merge, keeping
+the shared version manifest current.
+
 Optionally supply `RELEASE_PLEASE_TOKEN` (GitHub App or PAT). Otherwise the shared
 runner job resolves the repository's generated token using the caller's declared
 write permissions. GitHub Actions is allowed to create release PRs. Changes made

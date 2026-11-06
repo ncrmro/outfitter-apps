@@ -1,30 +1,85 @@
-# Outfitter apps
+# Personal Outfitter apps
 
-Nicholas's personal Outfitter apps. Outfitter installs them as your own apps
-(owned by a user, never an organization), from Apps > Add an app.
+Strength 5x5 and Yoga Practice, including their app-owned workflows and shared
+Apple Health helpers. CI, release and deployment tooling lives in
+[ai-outfitter/apps](https://github.com/ai-outfitter/apps).
 
-| App | What it does |
-| --- | --- |
-| [`strength-five`](strength-five) | Strength 5x5: squat, bench, row, press and deadlift five sets of five, with the next weight worked out for you. |
-| [`yoga-practice`](yoga-practice) | Yoga practice: a log of yoga sessions, a weekly target and streak, with resting heart rate and HRV from Apple Health. |
+This repository keeps app source, manifests, domain tests, fixtures, migrations
+and release metadata. `.outfitter/apps.json` declares discovery, shared inputs
+and validation mode. Thin workflows call shared tooling at a reviewed commit;
+Dependabot proposes upgrades without rebuilding every consumer automatically.
+No generic scripts or tooling tests are copied into this repository.
 
-`apple-health.ts` is the Apple Health read layer both apps share, and
-`apple-health-test-host.ts` its test double.
+The Check workflow selects affected apps, follows local workflow dependencies,
+and fans shared Health changes out to both apps. Every selected app runs its
+checks, unit/integration tests, and both build modes with `npm ci` and the public
+SDK. The stable `CI gate` records those results.
 
-## How this repo is built
+## Local development
 
-The apps are built on Outfitter's app SDK, whose packages are not published.
-So this repository is not built on its own: the
-[webapp](https://github.com/ai-outfitter/webapp) mounts it as a git submodule
-at `catalog/outfitter-apps` and builds and deploys these apps with its catalog.
-The webapp pins a commit of this repo; to ship a change here, land it on
-`main`, then bump the submodule in the webapp.
+Check out public `ai-outfitter/apps` at the `sdkSha` pinned in `.outfitter/apps.json`
+into `.outfitter-sdk`, then run `npm ci`. The root workspaces include those public
+packages and app-owned workflows; package-lock.json pins the complete dependency
+graph. Run `npm run check --workspace @ai-outfitter/app-strength-five` or the app's
+`test`, `build`, and `test:e2e` commands. The same works for Yoga Practice.
+`outfitter-app-build` produces `.outfitter/packages/<mode>.json` within each app;
+`preview:build` produces the read-only demo consumed by shared preview publication.
+No private webapp checkout or SSH key is needed by these workflows.
 
-To work on an app, from a webapp checkout:
+## Independent releases
 
-```sh
-git submodule update --init catalog/outfitter-apps
-npm install
-npm test --workspace @ai-outfitter/app-strength-five
-npm run build --workspace @ai-outfitter/app-strength-five
-```
+The main-push workflow creates and updates release-please PRs for changed apps. Keep `release-please-config.json`,
+`.release-please-manifest.json`, app versions and changelogs here. Components have
+independent versions and tags, for example `strength-five-v0.1.1`. Release PRs
+update `package.json`, `app.json` and `.release-please-manifest.json` together.
+When a release PR merges, release-please automatically creates the component tag
+and GitHub release. Owned workflows retain their own declared versions; this does
+not publish SDK packages to npm.
+
+Optionally supply `RELEASE_PLEASE_TOKEN` (GitHub App or PAT). Otherwise the shared
+runner job resolves the repository's generated token using the caller's declared
+write permissions. GitHub Actions is allowed to create release PRs. Changes made
+using the generated token do not trigger follow-up PR workflows. Nothing auto-merges. Root shared behavior
+changes need app-local release-notes.md entries in each affected app's conventional
+fix/feature commit so release-please sees those component paths.
+
+## Automatic deployment to Outfitter
+
+After selected app checks pass on a main-branch push, CI calls the shared deploy
+workflow with GitHub OIDC. SaaS at `https://ai-outfitter.com` is the default.
+There is no deployment enablement flag or platform deployment secret. Releases
+are independent of deployment; merging an app change is enough to request it.
+
+One-time setup in SaaS:
+
+1. Open [Apps](https://ai-outfitter.com/apps#app-repositories) in your personal
+   account, add `ncrmro/outfitter-apps`, and install Strength and Yoga. Authorize
+   GitHub repository access when requested. Existing installs created before CI
+   deployments need Update once to record their repository and installer.
+2. Merge a checked app change to main. Outfitter verifies the GitHub job's
+   repository and commit, builds that exact revision, and updates its existing
+   installations when successful. Inspect installation history for activation.
+
+The platform requires the installing member's current repository and account
+permissions. CI cannot create arbitrary installations in another user's account.
+Apps without subscribed installations report nothing to update. Accepted
+build/install requests are reported as queued, rather than as active deployments.
+
+For a self-hosted instance later, set `OUTFITTER_URL` to its HTTPS origin. The
+same OIDC audience and API contract apply. The runner must reach that host;
+WireGuard access and the self-hosted runtime will be configured separately.
+No deployment-runner override or WireGuard workflow is needed for SaaS.
+The caller grants `id-token: write` only to the deployment job; app checks and
+preview builds receive no deployment credentials.
+
+## Pull-request preview environments
+
+Same-repository PRs automatically check and test selected apps, then publish
+separate read-only synthetic demo previews. Build jobs use the pinned public SDK
+and receive no hosting token. Publication validates the artifact's source before
+uploading, reports a URL per app and verifies the served commit SHA. Closing the
+PR removes its preview Workers.
+
+Only `CLOUDFLARE_API_TOKEN` in the `preview-publish` environment and repository
+variable `OUTFITTER_PREVIEW_ACCOUNT_ID` are required for preview hosting.
+Previews contain no customer sessions, installed data or platform APIs.

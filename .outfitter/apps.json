@@ -6,10 +6,11 @@
     "apple-health.ts",
     "apple-health-test-host.ts"
   ],
-  "validation": "metadata",
+  "validation": "scripts",
   "commands": [
     "check",
     "test",
     "build"
-  ]
+  ],
+  "sdkSha": "52adcbeae4dd8ea20ee8e02e84b4a34fbfe410e8"
 }

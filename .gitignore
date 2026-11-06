@@ -5,3 +5,10 @@ dist/
 test-results/
 playwright-report/
 *.db*
+
+node_modules/
+.outfitter-sdk/
+**/.outfitter/packages/
+**/dist/
+**/.astro/
+**/test-results/

@@ -1,0 +1,17 @@
+{
+  "name": "@ncrmro/outfitter-apps",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "strength-five",
+    "yoga-practice",
+    "strength-five/workflows/*",
+    "yoga-practice/workflows/*",
+    ".outfitter-sdk/packages/*"
+  ],
+  "devDependencies": {
+    "@ai-outfitter/app-build": "0.1.1",
+    "typescript": "^6.0.3",
+    "tsx": "^4.23.15"
+  }
+}

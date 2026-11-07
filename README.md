@@ -17,14 +17,26 @@ SDK. The stable `CI gate` records those results.
 
 ## Local development
 
-Check out public `ai-outfitter/apps` at the `sdkSha` pinned in `.outfitter/apps.json`
-into `.outfitter-sdk`, then run `npm ci`. The root workspaces include those public
-packages and app-owned workflows; package-lock.json pins the complete dependency
-graph. Run `npm run check --workspace @ai-outfitter/app-strength-five` or the app's
-`test`, `build`, and `test:e2e` commands. The same works for Yoga Practice.
-`outfitter-app-build` produces `.outfitter/packages/<mode>.json` within each app;
-`preview:build` produces the read-only demo consumed by shared preview publication.
-No private webapp checkout or SSH key is needed by these workflows.
+Run an app from this checkout inside a local Outfitter server (a checkout of
+`ai-outfitter/webapp` beside this one). Once, set up the public SDK at the pinned
+`sdkSha` from `.outfitter/apps.json`, and install dependencies:
+
+```sh
+git clone https://github.com/ai-outfitter/apps .outfitter-sdk
+git -C .outfitter-sdk checkout <sdkSha> && npm ci
+```
+
+Then, from the webapp checkout:
+
+```sh
+node scripts/dev-local.mjs --apps-checkout ../outfitter-apps --app strength-five --port 4392
+```
+
+Saving a file in `strength-five/`, a shared input (`apple-health.ts`) or the SDK's
+`packages/ui` rebuilds the affected apps; reload the page to see the change. A failed
+build keeps the last working version and prints the error. Stop with Ctrl-C or
+`node scripts/dev-local.mjs --stop`. Nothing is released or published. See the
+webapp's `docs/local-organizations.md`.
 
 ## Independent releases
 

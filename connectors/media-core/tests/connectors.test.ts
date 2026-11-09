@@ -176,3 +176,39 @@ test('Sonarr search rechecks the owning series before issuing the command', asyn
   await assert.rejects(invoke('sonarr', fetcher, 'request.search', { id: 7 }, context('sonarr'), 'member'), status(409));
   assert.equal(commands, 0);
 });
+
+test('SABnzbd status verifies the credential using a bounded authenticated queue read', async () => {
+  let calls = 0;
+  const fetcher: typeof fetch = async (url) => {
+    calls++;
+    const target = new URL(String(url));
+    assert.equal(target.searchParams.get('mode'), 'queue');
+    assert.equal(target.searchParams.get('limit'), '1');
+    assert.equal(target.searchParams.get('start'), '0');
+    assert.equal(target.searchParams.get('apikey'), 'test-secret-key');
+    return Response.json({ queue: { slots: [], noofslots: 0 } });
+  };
+  const result = await invoke('sabnzbd', fetcher, 'status.get', {}, context('sabnzbd', ['status.get']));
+  assert.deepEqual(result, { connected: true, version: null });
+  assert.equal(calls, 1);
+});
+
+test('SABnzbd status refuses HTTP 200 invalid-key and malformed responses without exposing URLs or keys', async () => {
+  for (const body of [
+    { status: false, error: 'API Key Incorrect: test-secret-key http://sabnzbd.internal/api?apikey=test-secret-key' },
+    { status: false, error: 'API Key Incorrect', queue: { slots: [], noofslots: 0 } },
+    { version: '5.0.4' },
+  ]) {
+    try {
+      await invoke('sabnzbd', response(body), 'status.get', {}, context('sabnzbd', ['status.get']));
+      assert.fail('expected authenticated queue refusal');
+    } catch (error) {
+      assert.ok(error instanceof Response);
+      assert.equal(error.status, 502);
+      const message = await error.text();
+      assert.ok(!message.includes('test-secret-key'));
+      assert.ok(!message.includes('http://'));
+      assert.ok(!message.includes('API Key Incorrect'));
+    }
+  }
+});

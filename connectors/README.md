@@ -75,3 +75,5 @@ lend credential slots through the existing per-operation credential bindings.
 Do not bake credentials into these artifacts, container build arguments, image
 layers, package metadata, or checked-in connection configuration. Provision
 connection ownership and capability grants before enabling Dione's schedule.
+
+SABnzbd `status.get` authenticates through a queue read limited to one item, not its public version endpoint. It returns `version: null`. SABnzbd API errors returned with HTTP 200 are refused using sanitized error messages. This follows the [official API reference](https://sabnzbd.org/wiki/advanced/api), which documents that version/auth calls do not require an API key.

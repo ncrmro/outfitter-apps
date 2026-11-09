@@ -198,6 +198,7 @@ async function transmissionRead(fetcher: typeof fetch, context: ConnectorOperati
 async function sabRead(fetcher: typeof fetch, context: ConnectorOperationContext, raw: unknown, briefing: boolean, history = false): Promise<MediaPage> {
   const input = briefing ? briefingInput.parse(raw) : pageInput.parse(raw), offset = Number(input.cursor ?? 0);
   const data = object(await readJson(fetcher, target(config(context).baseUrl, 'api', { mode: history ? 'history' : 'queue', output: 'json', apikey: key(context), start: String(offset), limit: String(input.limit) })));
+  if (data.status === false || typeof data.error === 'string') return denied('SABnzbd request refused');
   const container = object(data[history ? 'history' : 'queue']); const rows = await validatedList(container.slots);
   const items: MediaItem[] = rows.map(value => ({ id: identity(value.nzo_id), title: string(value.name ?? value.filename), kind: 'download', date: typeof value.completed === 'number' && value.completed > 0 ? new Date(value.completed * 1000).toISOString() : null, detail: string(value.status) || 'Queued', url: itemUrl(context, '') }));
   const total = typeof container.noofslots === 'number' ? container.noofslots : Number(container.noofslots) || offset + items.length;
@@ -217,7 +218,12 @@ export function createMediaConnector(provider: MediaProvider, transport: MediaTr
       if (arr) result = object(await arrRequest(provider, fetcher, context, 'system/status'));
       else if (provider === 'jellyfin') result = object(await readJson(fetcher, target(config(context).baseUrl, 'System/Info'), { headers: { 'X-Emby-Token': key(context) } }));
       else if (provider === 'transmission') result = await transmissionRpc(fetcher, context, 'session-get', {});
-      else result = object(await readJson(fetcher, target(config(context).baseUrl, 'api', { mode: 'version', output: 'json', apikey: key(context) })));
+      else {
+        // SABnzbd's version/auth modes are public, so they cannot verify this key.
+        // A bounded queue read checks authentication and the expected response shape.
+        await sabRead(fetcher, context, { limit: 1 }, false);
+        return { connected: true, version: null };
+      }
       return { connected: true, version: string(result.version ?? result.Version) || null };
     } },
     ...(arr ? {

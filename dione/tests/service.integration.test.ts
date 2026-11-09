@@ -116,3 +116,18 @@ test("a report reconciles a completed workflow without repeating inference after
 finally {
     close();
 } });
+
+test("ranking receives the trusted Chicago report day and generation timestamp, including after the UTC day changes", async () => {
+    const { db, close } = await database();
+    try {
+        const h = hostDouble();
+        await saveSettings(db, identity, h.host, config, demoNow);
+        for (const now of [demoNow, demoNow + 12 * 3600000]) {
+            await generateReport(db, h.host, { now });
+            const inference = h.calls.filter(call => call.name === "inference.generate").at(-1)!;
+            assert.deepEqual(inference.input.data.report, { reportDate: "2026-11-09", timeZone: "America/Chicago", generatedAt: new Date(now).toISOString() });
+            assert.match(inference.input.instructions, /Today for this briefing is 2026-11-09 in America\/Chicago/);
+            assert.ok(inference.input.instructions.includes(new Date(now).toISOString()));
+        }
+    } finally { close(); }
+});

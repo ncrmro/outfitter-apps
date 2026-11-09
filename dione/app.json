@@ -1,0 +1,47 @@
+{
+  "id": "outfitter/dione",
+  "version": "0.1.0",
+  "runtime": "cloudflare-workers-for-platforms",
+  "dataLocation": "installation-database",
+  "modes": {
+    "demo": {
+      "capabilities": []
+    },
+    "operational": {
+      "capabilities": [
+        "graph.serve",
+        "workflow.host",
+        "workflow.dione-briefing.start",
+        "connector.radarr.briefing.read",
+        "connector.sonarr.briefing.read",
+        "connector.lidarr.briefing.read",
+        "connector.jellyfin.briefing.read",
+        "connector.transmission.briefing.read",
+        "connector.sabnzbd.briefing.read",
+        "connector.radarr.request.search",
+        "connector.sonarr.request.search",
+        "connector.lidarr.request.search",
+        "connector.radarr.missing.list",
+        "connector.radarr.queue.list",
+        "connector.sonarr.missing.list",
+        "connector.sonarr.queue.list",
+        "connector.lidarr.missing.list",
+        "connector.lidarr.queue.list"
+      ]
+    }
+  },
+  "catalog": {
+    "access": "admin-only",
+    "personal": true,
+    "operational": {
+      "slug": "dione",
+      "name": "Dione",
+      "description": "Your daily media briefing: releases, library additions and download recommendations to review."
+    },
+    "demo": {
+      "slug": "dione",
+      "name": "Dione",
+      "description": "A synthetic daily media briefing."
+    }
+  }
+}

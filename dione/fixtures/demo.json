@@ -1,0 +1,241 @@
+{
+  "description": "Synthetic fixture; no live service data or credentials.",
+  "overview": {
+    "settings": {
+      "timezone": "America/Chicago",
+      "hour": 8,
+      "enabled": false,
+      "bindings": [
+        {
+          "provider": "radarr",
+          "connectionId": "radarr-one",
+          "resource": "ocean-radarr"
+        }
+      ]
+    },
+    "reports": [
+      {
+        "id": "demo-report",
+        "day": "2026-11-09",
+        "status": "partial",
+        "summary": "One monitored movie is available to review.",
+        "generatedAt": 1794232800000,
+        "completedAt": 1794232800000,
+        "inferenceError": null
+      }
+    ],
+    "latest": {
+      "id": "demo-report",
+      "day": "2026-11-09",
+      "status": "partial",
+      "summary": "One monitored movie is available to review.",
+      "generatedAt": 1794232800000,
+      "completedAt": 1794232800000,
+      "inferenceError": null
+    },
+    "items": [
+      {
+        "id": "demo-report:radarr:movie:42",
+        "reportId": "demo-report",
+        "source": "radarr",
+        "sourceId": "42",
+        "title": "Synthetic Moonrise",
+        "kind": "movie",
+        "date": "2026-11-09T00:00:00Z",
+        "detail": "Monitored; not in library",
+        "url": "https://radarr.example/movie/42",
+        "reason": "A new release from your monitored movies.",
+        "rank": 0
+      }
+    ],
+    "sources": [
+      {
+        "id": "demo-report:radarr",
+        "reportId": "demo-report",
+        "source": "radarr",
+        "observedAt": 1794232800000,
+        "status": "ok",
+        "error": null,
+        "count": 1,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:sonarr",
+        "reportId": "demo-report",
+        "source": "sonarr",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:lidarr",
+        "reportId": "demo-report",
+        "source": "lidarr",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:jellyfin",
+        "reportId": "demo-report",
+        "source": "jellyfin",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:transmission",
+        "reportId": "demo-report",
+        "source": "transmission",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:sabnzbd",
+        "reportId": "demo-report",
+        "source": "sabnzbd",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      }
+    ],
+    "recommendations": [
+      {
+        "id": "11b5fc27-fc86-4ffd-a615-1a478f3cdce3",
+        "source": "radarr",
+        "sourceId": "42",
+        "title": "Synthetic Moonrise",
+        "status": "proposed",
+        "receipt": null,
+        "updatedAt": 1794232800000
+      }
+    ]
+  },
+  "report": {
+    "report": {
+      "id": "demo-report",
+      "day": "2026-11-09",
+      "status": "partial",
+      "summary": "One monitored movie is available to review.",
+      "generatedAt": 1794232800000,
+      "completedAt": 1794232800000,
+      "inferenceError": null
+    },
+    "items": [
+      {
+        "id": "demo-report:radarr:movie:42",
+        "reportId": "demo-report",
+        "source": "radarr",
+        "sourceId": "42",
+        "title": "Synthetic Moonrise",
+        "kind": "movie",
+        "date": "2026-11-09T00:00:00Z",
+        "detail": "Monitored; not in library",
+        "url": "https://radarr.example/movie/42",
+        "reason": "A new release from your monitored movies.",
+        "rank": 0
+      }
+    ],
+    "sources": [
+      {
+        "id": "demo-report:radarr",
+        "reportId": "demo-report",
+        "source": "radarr",
+        "observedAt": 1794232800000,
+        "status": "ok",
+        "error": null,
+        "count": 1,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:sonarr",
+        "reportId": "demo-report",
+        "source": "sonarr",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:lidarr",
+        "reportId": "demo-report",
+        "source": "lidarr",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:jellyfin",
+        "reportId": "demo-report",
+        "source": "jellyfin",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:transmission",
+        "reportId": "demo-report",
+        "source": "transmission",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      },
+      {
+        "id": "demo-report:sabnzbd",
+        "reportId": "demo-report",
+        "source": "sabnzbd",
+        "observedAt": 1794232800000,
+        "status": "unavailable",
+        "error": "Not connected",
+        "count": 0,
+        "truncated": false
+      }
+    ]
+  },
+  "settings": {
+    "settings": {
+      "timezone": "America/Chicago",
+      "hour": 8,
+      "enabled": false,
+      "bindings": [
+        {
+          "provider": "radarr",
+          "connectionId": "radarr-one",
+          "resource": "ocean-radarr"
+        }
+      ]
+    },
+    "connections": [
+      {
+        "provider": "radarr",
+        "connectionId": "radarr-one",
+        "resource": "ocean-radarr",
+        "operations": [
+          "briefing.read",
+          "missing.list",
+          "queue.list",
+          "request.search"
+        ]
+      }
+    ],
+    "schedules": []
+  }
+}

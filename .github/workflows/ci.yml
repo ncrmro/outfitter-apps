@@ -17,7 +17,7 @@ jobs:
     with:
       config-path: .outfitter/apps.json
   deploy:
-    needs: apps
+    needs: [apps, connectors]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true'
     permissions:
       contents: read
@@ -26,3 +26,40 @@ jobs:
     with:
       apps: ${{ needs.apps.outputs.apps }}
       destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}
+  connectors:
+    name: Media connectors and Dione browser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: sdk
+        name: Read immutable SDK pin
+        shell: bash
+        run: |
+          sdk_sha=$(jq -r .sdkSha .outfitter/apps.json)
+          [[ "$sdk_sha" =~ ^[a-f0-9]{40}$ ]]
+          echo "sha=$sdk_sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: ai-outfitter/apps
+          ref: ${{ steps.sdk.outputs.sha }}
+          path: .outfitter-sdk
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run connectors:check
+      - run: npm run connectors:test
+      - run: npm run connectors:build
+      - name: Install browser dependencies
+        run: node_modules/.bin/playwright install --with-deps chromium
+      - run: npm run test:e2e --workspace dione
+      - name: Browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dione-browser-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dione/test-results/
+          retention-days: 7

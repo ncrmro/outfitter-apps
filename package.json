@@ -7,11 +7,19 @@
     "yoga-practice",
     "strength-five/workflows/*",
     "yoga-practice/workflows/*",
-    ".outfitter-sdk/packages/*"
+    ".outfitter-sdk/packages/*",
+    "dione",
+    "dione/workflows/*",
+    "connectors/*"
   ],
   "devDependencies": {
     "@ai-outfitter/app-build": "0.1.1",
     "typescript": "^6.0.3",
     "tsx": "^4.23.15"
+  },
+  "scripts": {
+    "connectors:check": "npm run check -w @ncrmro/connector-media-core -w @ncrmro/connector-radarr -w @ncrmro/connector-sonarr -w @ncrmro/connector-lidarr -w @ncrmro/connector-jellyfin -w @ncrmro/connector-transmission -w @ncrmro/connector-sabnzbd",
+    "connectors:test": "npm test -w @ncrmro/connector-media-core",
+    "connectors:build": "npm run build -w @ncrmro/connector-media-core -w @ncrmro/connector-radarr -w @ncrmro/connector-sonarr -w @ncrmro/connector-lidarr -w @ncrmro/connector-jellyfin -w @ncrmro/connector-transmission -w @ncrmro/connector-sabnzbd"
   }
 }

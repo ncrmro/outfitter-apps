@@ -1,0 +1,88 @@
+type Query {
+  dioneReports(first: Int = 100, after: String, ids: [ID!], day: [String!], status: [String!]): DioneReportConnection!
+  dioneItems(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!], kind: [String!]): DioneItemConnection!
+  dioneSources(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!]): DioneSourceConnection!
+  dioneRecommendations(first: Int = 100, after: String, ids: [ID!], source: [String!], status: [String!]): DioneRecommendationConnection!
+}
+
+type DioneReportConnection {
+  nodes: [DioneReport!]!
+  pageInfo: PageInfo!
+  aggregate: Aggregate!
+}
+
+type DioneReport {
+  id: ID!
+  day: String!
+  status: String!
+  summary: String!
+  generatedAt: DateTime!
+  completedAt: DateTime
+  inferenceError: String
+}
+
+"""ISO-8601 date or date-time; as input also "NOW"."""
+scalar DateTime
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
+type Aggregate {
+  count: Int!
+}
+
+type DioneItemConnection {
+  nodes: [DioneItem!]!
+  pageInfo: PageInfo!
+  aggregate: Aggregate!
+}
+
+type DioneItem {
+  id: ID!
+  reportId: String!
+  source: String!
+  sourceId: String!
+  title: String!
+  kind: String!
+  date: String
+  detail: String!
+  url: String
+  reason: String!
+  rank: Float!
+}
+
+type DioneSourceConnection {
+  nodes: [DioneSource!]!
+  pageInfo: PageInfo!
+  aggregate: Aggregate!
+}
+
+type DioneSource {
+  id: ID!
+  reportId: String!
+  source: String!
+  observedAt: DateTime!
+  status: String!
+  error: String
+  count: Float!
+  truncated: Boolean!
+}
+
+type DioneRecommendationConnection {
+  nodes: [DioneRecommendation!]!
+  pageInfo: PageInfo!
+  aggregate: Aggregate!
+}
+
+type DioneRecommendation {
+  id: ID!
+  source: String!
+  sourceId: String!
+  title: String!
+  status: String!
+  receipt: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}

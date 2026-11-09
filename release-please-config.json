@@ -11,15 +11,62 @@
       "release-type": "node",
       "component": "strength-five",
       "extra-files": [
-        { "type": "json", "path": "app.json", "jsonpath": "$.version" }
+        {
+          "type": "json",
+          "path": "app.json",
+          "jsonpath": "$.version"
+        }
       ]
     },
     "yoga-practice": {
       "release-type": "node",
       "component": "yoga-practice",
       "extra-files": [
-        { "type": "json", "path": "app.json", "jsonpath": "$.version" }
+        {
+          "type": "json",
+          "path": "app.json",
+          "jsonpath": "$.version"
+        }
       ]
+    },
+    "dione": {
+      "release-type": "node",
+      "component": "dione",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "app.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    },
+    "connectors/media-core": {
+      "release-type": "node",
+      "component": "connector-media-core"
+    },
+    "connectors/radarr": {
+      "release-type": "node",
+      "component": "connector-radarr"
+    },
+    "connectors/sonarr": {
+      "release-type": "node",
+      "component": "connector-sonarr"
+    },
+    "connectors/lidarr": {
+      "release-type": "node",
+      "component": "connector-lidarr"
+    },
+    "connectors/jellyfin": {
+      "release-type": "node",
+      "component": "connector-jellyfin"
+    },
+    "connectors/transmission": {
+      "release-type": "node",
+      "component": "connector-transmission"
+    },
+    "connectors/sabnzbd": {
+      "release-type": "node",
+      "component": "connector-sabnzbd"
     }
   }
 }

@@ -1,0 +1,5 @@
+---
+import Layout from "../components/Layout.astro";
+---
+<Layout title="Today’s briefing"><div class="toolbar"><p>Releases, recent additions, and items worth a look.</p><button id="refresh" type="button">Refresh briefing</button></div><section id="briefing" aria-live="polite"></section><h2>Sources</h2><ul id="sources"></ul><h2>In your media world</h2><ol id="items" class="cards"></ol><p class="muted">Concert and local-event discovery will be available after a location and event source are configured.</p></Layout>
+<script>import "../scripts/app";</script>

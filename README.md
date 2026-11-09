@@ -1,6 +1,6 @@
 # Personal Outfitter apps
 
-Strength 5x5 and Yoga Practice, including their app-owned workflows and shared
+Dione, Strength 5x5 and Yoga Practice, including their app-owned workflows and shared
 Apple Health helpers. CI, release and deployment tooling lives in
 [ai-outfitter/apps](https://github.com/ai-outfitter/apps).
 
@@ -98,3 +98,19 @@ PR removes its preview Workers.
 Only `CLOUDFLARE_API_TOKEN` in the `preview-publish` environment and repository
 variable `OUTFITTER_PREVIEW_ACCOUNT_ID` are required for preview hosting.
 Previews contain no customer sessions, installed data or platform APIs.
+
+## Dione and custom media connectors
+
+Dione lives in `dione/`. Its six custom connector packages live in
+`connectors/`, alongside their shared media transport and contracts. These are
+source-owned packages in this repository, not platform catalog source. Connector
+changes select Dione through its development dependencies. Run `npm run
+connectors:check`, `npm run connectors:test`, and `npm run connectors:build` to
+validate and bundle deployable operator modules. See [connector setup](connectors/README.md)
+and [Dione](dione/README.md).
+
+Dione needs the reviewed public SDK schedule-binding extension and the generic
+self-hosted app/connector runtime changes before live installation. Ocean media
+migration manifests and the cutover runbook belong to `ncrmro/ks-config` under
+`k8s-cluster/apps/media-stack/`. A packaged app and passing fixtures do not mean
+those services have migrated or Dione is active.

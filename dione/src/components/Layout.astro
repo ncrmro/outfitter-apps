@@ -1,0 +1,8 @@
+---
+import ManagedAppLayout from "@ai-outfitter/ui/astro/ManagedAppLayout.astro";
+import "../dione.css";
+const {title,page="today"}=Astro.props;
+---
+<ManagedAppLayout name="Dione" {title} description="A daily briefing from your media library and download services." active={page==="settings"?"settings":"home"} settingsHref="./settings" sidebarLinks={[{label:"Today",href:"./",active:page==="today"},{label:"History",href:"./history",active:page==="history"},{label:"Recommendations",href:"./recommendations",active:page==="recommendations"}]}>
+<slot />
+</ManagedAppLayout>

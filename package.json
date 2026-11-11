@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "autodidact",
     "strength-five",
     "yoga-practice",
     "strength-five/workflows/*",

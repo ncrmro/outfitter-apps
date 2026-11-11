@@ -1,0 +1,273 @@
+{
+  "topics": [
+    {
+      "id": "demo-1",
+      "title": "Reading A/B test results",
+      "aim": "Say whether an experiment's result is real, how big it is and what to do next, without asking an analyst.",
+      "goalId": "9a1e0000-0000-4000-8000-000000000001",
+      "goalTitle": "Read our experiment results without help",
+      "status": "active",
+      "revision": 1,
+      "createdAt": 1794315600000,
+      "updatedAt": 1794319800000,
+      "concepts": 6,
+      "counts": {
+        "unprobed": 2,
+        "gap": 2,
+        "shaky": 0,
+        "solid": 2
+      },
+      "progress": "2 of 6 solid · 2 gaps · 2 not checked",
+      "next": {
+        "id": "demo-2",
+        "title": "p-value",
+        "state": "gap"
+      }
+    },
+    {
+      "id": "demo-3",
+      "title": "Writing SQL window functions",
+      "aim": "Write running totals and rankings for my own reports.",
+      "goalId": null,
+      "goalTitle": null,
+      "status": "paused",
+      "revision": 2,
+      "createdAt": 1794213600000,
+      "updatedAt": 1794243600000,
+      "concepts": 3,
+      "counts": {
+        "unprobed": 3,
+        "gap": 0,
+        "shaky": 0,
+        "solid": 0
+      },
+      "progress": "0 of 3 solid · 3 not checked",
+      "next": {
+        "id": "demo-4",
+        "title": "PARTITION BY",
+        "state": "unprobed"
+      }
+    }
+  ],
+  "details": {
+    "demo-1": {
+      "topic": {
+        "id": "demo-1",
+        "title": "Reading A/B test results",
+        "aim": "Say whether an experiment's result is real, how big it is and what to do next, without asking an analyst.",
+        "goalId": "9a1e0000-0000-4000-8000-000000000001",
+        "goalTitle": "Read our experiment results without help",
+        "status": "active",
+        "revision": 1,
+        "createdAt": 1794315600000,
+        "updatedAt": 1794319800000
+      },
+      "concepts": [
+        {
+          "id": "demo-5",
+          "topicId": "demo-1",
+          "title": "Sampling variation",
+          "summary": "Why two groups differ even when the change does nothing.",
+          "position": 0,
+          "state": "solid",
+          "lastCheckedAt": 1794316800000,
+          "revision": 2,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794316800000
+        },
+        {
+          "id": "demo-6",
+          "topicId": "demo-1",
+          "title": "Null hypothesis",
+          "summary": "What 'no effect' predicts, so a result can surprise it.",
+          "position": 1,
+          "state": "solid",
+          "lastCheckedAt": 1794319200000,
+          "revision": 3,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794319200000
+        },
+        {
+          "id": "demo-2",
+          "topicId": "demo-1",
+          "title": "p-value",
+          "summary": "How surprising the data would be if there were no effect.",
+          "position": 2,
+          "state": "gap",
+          "lastCheckedAt": 1794318300000,
+          "revision": 2,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794318300000
+        },
+        {
+          "id": "demo-7",
+          "topicId": "demo-1",
+          "title": "Confidence interval",
+          "summary": "The range of effect sizes the data is consistent with.",
+          "position": 3,
+          "state": "gap",
+          "lastCheckedAt": 1794319800000,
+          "revision": 2,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794319800000
+        },
+        {
+          "id": "demo-8",
+          "topicId": "demo-1",
+          "title": "Statistical power",
+          "summary": "Why a small test can miss a real effect.",
+          "position": 4,
+          "state": "unprobed",
+          "lastCheckedAt": null,
+          "revision": 1,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794315900000
+        },
+        {
+          "id": "demo-9",
+          "topicId": "demo-1",
+          "title": "Peeking and stopping early",
+          "summary": "Why checking every day inflates false positives.",
+          "position": 5,
+          "state": "unprobed",
+          "lastCheckedAt": null,
+          "revision": 1,
+          "createdAt": 1794315900000,
+          "updatedAt": 1794315900000
+        }
+      ],
+      "checks": [
+        {
+          "id": "demo-10",
+          "conceptId": "demo-7",
+          "question": "The dashboard says +2% conversion, 95% CI from -1% to +5%. Would you ship it?",
+          "answer": "Yes, it's 2% better.",
+          "outcome": "gap",
+          "insight": "Reads the point estimate only; does not see that the interval includes no effect or a loss.",
+          "createdAt": 1794319800000
+        },
+        {
+          "id": "demo-11",
+          "conceptId": "demo-6",
+          "question": "If there is no effect and we ran this test 100 times, would every run show identical rates?",
+          "answer": "No, they'd bounce around. So no effect means the difference is near zero, within the usual wobble.",
+          "outcome": "solid",
+          "insight": "Reached the null's prediction from sampling variation on their own.",
+          "createdAt": 1794319200000
+        },
+        {
+          "id": "demo-12",
+          "conceptId": "demo-2",
+          "question": "A test reports p = 0.03. In your own words, what is that 3% the probability of?",
+          "answer": "That there's a 3% chance the new version isn't better.",
+          "outcome": "gap",
+          "insight": "Reads the p-value as the probability the hypothesis is true: the most common misconception.",
+          "createdAt": 1794318300000
+        },
+        {
+          "id": "demo-13",
+          "conceptId": "demo-6",
+          "question": "Before we look at the data, what does 'the new checkout makes no difference' predict we will see?",
+          "answer": "That the conversion rates are the same?",
+          "outcome": "shaky",
+          "insight": "Expects identical rates; has not connected the null to the wobble they just described.",
+          "createdAt": 1794317400000
+        },
+        {
+          "id": "demo-14",
+          "conceptId": "demo-5",
+          "question": "If we split users into two groups and change nothing, would their conversion rates match? Why or why not?",
+          "answer": "Not exactly. Each group is a random handful of people, so the rates wobble a bit even with no change.",
+          "outcome": "solid",
+          "insight": "Explains chance differences and why they shrink with more users.",
+          "createdAt": 1794316800000
+        }
+      ],
+      "progress": "2 of 6 solid · 2 gaps · 2 not checked",
+      "next": {
+        "id": "demo-2",
+        "title": "p-value",
+        "state": "gap"
+      }
+    },
+    "demo-3": {
+      "topic": {
+        "id": "demo-3",
+        "title": "Writing SQL window functions",
+        "aim": "Write running totals and rankings for my own reports.",
+        "goalId": null,
+        "goalTitle": null,
+        "status": "paused",
+        "revision": 2,
+        "createdAt": 1794213600000,
+        "updatedAt": 1794243600000
+      },
+      "concepts": [
+        {
+          "id": "demo-4",
+          "topicId": "demo-3",
+          "title": "PARTITION BY",
+          "summary": "",
+          "position": 0,
+          "state": "unprobed",
+          "lastCheckedAt": null,
+          "revision": 1,
+          "createdAt": 1794214200000,
+          "updatedAt": 1794214200000
+        },
+        {
+          "id": "demo-15",
+          "topicId": "demo-3",
+          "title": "ORDER BY in a window",
+          "summary": "",
+          "position": 1,
+          "state": "unprobed",
+          "lastCheckedAt": null,
+          "revision": 1,
+          "createdAt": 1794214200000,
+          "updatedAt": 1794214200000
+        },
+        {
+          "id": "demo-16",
+          "topicId": "demo-3",
+          "title": "Frames: ROWS vs RANGE",
+          "summary": "",
+          "position": 2,
+          "state": "unprobed",
+          "lastCheckedAt": null,
+          "revision": 1,
+          "createdAt": 1794214200000,
+          "updatedAt": 1794214200000
+        }
+      ],
+      "checks": [],
+      "progress": "0 of 3 solid · 3 not checked",
+      "next": {
+        "id": "demo-4",
+        "title": "PARTITION BY",
+        "state": "unprobed"
+      }
+    }
+  },
+  "goals": {
+    "available": true,
+    "goals": [
+      {
+        "id": "9a1e0000-0000-4000-8000-000000000001",
+        "title": "Read our experiment results without help",
+        "summary": "Judge A/B tests on my own.",
+        "status": "active",
+        "target": null,
+        "due": null
+      },
+      {
+        "id": "9a1e0000-0000-4000-8000-000000000002",
+        "title": "Run a sub-4 marathon",
+        "summary": "Spring race.",
+        "status": "active",
+        "target": null,
+        "due": "2027-04-18"
+      }
+    ]
+  }
+}

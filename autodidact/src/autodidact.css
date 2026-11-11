@@ -1,0 +1,144 @@
+/* Only what this app adds to the shared frame; colors come from shared tokens. */
+
+.learning .cards,
+.learning .concepts,
+.learning .checks,
+.learning .goal-list {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.card,
+.concept,
+.check,
+.goal,
+.tile {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.learning p {
+  margin: 0;
+}
+
+.card--quiet {
+  opacity: 0.75;
+}
+
+.card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.ui-content .card-heading h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.goal {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* A gap is the call to action; shaky is a caution; solid is done. */
+.badge--gap,
+.concept--gap {
+  border-color: var(--error);
+}
+
+.badge--shaky,
+.concept--shaky {
+  border-color: var(--warning);
+}
+
+.badge--solid {
+  border-color: var(--success);
+}
+
+.concept--unprobed {
+  border-style: dashed;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.tile dt {
+  font-weight: 600;
+}
+
+.tile dd {
+  margin: 0;
+}
+
+.tile-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.tile--gap {
+  border-color: var(--error);
+}
+
+.next {
+  margin: 0 0 16px;
+}
+
+.check blockquote {
+  margin: 4px 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--border);
+}
+
+.check-question {
+  font-style: italic;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+  max-width: 40rem;
+}
+
+.stack label,
+.row label {
+  display: grid;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .goal {
+    grid-template-columns: 1fr;
+  }
+}

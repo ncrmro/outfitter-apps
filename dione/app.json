@@ -26,7 +26,26 @@
         "connector.sonarr.missing.list",
         "connector.sonarr.queue.list",
         "connector.lidarr.missing.list",
-        "connector.lidarr.queue.list"
+        "connector.lidarr.queue.list",
+        "threads.use",
+        "threads.provide",
+        "connector.radarr.status.get",
+        "connector.radarr.calendar.list",
+        "connector.radarr.library.list",
+        "connector.sonarr.status.get",
+        "connector.sonarr.calendar.list",
+        "connector.sonarr.library.list",
+        "connector.lidarr.status.get",
+        "connector.lidarr.calendar.list",
+        "connector.lidarr.library.list",
+        "connector.jellyfin.status.get",
+        "connector.jellyfin.library.list",
+        "connector.transmission.status.get",
+        "connector.transmission.queue.list",
+        "connector.sabnzbd.status.get",
+        "connector.sabnzbd.queue.list",
+        "connector.sabnzbd.history.list",
+        "connector.arr-mcp.read.call"
       ]
     }
   },

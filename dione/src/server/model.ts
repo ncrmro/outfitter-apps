@@ -2,13 +2,14 @@ import { z } from "zod";
 import type { AppIdentity } from "@ai-outfitter/app-sdk/server";
 export const providers = ["radarr", "sonarr", "lidarr", "jellyfin", "transmission", "sabnzbd"] as const;
 export const binding = z.strictObject({ provider: z.enum(providers), connectionId: z.string().min(1).max(256), resource: z.string().min(1).max(1024) });
+export const arrMcpBinding = z.strictObject({ connectionId: z.string().min(1).max(256), resource: z.string().min(1).max(1024) });
 export const settingsInput = z.strictObject({ timezone: z.string().min(1).max(64).refine(value => { try {
         new Intl.DateTimeFormat("en", { timeZone: value });
         return true;
     }
     catch {
         return false;
-    } }, "Invalid time zone"), hour: z.number().int().min(0).max(23), enabled: z.boolean(), bindings: z.array(binding).max(6).refine(rows => new Set(rows.map(r => r.provider)).size === rows.length, "One binding per provider") });
+    } }, "Invalid time zone"), hour: z.number().int().min(0).max(23), enabled: z.boolean(), bindings: z.array(binding).max(6).refine(rows => new Set(rows.map(r => r.provider)).size === rows.length, "One binding per provider"), arrMcpBinding: arrMcpBinding.nullable().default(null) });
 export type Binding = z.infer<typeof binding>;
 export const briefingRead = z.object({ items: z.array(z.object({ id: z.string().min(1).max(256), title: z.string().min(1).max(500), kind: z.enum(["movie", "episode", "album", "library", "download"]), date: z.string().nullable(), detail: z.string().max(2000), url: z.string().nullable(), request: z.object({ operation: z.literal("request.search"), input: z.object({ id: z.number().int().positive() }) }).optional() })).max(100), cursor: z.string().nullable(), truncated: z.boolean() });
 export const rankOutput = z.strictObject({ summary: z.string().max(2000), items: z.array(z.strictObject({ ref: z.string(), reason: z.string().max(400) })).max(20) });

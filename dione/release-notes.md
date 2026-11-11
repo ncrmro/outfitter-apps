@@ -3,3 +3,18 @@ source freshness, owner-confirmed requests, and read-only graph collections.
 Requires self-hosted runtime and approved multi-connection schedule support.
 
 SABnzbd connection setup verifies credentials with an authenticated queue probe.
+
+Dione now includes a conversational sidebar using Outfitter's shared private
+threads. It offers owner-scoped live reads from approved media connections and an
+optional full-stack Arr MCP connection for title/artist searches, details,
+calendars, queues and service health. Credentials stay in platform connections;
+source bindings and permissions are rechecked for every tool call. Replies carry
+source freshness and explicitly report unavailable, unsupported and limited
+results. The sidebar exposes no download or mutation tools; request submission
+continues through the existing explicit Recommendations review.
+
+The synthetic demo includes a scripted sidebar with no app, provider or inference
+requests. The operational sidebar requires the platform's shared-thread host,
+approved connector access and the app-owned proposal/guard migration. Selecting
+only the full-stack MCP enables agent reads independently of daily-report source
+bindings; daily briefings still use their selected individual service connectors.

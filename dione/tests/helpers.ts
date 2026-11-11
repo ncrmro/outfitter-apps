@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import type { AppIdentity } from "@ai-outfitter/app-sdk/server";
 import type { Host } from "../src/server/service";
 export const identity: AppIdentity = { userId: "owner", owner: { kind: "user", id: "owner" }, installationId: "dione-test", role: "owner", canEdit: true };
-export async function database() { const client = createClient({ url: ":memory:" }); const db = drizzle(client); await migrate(db, { migrationsFolder: fileURLToPath(new URL("../migrations", import.meta.url)) }); return { db, close: () => client.close() }; }
+export async function database() { const client = createClient({ url: ":memory:" }); const db = drizzle(client); await migrate(db, { migrationsFolder: fileURLToPath(new URL("../migrations", import.meta.url)) }); return { db, client, close: () => client.close() }; }
 export const demoNow = Date.parse("2026-11-09T14:00:00Z");
 export function hostDouble(options: {
     failSource?: boolean;

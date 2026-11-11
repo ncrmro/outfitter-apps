@@ -27,7 +27,10 @@
     "drizzle-orm": "^0.45.3",
     "zod": "^4.6.5",
     "@ncrmro/workflow-dione-briefing": "0.1.0",
-    "graphql": "^16.11.0"
+    "graphql": "^16.11.0",
+    "@astrojs/react": "^7.0.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@ai-outfitter/app-test": "0.1.1",
@@ -43,7 +46,9 @@
     "@ncrmro/connector-lidarr": "0.1.0",
     "@ncrmro/connector-jellyfin": "0.1.0",
     "@ncrmro/connector-transmission": "0.1.0",
-    "@ncrmro/connector-sabnzbd": "0.1.0"
+    "@ncrmro/connector-sabnzbd": "0.1.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   },
   "outfitter": {
     "kind": "app",

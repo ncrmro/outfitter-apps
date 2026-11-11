@@ -19,6 +19,10 @@ test("built operational app requires the personal owner; graph and workflow rout
         assert.equal((await app.call("/api/internal/workflow-host/v1", owner, { method: "POST", body: { phase: "schedule", input: {} } })).status, 503);
         assert.equal((await app.call("/api/apps/dione/confirm", { ...owner, actor: { kind: "app", id: "other-app" } }, { method: "POST", body: { id: "one", confirmed: true } })).status, 403);
         assert.equal((await app.call("/api/internal/actions/v1/list")).status, 401);
+        assert.equal((await app.call("/api/apps/dione/agent/context?focus=d1000000-0000-4000-8000-000000000001")).status, 401);
+        assert.equal((await app.call("/api/apps/dione/agent/context?focus=d1000000-0000-4000-8000-000000000001", { ...owner, userId: "other" })).status, 403);
+        assert.equal((await app.call("/api/internal/threads/v1/types", undefined, { method: "POST", body: {} })).status, 401);
+        assert.equal((await app.call("/api/internal/threads/v1/types", { ...owner, userId: "other" }, { method: "POST", body: {} })).status, 403);
     }
     finally {
         await app.dispose();

@@ -54,3 +54,25 @@ These checks do not establish live Ocean connectivity or provider activation.
 
 Regenerate synthetic fixture data with `node --import tsx dione/scripts/demo-fixtures.ts`
 and the graph schema with `node --import tsx dione/scripts/graph-schema.ts`.
+
+### Sidebar agent
+
+“Ask Dione” uses Outfitter's shared private conversations and inference. The app
+publishes two read tools: `dione_media_read` for its six approved service bindings,
+and `dione_stack_read` for an optional approved `arr-mcp` connection. Configure the
+latter in Settings → Agent connection for full-stack title/artist search and
+media details. It works independently of the individual briefing bindings.
+
+The MCP connector exposes only seven read operations (`get_library`,
+`search_media`, `get_media_details`, `get_calendar`, `get_queue`, `get_wanted`,
+`get_stack_health`). The app never receives provider credentials or an arbitrary
+MCP URL. Every tool call rechecks the selected connection/resource and current
+read grant before platform connector execution. Source failures and limited
+results are explicit, and provider text is treated as untrusted data. Sidebar
+read outputs are excluded from durable thread tool-result storage (`store:false`).
+
+The sidebar cannot submit downloads or change service state. Existing download
+recommendations remain behind the owner's explicit review. The demo uses the
+shared scripted sidebar and makes no inference, platform-thread or provider calls.
+Operational conversations require an installed package with `threads.use`,
+`threads.provide`, workflow-host bindings and the app's `0001` migration.

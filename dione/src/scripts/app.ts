@@ -83,6 +83,7 @@ async function loadSetup() {
         connections: Array<Binding & {
             operations: string[];
         }>;
+        stackConnections?: Array<{ connectionId: string; resource: string }>;
         schedules: Array<{
             workflowId: string;
             enabled: boolean;
@@ -90,6 +91,12 @@ async function loadSetup() {
             lastOutcome: string | null;
         }>;
     }>("settings");
+    const stack = document.getElementById("arr-mcp") as HTMLSelectElement;
+    const stackConnections = data.stackConnections ?? [];
+    stack.replaceChildren(new Option("Not connected", ""), ...stackConnections.map(c => new Option(c.resource, JSON.stringify(c))));
+    const stackCurrent = stackConnections.find(c => c.connectionId === data.settings.arrMcpBinding?.connectionId && c.resource === data.settings.arrMcpBinding?.resource);
+    if (stackCurrent) stack.value = JSON.stringify(stackCurrent);
+    stack.disabled = demo;
     const el = document.getElementById("connections")!;
     const providers = ["radarr", "sonarr", "lidarr", "jellyfin", "transmission", "sabnzbd"];
     el.replaceChildren(...providers.map(provider => { const label = node("label", provider); const select = document.createElement("select"); select.name = provider; select.append(new Option("Not connected", "")); for (const c of data.connections.filter(c => c.provider === provider))
@@ -103,7 +110,7 @@ async function loadSetup() {
     const form = document.getElementById("settings") as HTMLFormElement;
     form.onsubmit = async (event) => { event.preventDefault(); try {
         const bindings = Array.from(el.querySelectorAll("select")).filter(s => s.value).map(s => { const { provider, connectionId, resource } = JSON.parse(s.value); return { provider, connectionId, resource }; });
-        await api("settings", "PUT", { timezone: (document.getElementById("timezone") as HTMLInputElement).value, hour: Number((document.getElementById("hour") as HTMLInputElement).value), enabled: (document.getElementById("enabled") as HTMLInputElement).checked, bindings });
+        await api("settings", "PUT", { timezone: (document.getElementById("timezone") as HTMLInputElement).value, hour: Number((document.getElementById("hour") as HTMLInputElement).value), enabled: (document.getElementById("enabled") as HTMLInputElement).checked, bindings, arrMcpBinding: stack.value ? JSON.parse(stack.value) : null });
         notice("Settings saved.");
         await loadSetup();
     }

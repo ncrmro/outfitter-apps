@@ -3,7 +3,7 @@ import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 import type { AppIdentity } from "@ai-outfitter/app-sdk/server";
 import type { OperationInput, OperationOutput } from "@ai-outfitter/app-sdk/workflow-host";
 import { z } from "zod";
-import { briefingCandidates, binding, briefingRead, owner, plain, providers, rankOutput, rankSchema, reportDay, safeURL, settingsInput, type Binding } from "./model";
+import { arrMcpBinding, briefingCandidates, binding, briefingRead, owner, plain, providers, rankOutput, rankSchema, reportDay, safeURL, settingsInput, type Binding } from "./model";
 import { items, recommendations, reports, settings, sources } from "./schema";
 export type Database = BaseSQLiteDatabase<"async", any>;
 type Operations = "snapshot" | "schedules" | "schedule.save" | "workflow.start" | "workflow.read" | "workflow.collect" | "connector.execute" | "inference.generate";
@@ -16,11 +16,15 @@ export type BriefingHost = {
 export const workflow = "dione-briefing";
 export async function loadSettings(db: Database) {
     const [row] = await db.select().from(settings).where(eq(settings.id, "default"));
-    return row ? { timezone: row.timezone, hour: row.hour, enabled: row.enabled, bindings: z.array(binding).parse(JSON.parse(row.bindings)) } : { timezone: "America/Chicago", hour: 8, enabled: false, bindings: [] as Binding[] };
+    return row ? { timezone: row.timezone, hour: row.hour, enabled: row.enabled, bindings: z.array(binding).parse(JSON.parse(row.bindings)), arrMcpBinding: row.arrMcpBinding ? arrMcpBinding.parse(JSON.parse(row.arrMcpBinding)) : null } : { timezone: "America/Chicago", hour: 8, enabled: false, bindings: [] as Binding[], arrMcpBinding: null };
 }
 export async function connections(host: Host) {
     const { connections } = await host.call("snapshot", {});
     return connections.filter(c => (providers as readonly string[]).includes(c.provider) && c.resource && c.operations.includes("briefing.read")).map(c => ({ provider: c.provider, connectionId: c.id, resource: c.resource!, operations: c.operations }));
+}
+export async function stackConnections(host: Host) {
+    const { connections } = await host.call("snapshot", {});
+    return connections.filter(c => c.provider === "arr-mcp" && c.resource && c.operations.includes("read.call")).map(c => ({ connectionId: c.id, resource: c.resource! }));
 }
 export async function saveSettings(db: Database, identity: AppIdentity, host: Host, input: unknown, now = Date.now()) {
     owner(identity);
@@ -29,6 +33,8 @@ export async function saveSettings(db: Database, identity: AppIdentity, host: Ho
     for (const b of value.bindings)
         if (!available.some(c => c.provider === b.provider && c.connectionId === b.connectionId && c.resource === b.resource))
             throw new Response("Select an active approved connection", { status: 409 });
+    if (value.arrMcpBinding && !(await stackConnections(host)).some(c => c.connectionId === value.arrMcpBinding!.connectionId && c.resource === value.arrMcpBinding!.resource))
+        throw new Response("Select an active approved media MCP connection", { status: 409 });
     if (value.enabled && !value.bindings.length)
         throw new Response("Connect a media source before enabling the schedule", { status: 409 });
     // Platform validates and persists these bindings, then rechecks every scheduled read.
@@ -39,7 +45,8 @@ export async function saveSettings(db: Database, identity: AppIdentity, host: Ho
         }[];
     } = { workflow, timezone: value.timezone, cron: `0 ${value.hour} * * *`, inputs: {}, enabled: value.enabled, connectionBindings: value.bindings.map(({ connectionId, resource }) => ({ connectionId, resource })) };
     await host.call("schedule.save", scheduleInput);
-    await db.insert(settings).values({ id: "default", ...value, bindings: JSON.stringify(value.bindings), updatedAt: now }).onConflictDoUpdate({ target: settings.id, set: { ...value, bindings: JSON.stringify(value.bindings), updatedAt: now } });
+    const stored = { ...value, bindings: JSON.stringify(value.bindings), arrMcpBinding: value.arrMcpBinding ? JSON.stringify(value.arrMcpBinding) : null, updatedAt: now };
+    await db.insert(settings).values({ id: "default", ...stored }).onConflictDoUpdate({ target: settings.id, set: stored });
     return value;
 }
 export async function overview(db: Database) {

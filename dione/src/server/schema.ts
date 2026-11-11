@@ -1,4 +1,6 @@
 import { integer, sqliteTable, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
+import { proposalTables } from "@ai-outfitter/app-sdk/proposal-tables";
+export const { proposals: agentProposals, guard: agentGuard } = proposalTables("dione_proposals", "dione_agent_guard");
 export const reports = sqliteTable("reports", {
     id: text().primaryKey(), day: text().notNull(), status: text().notNull(), summary: text().notNull().default(""),
     generatedAt: integer().notNull(), completedAt: integer(), inferenceError: text(),
@@ -14,4 +16,4 @@ export const recommendations = sqliteTable("recommendations", {
     id: text().primaryKey(), source: text().notNull(), sourceId: text().notNull(), title: text().notNull(), operation: text().notNull(), input: text().notNull(),
     connectionId: text().notNull(), resource: text().notNull(), status: text().notNull().default("proposed"), receipt: text(), confirmedBy: text(), createdAt: integer().notNull(), updatedAt: integer().notNull(),
 }, t => [uniqueIndex("recommendations_target").on(t.source, t.sourceId, t.operation, t.connectionId, t.resource)]);
-export const settings = sqliteTable("settings", { id: text().primaryKey(), timezone: text().notNull(), hour: integer().notNull(), enabled: integer({ mode: "boolean" }).notNull(), bindings: text().notNull(), updatedAt: integer().notNull() });
+export const settings = sqliteTable("settings", { id: text().primaryKey(), timezone: text().notNull(), hour: integer().notNull(), enabled: integer({ mode: "boolean" }).notNull(), bindings: text().notNull(), arrMcpBinding: text(), updatedAt: integer().notNull() });

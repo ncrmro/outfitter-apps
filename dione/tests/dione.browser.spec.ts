@@ -16,13 +16,29 @@ test("synthetic briefing is readable on desktop and mobile and survives client n
             await expect(page.getByRole("heading", { name: "Today’s briefing", exact: true })).toBeVisible();
             await expect(page.getByText("Synthetic Moonrise", { exact: true })).toBeVisible();
             await expect(page.getByRole("button", { name: "Refresh briefing" })).toBeDisabled();
+            await expect(page.locator("#items > li")).toHaveCount(26);
+            await expect(page.locator("#sources > li")).toHaveCount(6);
             expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
             await page.screenshot({path:testInfo.outputPath(viewport.width > 1000 ? "desktop.png" : "mobile.png"),fullPage:true});
         }
         await page.setViewportSize({ width: 1440, height: 1000 });
         await expectClientNavigation(page, origin, ["Today", "History", "Recommendations", "Settings"], () => expect(page.locator("#notice")).toContainText("Synthetic demo"));
+        await page.goto(`${origin}/history`);
+        await expect(page.locator("#history > li")).toHaveCount(7);
+        await page.getByRole("button", {name: "2026-11-09 · partial", exact: true}).click();
+        await expect(page.locator("#briefing")).toContainText("2026-11-09 · partial");
+        await expect(page.locator("#sources")).toContainText("sabnzbd: unavailable");
+        await page.screenshot({path:testInfo.outputPath("history.png"),fullPage:true});
+        await page.goto(`${origin}/recommendations`);
+        await expect(page.locator("#recommendations > li")).toHaveCount(9);
+        await expect(page.locator("#recommendations")).toContainText("submitted");
+        await expect(page.locator("#recommendations")).toContainText("unknown");
+        for (const button of await page.getByRole("button", {name: "Review request"}).all()) await expect(button).toBeDisabled();
+        await page.screenshot({path:testInfo.outputPath("recommendations.png"),fullPage:true});
         await page.goto(`${origin}/settings`);
         await expect(page.getByRole("heading",{name:"Settings",exact:true})).toBeVisible();
+        await expect(page.locator("#arr-mcp")).toHaveValue(/demo-arr-mcp/);
+        await expect(page.locator("#schedule-health")).toContainText("Last outcome: complete");
         await page.screenshot({path:testInfo.outputPath("settings.png"),fullPage:true,animations:"disabled"});
         expect(errors).toEqual([]);
     }

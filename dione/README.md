@@ -76,3 +76,18 @@ recommendations remain behind the owner's explicit review. The demo uses the
 shared scripted sidebar and makes no inference, platform-thread or provider calls.
 Operational conversations require an installed package with `threads.use`,
 `threads.provide`, workflow-host bindings and the app's `0001` migration.
+
+### Populated synthetic demo
+
+Run `npm run demo:seed --workspace dione` from the repository root to regenerate
+`fixtures/demo.json`. `scripts/demo-catalog.ts` supplies fictional observations
+for all six services; the seed runs the real settings, report and recommendation
+services against an in-memory database and fake host. The small unit-test host
+remains independent of the larger visual demo.
+
+The fixture includes 26 observations, seven daily reports (one with an unavailable
+source), nine recommendations across proposed/submitted/unknown states, an MCP
+connection, all six service selections, and schedule health. Queue examples cover
+active, queued, completed and seeding downloads. Historical report links resolve
+to their own dated observations. IDs, dates and receipts are deterministic;
+regenerating the fixture requires no live credentials, inference or provider calls.

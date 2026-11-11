@@ -12,7 +12,13 @@ async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> 
         if (method !== "GET")
             throw new Error("This demo is read-only.");
         const fixtures = (await import("../../fixtures/demo.json")).default;
-        return (path.startsWith("report?") ? fixtures.report : fixtures[path as "overview" | "settings"]) as T;
+        if (path.startsWith("report?")) {
+            const id = new URLSearchParams(path.slice(path.indexOf("?") + 1)).get("id");
+            const report = id ? fixtures.reports[id as keyof typeof fixtures.reports] : undefined;
+            if (!report) throw new Error("Demo report not found.");
+            return report as T;
+        }
+        return fixtures[path as "overview" | "settings"] as T;
     }
     const response = await fetch(`api/apps/dione/${path}`, { method, headers: { Accept: "application/json", ...(body === undefined ? {} : { "Content-Type": "application/json" }) }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
     if (!response.ok)

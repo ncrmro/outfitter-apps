@@ -1,6 +1,6 @@
 # Personal Outfitter apps
 
-Strength 5x5 and Yoga Practice, including their app-owned workflows and shared
+Strength 5x5, Yoga Practice and Autodidact (a Socratic tutor), including their app-owned workflows and shared
 Apple Health helpers. CI, release and deployment tooling lives in
 [ai-outfitter/apps](https://github.com/ai-outfitter/apps).
 

@@ -1,0 +1,61 @@
+---
+// The demo build resolves this to the shared scripted sidebar (astro.config.mjs).
+import AppAgentSidebar from "@ai-outfitter/ui/react/AppAgentSidebar";
+import AgentSidebarToggle from "@ai-outfitter/ui/astro/AgentSidebarToggle.astro";
+import ManagedAppLayout from "@ai-outfitter/ui/astro/ManagedAppLayout.astro";
+import "@ai-outfitter/ui/chat.css";
+import "../autodidact.css";
+
+export type LearningPage = "overview" | "topic" | "settings";
+interface Props { title: string; description: string; page: LearningPage }
+const { title, description, page } = Astro.props;
+const demo = import.meta.env.OUTFITTER_APP_MODE !== "operational";
+const panel = "autodidact-agent";
+// Relative links: every page sits at the app's root, which may be under a path prefix.
+---
+<ManagedAppLayout
+  name="Autodidact"
+  {title}
+  {description}
+  active={page === "settings" ? "settings" : "home"}
+  settingsHref="./settings"
+  sidebarLinks={[{ label: "Topics", href: "./", active: page !== "settings" }]}
+>
+  <AgentSidebarToggle slot="header-actions" controls={panel} label="Ask your tutor" persist />
+  <div class="learning" data-demo={String(demo)}>
+    <slot />
+  </div>
+  <AppAgentSidebar
+    slot="overlays"
+    client:idle
+    transition:persist
+    id={panel}
+    pageId="autodidact"
+    endpoint="/api/apps/autodidact/agent"
+    {demo}
+    agentName="Autodidact"
+    intro="Your Socratic tutor. Pick a goal or tell it what you want to learn; it maps the concepts, asks one question at a time to find your gaps, and leads you to close them."
+    emptyIntro="Ask your tutor to start a topic, map its concepts or quiz you on the next one."
+    limits={demo ? "Scripted, read-only demo. No inference or writes." : "Reads your topics and your Wiki goals. Every change is a proposal you approve; it never edits your Wiki."}
+    demoReply="This is a scripted, read-only example. In the real app your tutor asks one open question about the next concept, judges your answer as solid, shaky or a gap, and leads you with questions until you can explain it yourself. No inference ran and nothing changed."
+  />
+</ManagedAppLayout>
+<script>
+  import { navigate } from "astro:transitions/client";
+  import { agentPage } from "@ai-outfitter/app-sdk/agent-context";
+  import { onPageLoad } from "@ai-outfitter/ui/page";
+  import { focusId } from "../lib/learning";
+  const page = agentPage("autodidact");
+  page.set({ focus: { kind: "autodidact", id: focusId, label: "Autodidact" } });
+  // When the member approves a proposal in the sidebar, show its result.
+  page.onApplied(() => void navigate(location.href));
+  // Tell the tutor what this page shows, and which topic.
+  onPageLoad(() => {
+    const view = document.querySelector<HTMLElement>("[data-agent-summary]");
+    page.describe({
+      title: document.title,
+      ...(view?.dataset.agentSummary ? { summary: view.dataset.agentSummary } : {}),
+      ...(view?.dataset.topicId ? { state: { topicId: view.dataset.topicId } } : {}),
+    });
+  });
+</script>

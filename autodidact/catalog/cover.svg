@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-labelledby="title desc">
+  <title id="title">Autodidact</title>
+  <desc id="desc">A question mark in a speech bubble beside a concept map where most nodes are filled and two gaps are outlined.</desc>
+  <rect width="800" height="480" rx="36" fill="#eef0f4"/>
+  <rect x="80" y="110" width="250" height="190" rx="32" fill="#fffefa" stroke="#cfd5e1" stroke-width="4"/>
+  <path d="M140 300l-10 64 64-64" fill="#fffefa" stroke="#cfd5e1" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M170 170c0-26 20-42 45-42s45 16 45 40c0 30-40 32-40 62" fill="none" stroke="#2d3550" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="220" cy="262" r="11" fill="#2d3550"/>
+  <path d="M500 130L430 240M500 130L590 230M430 240L470 350M430 240L380 340M590 230L640 340M590 230L560 350" stroke="#9aa3b8" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="500" cy="130" r="30" fill="#4d5f9a"/>
+  <circle cx="430" cy="240" r="26" fill="#4d5f9a"/>
+  <circle cx="590" cy="230" r="26" fill="#4d5f9a"/>
+  <circle cx="380" cy="340" r="22" fill="#4d5f9a"/>
+  <circle cx="470" cy="350" r="22" fill="#eef0f4" stroke="#c2563f" stroke-width="6" stroke-dasharray="10 8"/>
+  <circle cx="560" cy="350" r="22" fill="#8fa0d0"/>
+  <circle cx="640" cy="340" r="22" fill="#eef0f4" stroke="#c2563f" stroke-width="6" stroke-dasharray="10 8"/>
+</svg>

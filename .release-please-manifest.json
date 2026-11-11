@@ -8,5 +8,6 @@
   "connectors/lidarr": "0.1.0",
   "connectors/jellyfin": "0.1.0",
   "connectors/transmission": "0.1.0",
-  "connectors/sabnzbd": "0.1.0"
+  "connectors/sabnzbd": "0.1.0",
+  "connectors/arr-mcp": "0.1.0"
 }

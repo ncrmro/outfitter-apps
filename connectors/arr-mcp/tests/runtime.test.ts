@@ -134,6 +134,25 @@ test('input and result bounds fail closed and text results stay untrusted', asyn
   await assert.rejects(executeConnector(createArrMcpConnector(), 'read.call', { tool: 'get_queue' }, context(failed.url)), error => error instanceof Response && error.status === 502);
 });
 
+test('text-only and nested JSON credentials are redacted while safe prose stays useful', async t => {
+  for (const envelope of [
+    { content: [{ type: 'text', text: JSON.stringify({ apiKey: 'private-provider-key', items: [{ title: 'Safe title' }] }) }] },
+    { structuredContent: { nested: JSON.stringify({ password: 'private-provider-password', title: 'Safe title' }) }, content: [] },
+    { content: [{ type: 'text', text: 'Authorization: Bearer private-provider-header' }] },
+    { content: [{ type: 'text', text: 'password=private passphrase with spaces' }] },
+  ]) {
+    const fixture = await server(t, envelope);
+    const output = await executeConnector(createArrMcpConnector(), 'read.call', { tool: 'get_library' }, context(fixture.url));
+    const serialized = JSON.stringify(output);
+    for (const secret of ['private-provider-key', 'private-provider-password', 'private-provider-header', 'private passphrase'])
+      assert.ok(!serialized.includes(secret));
+    if ('structuredContent' in envelope || envelope.content[0]?.text.startsWith('{')) assert.ok(serialized.includes('Safe title'));
+  }
+  const fixture = await server(t, { content: [{ type: 'text', text: '3 items; Sonarr is unavailable.' }] });
+  const output = await executeConnector(createArrMcpConnector(), 'read.call', { tool: 'get_library' }, context(fixture.url)) as ArrMcpResult;
+  assert.equal(output.data, '3 items; Sonarr is unavailable.');
+});
+
 test('the deployed ESM bundle performs an actual HTTP MCP read', async t => {
   const bundled = await build({ entryPoints: [new URL('../src/runtime.ts', import.meta.url).pathname], bundle: true, platform: 'node', format: 'esm', target: 'node24', write: false });
   const code = bundled.outputFiles[0].text;

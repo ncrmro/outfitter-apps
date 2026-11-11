@@ -18,3 +18,7 @@ requests. The operational sidebar requires the platform's shared-thread host,
 approved connector access and the app-owned proposal/guard migration. Selecting
 only the full-stack MCP enables agent reads independently of daily-report source
 bindings; daily briefings still use their selected individual service connectors.
+
+Register the MCP adapter in shared validation and independent releases, and document required upstream missing/upgradable search arguments.
+
+Allow the existing main-push deployment workflow to use an operator-selected runner for a private self-hosted destination; validation remains on hosted runners.

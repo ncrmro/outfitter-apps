@@ -67,6 +67,10 @@
     "connectors/sabnzbd": {
       "release-type": "node",
       "component": "connector-sabnzbd"
+    },
+    "connectors/arr-mcp": {
+      "release-type": "node",
+      "component": "connector-arr-mcp"
     }
   }
 }

@@ -48,7 +48,15 @@ function denied(message: string, status = 502): never { throw new Response(messa
 /** Keys, URLs, and echoed access tokens do not cross the connector boundary. */
 function redact(value: unknown, token: string, depth = 0): unknown {
   if (depth > 20) return '[nested data omitted]';
-  if (typeof value === 'string') return value.replaceAll(token, '[redacted]').replace(/https?:\/\/[^\s<>"']+/g, text => {
+  if (typeof value === 'string') {
+    const normalized = value.replaceAll(token, '[redacted]');
+    // MCP TextContent can carry JSON, including nested serialized results.
+    // Normalize it before inspecting credential field names.
+    if (/^\s*[\[{]/.test(normalized)) {
+      try { return redact(JSON.parse(normalized), token, depth + 1); }
+      catch { /* Non-JSON text is handled below. */ }
+    }
+    const safe = normalized.replace(/https?:\/\/[^\s<>"']+/g, text => {
     try {
       const url = new URL(text);
       url.username = ''; url.password = '';
@@ -57,7 +65,15 @@ function redact(value: unknown, token: string, depth = 0): unknown {
       }
       return url.href;
     } catch { return '[invalid URL]'; }
-  });
+    });
+    // An opaque credential assignment cannot be safely split into a value and
+    // surrounding prose (passwords may contain spaces). Keep ordinary prose,
+    // but omit credential-shaped text; URLs were sanitized independently.
+    const prose = safe.replace(/https?:\/\/[^\s<>"']+/g, '');
+    if (/(?:^|[\s{,;])["']?(?:api[-_]?key|access[-_]?token|authorization|password|secret|token|credentials?)["']?\s*[:=]/i.test(prose))
+      return '[credential-shaped provider text omitted]';
+    return safe;
+  }
   if (Array.isArray(value)) return value.map(item => redact(item, token, depth + 1));
   if (value !== null && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [
     key, /^(?:api[-_]?key|access[-_]?token|authorization|password|secret|token|credential[s]?)$/i.test(key)

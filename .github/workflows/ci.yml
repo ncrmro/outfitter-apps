@@ -26,6 +26,7 @@ jobs:
     with:
       apps: ${{ needs.apps.outputs.apps }}
       destination: ${{ vars.OUTFITTER_URL || 'https://ai-outfitter.com' }}
+      runner: ${{ vars.OUTFITTER_DEPLOY_RUNNER || 'ubuntu-latest' }}
   connectors:
     name: Media connectors and Dione browser
     runs-on: ubuntu-latest

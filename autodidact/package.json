@@ -13,7 +13,8 @@
     "test:unit": "node --import tsx --test tests/*.unit.test.ts",
     "pretest:integration": "node --import tsx scripts/prepare-tests.ts",
     "test:integration": "node --import tsx --test tests/*.integration.test.ts",
-    "preview:build": "outfitter-app-build --mode demo --output dist/preview.json"
+    "preview:build": "outfitter-app-build --mode demo --output dist/preview.json",
+    "eval": "node --import tsx evals/tutor/run.ts"
   },
   "dependencies": {
     "@ai-outfitter/app-sdk": "0.1.1",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@ai-outfitter/app-build": "0.1.1",
     "@ai-outfitter/app-test": "0.1.1",
+    "@ai-sdk/openai": "^4.0.114",
     "@astrojs/check": "^0.9.10",
     "@libsql/client": "^0.18.0",
     "@types/node": "^26.6.3",

@@ -3,8 +3,8 @@
     "name": "DioneItems",
     "kind": "query",
     "story": "As an owner, I want to inspect media observations and their sources, so that I can verify recommendations.",
-    "query": "query DioneItems($first: Int, $after: String) {\n  dioneItems(first: $first, after: $after) {\n    nodes {\n      id\n      reportId\n      source\n      sourceId\n      title\n      kind\n      date\n      detail\n      url\n      reason\n      rank\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
-    "hash": "a6e3227d12f376b6aa1adcbcb12b97d637491609a03ba03374e6120ec788bc60",
+    "query": "query DioneItems($first: Int, $after: String) {\n  dioneItems(first: $first, after: $after) {\n    nodes {\n      id\n      reportId\n      source\n      sourceId\n      title\n      kind\n      date\n      detail\n      url\n      section\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "d72cb99798822e3f40defea0ab17b164d6d430c10f15904d067804bed2a1ec16",
     "variables": {
       "type": "object",
       "properties": {
@@ -51,8 +51,8 @@
     "name": "DioneReports",
     "kind": "query",
     "story": "As an owner, I want to read my media briefings, so that I can decide what to watch or listen to.",
-    "query": "query DioneReports($first: Int, $after: String) {\n  dioneReports(first: $first, after: $after) {\n    nodes {\n      id\n      day\n      status\n      summary\n      generatedAt\n      completedAt\n      inferenceError\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
-    "hash": "5d2d9e1ad0581c0057d089763df63ab2d6775b24e0129bca41cba67a99286189",
+    "query": "query DioneReports($first: Int, $after: String) {\n  dioneReports(first: $first, after: $after) {\n    nodes {\n      id\n      day\n      status\n      summary\n      generatedAt\n      completedAt\n      timezone\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "5ff8f420c3bbbc03c799b3082d20f13aa58b7c3e776922aa1b04ad3a13c1132e",
     "variables": {
       "type": "object",
       "properties": {

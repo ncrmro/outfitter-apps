@@ -31,11 +31,20 @@ The scripted agent includes queue progress and library examples. Fixtures are
 regenerated through real application services against isolated fake providers;
 no live data, credentials, inference or downloads are used.
 
-Add an explicit private production-read baseline command. It captures the deployed
-service connectors and read-only MCP, then evaluates the real report service in
-an isolated in-memory workflow harness with validated operator Spark inference.
-Artifacts retain coverage, limits, timestamps, timings, code pins, provider
-failures and model evidence outside Git. No provider writes, owner-session
-substitution, production database changes or public demo data replacement occur.
+Add an explicit private production-read baseline command. It captures deployed
+service connectors and read-only MCP data, then evaluates the real report service
+in an isolated in-memory workflow harness. Artifacts retain source coverage,
+limits, timestamps, timings, code pins and failures outside Git. No provider
+writes, owner-session substitution, production database changes or public demo
+data replacement occur.
 
-Failed baseline inference retains elapsed time and a sanitized failure marker; readable reports explicitly identify unranked observations.
+Remove report ranking and its inference workflow step. The briefing now groups
+provider facts into Upcoming releases, Recent library additions and Needs
+attention, with deterministic summaries and chronological/source ordering.
+Completed and seeding downloads do not crowd the attention list. The sidebar
+agent still queries approved sources through its existing private conversations.
+New section provenance is persisted by migration 0002; legacy ranking columns
+remain only for safe upgrades and are omitted from report APIs and the graph.
+The production baseline collector/replay no longer contacts an inference provider.
+
+Save report timezones for stable history; migration removes old AI summaries while retaining observations. Active downloads remain visible even when progress rounds to 100%. Date-only releases keep their provider calendar date.

@@ -14,7 +14,7 @@ try {
         const now = demoNow - daysAgo * 86400000;
         const {host} = demoHost(now, daysAgo === 2 ? "sabnzbd" : undefined);
         const id = daysAgo === 0 ? "demo-report" : `demo-report-${daysAgo}`;
-        history[id] = await generateReport(db, host, {runId: id, now});
+        history[id] = await generateReport(db, host, {runId: id, now, clock: () => now});
     }
     // Exercise real application transitions against a fake provider, including an
     // interrupted receipt. Export stable IDs so rebuilding fixtures has no churn.

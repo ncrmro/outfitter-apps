@@ -18,10 +18,9 @@ steps:
             count: { type: integer, minimum: 0 }
           required: [count]
           additionalProperties: false
-  - id: rank
+  - id: briefing
     inputs:
       observations: collect.outputs.observations
-    inference: { maxOutputTokens: 3000 }
     outputs:
       briefing:
         connector: database
@@ -33,4 +32,4 @@ steps:
           required: [reportId]
           additionalProperties: false
 outputs:
-  briefing: rank.outputs.briefing
+  briefing: briefing.outputs.briefing

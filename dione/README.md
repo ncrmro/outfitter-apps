@@ -7,8 +7,12 @@ service credentials or calls arbitrary browser-provided service URLs.
 The owner selects approved connections in Settings, then refreshes a briefing
 or enables the daily schedule (08:00 America/Chicago by default). Reports keep
 release calendars, monitored missing media, recent library additions, queue
-activity, and source observations. Platform inference ranks observed entries;
-an unavailable model leaves source observations available with a partial label.
+activity, and source observations. Reports show three factual sections: upcoming
+releases (today through the next seven days), recent library additions (the last
+seven days), and things needing attention. Items are ordered chronologically or
+by source and title, without model ranking or generated explanations. Missing
+media, active/troubled downloads and source failures remain visible; completed
+and seeding downloads are omitted from attention unless they report a problem.
 Missing or failed connections are visible rather than interpreted as empty data.
 Concert and local-event discovery remain unconfigured and are not invented.
 
@@ -29,7 +33,7 @@ OAuth clients are refused, even when acting for the owner.
 ## Runtime dependencies
 
 This app requires local Outfitter installation dispatch, installation databases,
-custom connector package loading, workflow/inference support, and the generic
+custom connector package loading, workflow support, and the generic
 `schedule.save.connectionBindings` extension. The platform approves each binding
 when saved and rechecks it for scheduled reads; inputs do not grant authority.
 The app deliberately cannot substitute network access for missing host support.
@@ -108,18 +112,39 @@ this is a bounded snapshot, not a full inventory. MCP results retain degraded
 source and freshness information. No download recommendation is confirmed.
 
 The captured normalized pages feed the real report service using a disposable
-in-memory database and workflow receipt harness. Ranking uses Ocean's configured
-Spark provider with the app's instructions, data and validated result schema;
-this is an operator provider call, not platform owner routing, billing or a
-scheduled installation run. Model failures remain partial reports, not successful
-ranking. The harness uses the rank step's 3000 token output budget and a 60 second
-request timeout; it records model input/output and usage privately.
+in-memory database and workflow receipt harness. Reports group all observed items
+into the same upcoming, library and attention sections as the app. Report
+generation makes no inference requests; the conversational sidebar retains its
+normal shared-thread inference separately. This command does not prove owner
+routing, a scheduled installation run, or graph publication.
 
 Artifacts are stored outside Git under
 `~/.local/state/dione/baselines/<UTC timestamp>/` (directory 0700, files 0600):
 `capture.json` contains timestamped reads/timings and connector/platform pins;
-`report.json` contains app output, recommendation examples and inference evidence;
+`report.json` contains app output, grouped observations and recommendation examples;
 `summary.json` contains coverage, caps and failures; `report.md` is the readable
 briefing. Treat these as personal library data. Never replace the fictional public
 demo fixture with production captures. Keep partial/error runs for diagnosis and
 use the committed-source baseline for comparison.
+
+The `0002_report_sections` migration adds factual section provenance. Old database
+ranking columns are retained only for safe upgrades and omitted from report APIs
+and graph documents. Older in-flight workflow snapshots can finish their final
+legacy checkpoint without inference. New workflows collect observations and
+publish a briefing directly.
+
+Each new report saves its timezone and generation time, so changing schedule
+settings does not move historical releases between days. Legacy reports without
+saved timezone metadata use their saved report day and UTC calendar dates, not
+current settings; their old AI summaries are replaced with a factual archive
+label during migration. Completion timestamps record actual completion rather
+than the original scheduled time.
+
+To compare a private production capture without contacting services, run:
+
+```sh
+npm run baseline:prod --workspace dione -- --capture /private/path/capture.json
+```
+
+Replay uses the original capture window and the current factual section logic;
+it makes no Kubernetes, media-provider or model calls.

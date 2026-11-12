@@ -60,12 +60,8 @@ export function demoHost(now: number, unavailable?: string) {
                 return {id: `demo-${provider}-${input.input.id}`, status: "queued", synthetic: true};
             }
             if (provider === unavailable) throw Error("Synthetic source outage");
-            const entries = input.operation === "briefing.read" ? catalog[provider] : [];
-            return {items: entries.map(([title, kind, offset, detail, request], index): Item => ({id: String(index + 1), title, kind, date: offset === null ? null : new Date(now + offset * 86400000).toISOString(), detail, url: `https://${provider}.example/items/${index + 1}`, ...(request ? {request: {operation: "request.search" as const, input: {id: index + 1}}} : {})})), cursor: null, truncated: false};
-        }
-        if (name === "inference.generate") {
-            const observations = input.data.observations as Array<{ref: string; detail: string}>;
-            return {output: {summary: `${observations.length} media updates: Synthetic Moonrise releases today, Signal Coast and The Archive Room have new episodes, and Paper Satellites has a new album. Review missing titles, browse recent library additions, and check active downloads.${unavailable ? ` ${unavailable} is temporarily unavailable; this report is partial.` : " All six sources responded."}`, items: observations.slice(0, 20).map(item => ({ref: item.ref, reason: item.detail}))}};
+            const entries = input.operation === "briefing.read" ? catalog[provider].filter(e => !["radarr", "sonarr", "lidarr"].includes(provider) || e[2] !== null) : input.operation === "missing.list" ? catalog[provider].filter(e => e[2] === null) : [];
+            return {items: entries.map(([title, kind, offset, detail, request]): Item => ({id: String(catalog[provider].findIndex(e => e[0] === title) + 1), title, kind, date: offset === null ? null : new Date(now + offset * 86400000).toISOString(), detail, url: `https://${provider}.example/items/${catalog[provider].findIndex(e => e[0] === title) + 1}`, ...(request ? {request: {operation: "request.search" as const, input: {id: catalog[provider].findIndex(e => e[0] === title) + 1}}} : {})})), cursor: null, truncated: false};
         }
         return base.host.call(name as any, input);
     }} as Host;

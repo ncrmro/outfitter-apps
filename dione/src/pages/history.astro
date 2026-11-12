@@ -1,5 +1,6 @@
 ---
 import Layout from "../components/Layout.astro";
+import ReportSections from "../components/ReportSections.astro";
 ---
-<Layout title="Briefing history" page="history"><ol id="history" class="cards"></ol><section id="briefing"></section><ul id="sources"></ul><ol id="items" class="cards"></ol></Layout>
+<Layout title="Briefing history" page="history"><p>Choose a saved briefing to see its releases, library additions, and attention items.</p><ol id="history" class="cards history-list"></ol><ReportSections /></Layout>
 <script>import "../scripts/app";</script>

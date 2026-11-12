@@ -9,7 +9,6 @@ export async function database() { const client = createClient({ url: ":memory:"
 export const demoNow = Date.parse("2026-11-09T14:00:00Z");
 export function hostDouble(options: {
     failSource?: boolean;
-    failInference?: boolean;
     failRequest?: boolean;
 } = {}) {
     const calls: Array<{
@@ -28,13 +27,13 @@ export function hostDouble(options: {
         if (name === "workflow.read")
             return runs.get(input.id) ?? null;
         if (name === "workflow.start") {
-            runs.set(input.id, { readiness: { steps: { collect: "ready", rank: "waiting" } } });
+            runs.set(input.id, { readiness: { steps: { collect: "ready", briefing: "waiting" } } });
             return { id: input.id };
         }
         if (name === "workflow.collect") {
             const run = runs.get(input.runId);
-            run.readiness.steps = input.slot.startsWith("collect") ? { collect: "complete", rank: "ready" } : { collect: "complete", rank: "complete" };
-            return { run: input.slot.startsWith("rank") ? "complete" : "running", steps: run.readiness.steps };
+            run.readiness.steps = input.slot.startsWith("collect") ? { collect: "complete", briefing: "ready" } : { collect: "complete", briefing: "complete" };
+            return { run: input.slot.startsWith("briefing") ? "complete" : "running", steps: run.readiness.steps };
         }
         if (name === "connector.execute") {
             if (input.operation === "request.search") {
@@ -44,12 +43,7 @@ export function hostDouble(options: {
             }
             if (options.failSource)
                 throw Error("provider secret must not appear");
-            return { items: input.operation === "queue.list" ? [] : [{ id: "42", title: "Synthetic Moonrise", kind: "movie", date: "2026-11-09T00:00:00Z", detail: "Monitored; not in library", url: "https://radarr.example/movie/42", request: { operation: "request.search", input: { id: 42 } } }], cursor: null, truncated: false };
-        }
-        if (name === "inference.generate") {
-            if (options.failInference)
-                throw Error("inference unavailable");
-            return { output: { summary: "One monitored movie is available to review.", items: [{ ref: "m0", reason: "A new release from your monitored movies." }, { ref: "invented", reason: "Must never create an item" }] } };
+            return { items: input.operation === "queue.list" ? [] : [{ id: "42", title: "Synthetic Moonrise", kind: "movie", date: "2026-11-09T14:00:00Z", detail: "Monitored; not in library", url: "https://radarr.example/movie/42", request: { operation: "request.search", input: { id: 42 } } }], cursor: null, truncated: false };
         }
         throw Error(`Unexpected host operation ${name}`);
     };

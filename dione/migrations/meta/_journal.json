@@ -15,6 +15,13 @@
       "when": 1794355200000,
       "tag": "0001_agent_proposals",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794441600000,
+      "tag": "0002_report_sections",
+      "breakpoints": true
     }
   ]
 }

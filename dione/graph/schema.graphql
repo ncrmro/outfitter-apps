@@ -1,6 +1,6 @@
 type Query {
   dioneReports(first: Int = 100, after: String, ids: [ID!], day: [String!], status: [String!]): DioneReportConnection!
-  dioneItems(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!], kind: [String!]): DioneItemConnection!
+  dioneItems(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!], kind: [String!], section: [String!]): DioneItemConnection!
   dioneSources(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!]): DioneSourceConnection!
   dioneRecommendations(first: Int = 100, after: String, ids: [ID!], source: [String!], status: [String!]): DioneRecommendationConnection!
 }
@@ -18,7 +18,7 @@ type DioneReport {
   summary: String!
   generatedAt: DateTime!
   completedAt: DateTime
-  inferenceError: String
+  timezone: String
 }
 
 """ISO-8601 date or date-time; as input also "NOW"."""
@@ -49,8 +49,7 @@ type DioneItem {
   date: String
   detail: String!
   url: String
-  reason: String!
-  rank: Float!
+  section: String
 }
 
 type DioneSourceConnection {

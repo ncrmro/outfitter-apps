@@ -16,24 +16,6 @@ export function clean(value: unknown, secrets: string[]): any {
     return value;
 }
 export async function run(input: any) {
-    if(input.mode==='infer'){
-        // Explicit operator model baseline, NOT an installed workflow principal.
-        const base=process.env.SPARK_BASE_URL;
-        if(!base)throw Error('Configured Spark inference is unavailable');
-        const url=new URL(base);if(!['http:','https:'].includes(url.protocol)||url.username||url.password||url.search||url.hash||!url.pathname.endsWith('/v1'))throw Error('Invalid inference endpoint');
-        const headers:Record<string,string>={'content-type':'application/json'};
-        if(process.env.SPARK_AUTHORIZATION)headers.Authorization=process.env.SPARK_AUTHORIZATION;
-        if(process.env.SPARK_ACCESS_CLIENT_ID&&process.env.SPARK_ACCESS_CLIENT_SECRET){headers['CF-Access-Client-Id']=process.env.SPARK_ACCESS_CLIENT_ID;headers['CF-Access-Client-Secret']=process.env.SPARK_ACCESS_CLIENT_SECRET;}
-        if(Object.keys(headers).length===1)throw Error('Inference credentials unavailable');
-        const model=process.env.AI_MODEL||'GLM-5.3-Flash-EXL3';
-        const started=performance.now();
-        const response=await fetch(base.replace(/\/$/,'')+'/chat/completions',{method:'POST',headers,redirect:'error',signal:AbortSignal.timeout(60000),body:JSON.stringify({model,temperature:0,max_tokens:3000,messages:[{role:'system',content:input.instructions+'\nReturn only JSON matching this result schema: '+JSON.stringify(input.schema)},{role:'user',content:JSON.stringify(input.data)}],response_format:{type:'json_schema',json_schema:{name:'dione_briefing',strict:true,schema:input.schema}}})});
-        if(!response.ok)return {error:'Inference HTTP failure',httpStatus:response.status,model,durationMs:Math.round(performance.now()-started)};
-        const data:any=await response.json();const text=data.choices?.[0]?.message?.content;
-        if(typeof text!=='string')return {error:'No structured model reply',model,finishReason:data.choices?.[0]?.finish_reason??null,durationMs:Math.round(performance.now()-started)};
-        const secrets=[process.env.SPARK_AUTHORIZATION||'',process.env.SPARK_ACCESS_CLIENT_SECRET||''];
-        return clean({output:JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g,'')),model,durationMs:Math.round(performance.now()-started),usage:data.usage??null},secrets);
-    }
     if(input.mode!=='capture')throw Error('Unknown baseline mode');
     const db=new DatabaseSync(new URL(process.env.DATABASE_URL!).pathname,{readOnly:true});
     let owner:any;

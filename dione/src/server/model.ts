@@ -12,8 +12,6 @@ export const settingsInput = z.strictObject({ timezone: z.string().min(1).max(64
     } }, "Invalid time zone"), hour: z.number().int().min(0).max(23), enabled: z.boolean(), bindings: z.array(binding).max(6).refine(rows => new Set(rows.map(r => r.provider)).size === rows.length, "One binding per provider"), arrMcpBinding: arrMcpBinding.nullable().default(null) });
 export type Binding = z.infer<typeof binding>;
 export const briefingRead = z.object({ items: z.array(z.object({ id: z.string().min(1).max(256), title: z.string().min(1).max(500), kind: z.enum(["movie", "episode", "album", "library", "download"]), date: z.string().nullable(), detail: z.string().max(2000), url: z.string().nullable(), request: z.object({ operation: z.literal("request.search"), input: z.object({ id: z.number().int().positive() }) }).optional() })).max(100), cursor: z.string().nullable(), truncated: z.boolean() });
-export const rankOutput = z.strictObject({ summary: z.string().max(2000), items: z.array(z.strictObject({ ref: z.string(), reason: z.string().max(400) })).max(20) });
-export const rankSchema = { type: "object", properties: { summary: { type: "string", maxLength: 2000 }, items: { type: "array", maxItems: 20, items: { type: "object", properties: { ref: { type: "string" }, reason: { type: "string", maxLength: 400 } }, required: ["ref", "reason"], additionalProperties: false } } }, required: ["summary", "items"], additionalProperties: false };
 export function owner(identity: AppIdentity) {
     if (identity.owner.kind !== "user" || identity.owner.id !== identity.userId || !identity.canEdit)
         throw new Response("Only the personal app owner can access Dione", { status: 403 });
@@ -29,28 +27,37 @@ catch {
 export const plain = (value: string, max: number) => value.replace(/[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/g, " ").trim().slice(0, max);
 export function reportDay(now: number, timezone: string) { const f = new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now); return ["year", "month", "day"].map(k => f.find(p => p.type === k)!.value).join("-"); }
 
-/** Keep the agent input bounded without letting alphabetically early library
- * titles crowd out today's releases or a quieter media source. */
-export function briefingCandidates<T extends {source:string;sourceId:string;title:string;kind:string;date:string|null}>(rows:T[],now:number,timezone:string,limit=60):T[] {
-    const today=reportDay(now,timezone);
-    const priority=(row:T)=>{
-        const date=row.date?Date.parse(row.date):Number.NaN;
-        if(Number.isFinite(date)&&reportDay(date,timezone)===today)return 0;
-        if(Number.isFinite(date)&&date>now&&date<=now+7*86400000)return 1;
-        if(["movie","episode","album"].includes(row.kind))return 2;
-        if(row.kind==="download")return 3;
-        if(row.kind==="library"&&Number.isFinite(date)&&date>=now-7*86400000)return 4;
-        return 5;
-    };
-    const compare=(a:T,b:T)=>priority(a)-priority(b)||(a.date&&b.date?Date.parse(a.date)-Date.parse(b.date):0)||a.title.localeCompare(b.title)||a.sourceId.localeCompare(b.sourceId);
-    const groups=new Map<string,T[]>();
-    for(const row of rows){const key=`${row.source}:${row.kind}`;const group=groups.get(key)??[];group.push(row);groups.set(key,group);}
-    for(const group of groups.values())group.sort(compare);
-    const result:T[]=[];
-    while(result.length<limit){
-        const available=[...groups.entries()].filter(([,group])=>group.length).sort(([key,a],[other,b])=>compare(a[0],b[0])||key.localeCompare(other));
-        if(!available.length)break;
-        for(const [,group]of available){result.push(group.shift()!);if(result.length===limit)break;}
+export const reportSectionNames = ["upcoming", "library", "attention"] as const;
+export type ReportSection = typeof reportSectionNames[number];
+type Observation = { id?: string; sourceId?: string; source: string; title: string; kind: string; date: string | null; detail: string; section?: string | null };
+/** Sections describe provider facts, not inferred taste or importance. */
+export function observationSection(item: Observation, now: number, timezone: string, operation?: string, requestable = false, day = reportDay(now, timezone)): ReportSection | null {
+    const date = item.date ? Date.parse(item.date) : Number.NaN;
+    if (item.kind === "library" && item.source === "jellyfin")
+        return Number.isFinite(date) && date <= now && date >= now - 7 * 86400000 ? "library" : null;
+    if (item.kind === "download") {
+        if (/\b(error|failed|stalled|warning|blocked|paused|stopped)\b/i.test(item.detail)) return "attention";
+        if (/\b(seeding|completed|imported)\b/i.test(item.detail)) return null;
+        return "attention";
     }
-    return result;
+    if (["movie", "episode", "album"].includes(item.kind) && Number.isFinite(date) && ( /^\d{4}-\d{2}-\d{2}$/.test(item.date!) || (["movie", "album"].includes(item.kind) && /T00:00:00(?:\.000)?Z$/.test(item.date!)) ? item.date!.slice(0,10) : reportDay(date, timezone)) >= day && date < now + 7 * 86400000)
+        return "upcoming";
+    if (operation === "missing.list" || requestable || /\bmissing\b|not in library/i.test(item.detail)) return "attention";
+    return null;
+}
+export function reportSections<T extends Observation>(rows: T[], now: number, timezone: string, day = reportDay(now, timezone)) {
+    const sections: Record<ReportSection, T[]> = {upcoming: [], library: [], attention: []};
+    for (const row of rows) {
+        const section = reportSectionNames.includes(row.section as ReportSection) ? row.section as ReportSection : observationSection(row, now, timezone, undefined, false, day);
+        if (section) sections[section].push(row);
+    }
+    const title = (a: T, b: T) => a.title.localeCompare(b.title) || a.source.localeCompare(b.source) || String(a.id ?? a.sourceId ?? "").localeCompare(String(b.id ?? b.sourceId ?? ""));
+    sections.upcoming.sort((a,b) => Date.parse(a.date!) - Date.parse(b.date!) || title(a,b));
+    sections.library.sort((a,b) => Date.parse(b.date!) - Date.parse(a.date!) || title(a,b));
+    sections.attention.sort((a,b) => a.source.localeCompare(b.source) || title(a,b));
+    return sections;
+}
+export function reportSummary(sections: Record<ReportSection, unknown[]>) {
+    const phrase = (count: number, noun: string) => `${count} ${noun}${count === 1 ? "" : "s"}`;
+    return `${phrase(sections.upcoming.length, "upcoming release")}, ${phrase(sections.library.length, "recent library addition")}, and ${phrase(sections.attention.length, "item")} needing attention.`;
 }

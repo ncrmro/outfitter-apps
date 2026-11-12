@@ -55,7 +55,7 @@
     "operational": {
       "slug": "dione",
       "name": "Dione",
-      "description": "Your daily media briefing: releases, library additions and download recommendations to review."
+      "description": "Upcoming releases, recent library additions and things needing attention, with a sidebar agent for media queries."
     },
     "demo": {
       "slug": "dione",

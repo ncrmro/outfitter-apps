@@ -2,6 +2,9 @@ import { expect, test } from "@playwright/test";
 import { appArtifact } from "@ai-outfitter/app-test/prepare";
 import { appWorker } from "@ai-outfitter/app-test/worker";
 import { expectClientNavigation, fulfillFrom } from "@ai-outfitter/app-test/playwright";
+import { readFileSync } from "node:fs";
+const fixtures = JSON.parse(readFileSync(new URL("../fixtures/demo.json", import.meta.url), "utf8"));
+import type { overview } from "../src/server/service";
 const origin = "https://dione.example";
 test("synthetic briefing is readable on desktop and mobile and survives client navigation", async ({ page }, testInfo) => {
     test.setTimeout(120000);
@@ -16,7 +19,17 @@ test("synthetic briefing is readable on desktop and mobile and survives client n
             await expect(page.getByRole("heading", { name: "Today’s briefing", exact: true })).toBeVisible();
             await expect(page.getByText("Synthetic Moonrise", { exact: true })).toBeVisible();
             await expect(page.getByRole("button", { name: "Refresh briefing" })).toBeDisabled();
-            await expect(page.locator("#items > li")).toHaveCount(26);
+            await expect(page.getByRole("heading", { name: "Upcoming releases", exact: true })).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Recent library additions", exact: true })).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Needs attention", exact: true })).toBeVisible();
+            await expect(page.locator("#upcoming-items > li")).toHaveCount(9);
+            await expect(page.locator("#library-items > li")).toHaveCount(5);
+            await expect(page.locator("#attention-items > li")).toHaveCount(10);
+            await expect(page.locator("#items")).toHaveCount(0);
+            await expect(page.locator("#upcoming-items > li").first()).toContainText("Paper Satellites — Soft Geometry");
+            await expect(page.locator("#library-items > li").first()).toContainText("A Sunday in October");
+            await expect(page.locator("#attention-items")).not.toContainText("Public-domain short film collection");
+            await expect(page.locator("#attention-items")).not.toContainText("The Archive Room · S01E02");
             await expect(page.locator("#sources > li")).toHaveCount(6);
             expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
             await page.screenshot({path:testInfo.outputPath(viewport.width > 1000 ? "desktop.png" : "mobile.png"),fullPage:true});
@@ -27,8 +40,17 @@ test("synthetic briefing is readable on desktop and mobile and survives client n
         await expect(page.locator("#history > li")).toHaveCount(7);
         await page.getByRole("button", {name: "2026-11-09 · partial", exact: true}).click();
         await expect(page.locator("#briefing")).toContainText("2026-11-09 · partial");
-        await expect(page.locator("#sources")).toContainText("sabnzbd: unavailable");
+        await expect(page.getByRole("button", {name: "2026-11-09 · partial", exact: true})).toHaveAttribute("aria-pressed", "true");
+        await expect(page.locator("#attention-items > li")).toHaveCount(8);
+        await expect(page.locator("#source-attention")).toContainText("SABnzbd is unavailable");
+        await expect(page.locator("#sources")).not.toBeVisible();
+        await page.locator("#source-freshness summary").click();
+        await expect(page.locator("#sources")).toContainText("SABnzbd: unavailable");
         await page.screenshot({path:testInfo.outputPath("history.png"),fullPage:true});
+        await page.getByRole("button", {name: "2026-11-10 · complete", exact: true}).click();
+        await expect(page.locator("#briefing")).toContainText("2026-11-10 · complete");
+        await expect(page.locator("#source-attention > li")).toHaveCount(0);
+        await expect(page.locator("#attention-items > li")).toHaveCount(10);
         await page.goto(`${origin}/recommendations`);
         await expect(page.locator("#recommendations > li")).toHaveCount(9);
         await expect(page.locator("#recommendations")).toContainText("submitted");
@@ -45,6 +67,32 @@ test("synthetic briefing is readable on desktop and mobile and survives client n
     finally {
         await worker.dispose();
     }
+});
+
+test("empty lists remain distinct from an unavailable source", async ({ page }) => {
+    test.setTimeout(120000);
+    const worker = await appWorker("dione", appArtifact(new URL("..", import.meta.url), "operational"));
+    const empty = structuredClone(fixtures.overview) as unknown as Awaited<ReturnType<typeof overview>>;
+    empty.items = [];
+    empty.sections = { upcoming: [], library: [], attention: [] };
+    empty.latest = { ...empty.latest!, status: "partial", summary: "No media items returned; one source could not be checked." };
+    empty.sources = empty.sources.map(source => ({ ...source, count: 0, status: source.source === "radarr" ? "unavailable" : "ok", error: source.source === "radarr" ? "Source unavailable or access revoked" : null }));
+    await page.route(`${origin}/**`, async route => {
+        const path = new URL(route.request().url()).pathname;
+        expect(route.request().method()).toBe("GET");
+        if (path === "/api/apps/dione/overview") return route.fulfill({ json: empty });
+        expect(path.startsWith("/api/")).toBe(false);
+        await fulfillFrom(route, await worker.fetch(route.request().url()));
+    });
+    try {
+        await page.goto(origin);
+        await expect(page.locator("#upcoming-empty")).toContainText("No upcoming releases were returned");
+        await expect(page.locator("#library-empty")).toContainText("No recent library additions were returned");
+        await expect(page.locator("#attention-empty")).toContainText("No missing media or active download items were returned");
+        await expect(page.locator("#source-attention")).toContainText("Radarr is unavailable; its media could not be checked");
+        await expect(page.locator("#source-attention")).toBeVisible();
+        await expect(page.locator("#sources")).not.toBeVisible();
+    } finally { await worker.dispose(); }
 });
 
 test("agent sidebar hydrates under CSP and the demo replies without a provider or platform request", async ({ page }, testInfo) => {

@@ -27,39 +27,85 @@ async function api<T>(path: string, method = "GET", body?: unknown): Promise<T> 
 }
 const node = (tag: string, text?: string) => { const el = document.createElement(tag); if (text)
     el.textContent = text; return el; };
-function showReport(value: Report) {
-    const section = document.getElementById("briefing");
-    if (section) {
-        section.replaceChildren(node("h2", `${value.report.day} · ${value.report.status}`), node("p", value.report.summary), node("small", `Generated ${new Date(value.report.generatedAt).toLocaleString()}`));
-        if (value.report.inferenceError)
-            section.append(node("p", value.report.inferenceError));
+const sectionNames = ["upcoming", "library", "attention"] as const;
+const sourceNames: Record<string, string> = { radarr: "Radarr", sonarr: "Sonarr", lidarr: "Lidarr", jellyfin: "Jellyfin", transmission: "Transmission", sabnzbd: "SABnzbd" };
+const sourceName = (source: string) => sourceNames[source] ?? source;
+const emptySections = {
+    upcoming: "No upcoming releases were returned by the connected sources.",
+    library: "No recent library additions were returned by the connected sources.",
+    attention: "No missing media or active download items were returned by the connected sources.",
+};
+function itemCard(item: Report["items"][number]) {
+    const li = node("li");
+    li.append(node("h3", item.title), node("small", `${sourceName(item.source)} · ${item.kind}${item.date ? ` · ${item.date}` : ""}`), node("p", item.detail));
+    if (item.url) {
+        const a = document.createElement("a");
+        a.textContent = "View source";
+        a.href = item.url;
+        a.rel = "noreferrer noopener";
+        a.target = "_blank";
+        li.append(a);
     }
-    const list = document.getElementById("items");
-    if (list)
-        list.replaceChildren(...value.items.map(item => { const li = node("li"); li.append(node("h3", item.title), node("small", `${item.source} · ${item.kind}${item.date ? ` · ${item.date}` : ""}`), node("p", item.reason || item.detail)); if (item.url) {
-            const a = document.createElement("a");
-            a.textContent = "View source";
-            a.href = item.url;
-            a.rel = "noreferrer noopener";
-            a.target = "_blank";
-            li.append(a);
-        } return li; }));
-    const sources = document.getElementById("sources");
-    if (sources)
-        sources.replaceChildren(...value.sources.map(s => node("li", `${s.source}: ${s.status} · ${s.count} observations · ${new Date(s.observedAt).toLocaleString()}${s.error ? ` · ${s.error}` : ""}${s.truncated ? " · Results limited" : ""}`)));
+    return li;
 }
+function showReport(value: Report) {
+    const report = document.getElementById("briefing");
+    if (report) report.replaceChildren(node("h2", `${value.report.day} · ${value.report.status}`), node("p", value.report.summary), node("small", `Generated ${new Date(value.report.generatedAt).toLocaleString()}`));
+    for (const section of sectionNames) {
+        const rows = value.sections[section];
+        document.getElementById(`${section}-items`)?.replaceChildren(...rows.map(itemCard));
+        const count = document.getElementById(`${section}-count`);
+        if (count) count.textContent = `${rows.length} ${rows.length === 1 ? "item" : "items"}`;
+        const empty = document.getElementById(`${section}-empty`);
+        if (empty) { empty.textContent = emptySections[section]; empty.hidden = rows.length > 0; }
+    }
+    const needsCheck = value.sources.filter(source => source.status !== "ok");
+    document.getElementById("source-attention")?.replaceChildren(...needsCheck.map(source => {
+        const state = source.status === "partial" ? "returned a limited result; some items may be missing" : source.status === "unavailable" ? "is unavailable; its media could not be checked" : "needs a check";
+        return node("li", `${sourceName(source.source)} ${state}.${source.error ? ` ${source.error}.` : ""} Checked ${new Date(source.observedAt).toLocaleString()}.`);
+    }));
+    const sources = document.getElementById("sources");
+    if (sources) sources.replaceChildren(...value.sources.map(source => node("li", `${sourceName(source.source)}: ${source.status} · ${source.count} observations · ${new Date(source.observedAt).toLocaleString()}${source.error ? ` · ${source.error}` : ""}${source.truncated ? " · Results limited" : ""}`)));
+    const sourceEmpty = document.getElementById("source-empty");
+    if (sourceEmpty) sourceEmpty.hidden = value.sources.length > 0;
+    const summary = document.getElementById("source-summary");
+    if (summary) summary.textContent = value.sources.length ? `· ${value.sources.length} services${needsCheck.length ? ` · ${needsCheck.length} need a check` : ""}` : "";
+}
+
 async function loadOverview() {
     const value = await api<Overview>("overview");
     if (value.latest)
-        showReport({ report: value.latest, items: value.items, sources: value.sources });
+        showReport({ report: value.latest, items: value.items, sources: value.sources, sections: value.sections });
     else {
         const section = document.getElementById("briefing");
         if (section)
             section.textContent = "No report yet. Connect your media services in Settings, then refresh your briefing.";
     }
     const history = document.getElementById("history");
-    if (history)
-        history.replaceChildren(...value.reports.map(report => { const li = node("li"); const button = document.createElement("button"); button.textContent = `${report.day} · ${report.status}`; button.onclick = () => void api<Report>(`report?id=${encodeURIComponent(report.id)}`).then(showReport).catch(error => notice(error.message)); li.append(button, node("p", report.summary)); return li; }));
+    if (history) {
+        let selection = 0;
+        history.replaceChildren(...value.reports.map(report => {
+            const li = node("li");
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = `${report.day} · ${report.status}`;
+            button.setAttribute("aria-pressed", String(report.id === value.latest?.id));
+            button.onclick = async () => {
+                const request = ++selection;
+                button.disabled = true;
+                try {
+                    const result = await api<Report>(`report?id=${encodeURIComponent(report.id)}`);
+                    if (request !== selection) return;
+                    showReport(result);
+                    for (const candidate of history.querySelectorAll("button")) candidate.setAttribute("aria-pressed", String(candidate === button));
+                    if (window.innerWidth < 700) document.getElementById("briefing")?.scrollIntoView({ block: "start" });
+                } catch (error) { if (request === selection) notice(error instanceof Error ? error.message : "Could not load this briefing"); }
+                finally { button.disabled = false; }
+            };
+            li.append(button, node("p", report.summary));
+            return li;
+        }));
+    }
     const recs = document.getElementById("recommendations");
     if (recs) {
         recs.replaceChildren(...value.recommendations.map(rec => { const li = node("li"); li.append(node("h3", rec.title), node("p", `${rec.source} · ${rec.status}`)); if (rec.receipt)

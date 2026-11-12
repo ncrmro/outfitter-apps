@@ -30,3 +30,10 @@ schedule health. History selection loads the selected report's own observations.
 The scripted agent includes queue progress and library examples. Fixtures are
 regenerated through real application services against isolated fake providers;
 no live data, credentials, inference or downloads are used.
+
+Add an explicit private production-read baseline command. It captures the deployed
+service connectors and read-only MCP, then evaluates the real report service in
+an isolated in-memory workflow harness with validated operator Spark inference.
+Artifacts retain coverage, limits, timestamps, timings, code pins, provider
+failures and model evidence outside Git. No provider writes, owner-session
+substitution, production database changes or public demo data replacement occur.

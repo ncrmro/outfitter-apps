@@ -91,3 +91,35 @@ connection, all six service selections, and schedule health. Queue examples cove
 active, queued, completed and seeding downloads. Historical report links resolve
 to their own dated observations. IDs, dates and receipts are deterministic;
 regenerating the fixture requires no live credentials, inference or provider calls.
+
+### Private production-read baseline
+
+Run `npm run baseline:prod --workspace dione -- default` with authorized Ocean
+Kubernetes operator access. The command refuses a Kubernetes API other than
+Ocean's configured address. It uses the existing private MCP Secret and deployed
+connector bundles, without writing credentials to disk or command arguments.
+The existing active personal MCP connection must be present.
+
+This is explicit operator evaluation: it does not create owner sessions,
+installation grants or production workflow records. Status, calendar/briefing,
+missing, queue, small library samples and SABnzbd history are reads only. Each
+briefing/missing/queue operation has the app's three-page cap of 100 per page;
+this is a bounded snapshot, not a full inventory. MCP results retain degraded
+source and freshness information. No download recommendation is confirmed.
+
+The captured normalized pages feed the real report service using a disposable
+in-memory database and workflow receipt harness. Ranking uses Ocean's configured
+Spark provider with the app's instructions, data and validated result schema;
+this is an operator provider call, not platform owner routing, billing or a
+scheduled installation run. Model failures remain partial reports, not successful
+ranking. The harness uses the rank step's 3000 token output budget and a 60 second
+request timeout; it records model input/output and usage privately.
+
+Artifacts are stored outside Git under
+`~/.local/state/dione/baselines/<UTC timestamp>/` (directory 0700, files 0600):
+`capture.json` contains timestamped reads/timings and connector/platform pins;
+`report.json` contains app output, recommendation examples and inference evidence;
+`summary.json` contains coverage, caps and failures; `report.md` is the readable
+briefing. Treat these as personal library data. Never replace the fictional public
+demo fixture with production captures. Keep partial/error runs for diagnosis and
+use the committed-source baseline for comparison.

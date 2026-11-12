@@ -37,3 +37,5 @@ an isolated in-memory workflow harness with validated operator Spark inference.
 Artifacts retain coverage, limits, timestamps, timings, code pins, provider
 failures and model evidence outside Git. No provider writes, owner-session
 substitution, production database changes or public demo data replacement occur.
+
+Failed baseline inference retains elapsed time and a sanitized failure marker; readable reports explicitly identify unranked observations.

@@ -2,6 +2,12 @@ Initial Dione personal media briefing app, with approved connections, daily sche
 source freshness, owner-confirmed requests, and read-only graph collections.
 Requires self-hosted runtime and approved multi-connection schedule support.
 
+Add a trusted operator movie-request and progress command. New movies require
+an exact TMDb ID, explicit folder/profile selection and write confirmation.
+Existing movies and active searches are reused. Radarr download receipts join
+SABnzbd queue/history and Transmission hashes to actual progress; missing jobs
+and provider failures remain explicit. This does not widen sidebar permissions.
+
 SABnzbd connection setup verifies credentials with an authenticated queue probe.
 
 Dione now includes a conversational sidebar using Outfitter's shared private

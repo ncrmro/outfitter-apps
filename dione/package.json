@@ -10,7 +10,7 @@
     "build": "outfitter-app-build",
     "check": "astro check && node --import tsx scripts/graph-schema.ts --check",
     "test": "npm run test:unit && npm run test:integration",
-    "test:unit": "node --import tsx --test tests/*.unit.test.ts",
+    "test:unit": "node --import tsx --test tests/*.unit.test.ts tests/movie-download.test.mjs",
     "pretest:integration": "node --import tsx scripts/prepare-tests.ts",
     "test:integration": "node --import tsx --test tests/*.integration.test.ts",
     "pretest:e2e": "node --import tsx scripts/prepare-tests.ts",

@@ -96,6 +96,41 @@ active, queued, completed and seeding downloads. Historical report links resolve
 to their own dated observations. IDs, dates and receipts are deterministic;
 regenerating the fixture requires no live credentials, inference or provider calls.
 
+### Operator movie requests and downloader progress
+
+`scripts/movie-download.mjs` runs inside the trusted Ocean webapp Pod using its
+existing service credentials. It does not grant write access to the sidebar.
+Adding a new title requires an exact TMDb ID, a verified existing quality profile
+and movie root, and explicit confirmation. For example, Silent Running (1972) is
+TMDb 811:
+
+```sh
+kubectl --context default -n outfitter-cloud exec -i deployment/outfitter-webapp \
+  -c webapp -- node --input-type=module -e \
+  'import{writeFile}from"node:fs/promises";let s="";for await(const b of process.stdin)s+=b;await writeFile("/tmp/dione-movie-download.mjs",s,{mode:0o600})' \
+  < dione/scripts/movie-download.mjs
+
+# Mutates provider state only with explicit confirmation. Choose the intended
+# profile/root; these values are the existing Ocean configuration.
+kubectl --context default -n outfitter-cloud exec deployment/outfitter-webapp \
+  -c webapp -- node /tmp/dione-movie-download.mjs --tmdb-id 811 \
+  --add --search --confirm --quality-profile-id 1 --root-folder /ocean/media/movies
+
+# Subsequent checks are read-only; run again to observe changes in progress.
+kubectl --context default -n outfitter-cloud exec deployment/outfitter-webapp \
+  -c webapp -- node /tmp/dione-movie-download.mjs --tmdb-id 811
+```
+
+The command checks the existing TMDb ID before adding, reuses active searches and
+queued jobs, and never automatically retries an uncertain provider write. It joins
+Radarr receipts to SABnzbd job IDs and Transmission hashes rather than guessing
+from filenames. Output separates search status, provider acceptance, percent,
+remaining bytes/MB, queue speed/state, ETA, import status, recent service-level
+authentication/storage warnings and failed status reads. A queued job at 0% with
+an idle downloader is not evidence that bytes are transferring. Read results may
+be incomplete beyond 2,000 Radarr queue entries or 1,000 SABnzbd history entries.
+Remove the temporary script after use. Keep live command receipts outside Git.
+
 ### Private production-read baseline
 
 Run `npm run baseline:prod --workspace dione -- default` with authorized Ocean

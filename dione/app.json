@@ -45,7 +45,13 @@
         "connector.sabnzbd.status.get",
         "connector.sabnzbd.queue.list",
         "connector.sabnzbd.history.list",
-        "connector.arr-mcp.read.call"
+        "connector.arr-mcp.read.call",
+        "connector.radarr.movie.lookup",
+        "connector.radarr.movie.options",
+        "connector.radarr.movie.progress",
+        "connector.radarr.movie.request",
+        "connector.sabnzbd.download.status",
+        "connector.transmission.download.status"
       ]
     }
   },

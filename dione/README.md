@@ -22,9 +22,7 @@ standard `graph.graphql` action. Graph collections are `dioneReports`,
 `dioneItems`, `dioneSources`, and `dioneRecommendations`; private bindings and
 credentials are not graph fields. Read the committed `graph/schema.graphql`.
 
-An owner must review and explicitly confirm each search request in Dione. Only
-existing monitored, missing Radarr/Sonarr/Lidarr media can be requested; provider
-settings decide what a search downloads. The connector rechecks eligibility.
+An owner must review and explicitly confirm each search request in Dione. The existing Recommendations page searches monitored, missing Radarr/Sonarr/Lidarr media; provider settings decide what a search downloads. The connector rechecks eligibility. The sidebar also supports explicitly reviewed Radarr movie additions and monitoring as described below.
 Confirmation claims a recommendation once before contacting the provider. A
 lost or failed answer becomes `unknown`, with no automatic retry; reconcile that
 state in the source service before further action. Confirmations from apps or
@@ -62,7 +60,7 @@ and the graph schema with `node --import tsx dione/scripts/graph-schema.ts`.
 ### Sidebar agent
 
 “Ask Dione” uses Outfitter's shared private conversations and inference. The app
-publishes two read tools: `dione_media_read` for its six approved service bindings,
+publishes source read tools: `dione_media_read` for its six approved service bindings,
 and `dione_stack_read` for an optional approved `arr-mcp` connection. Configure the
 latter in Settings → Agent connection for full-stack title/artist search and
 media details. It works independently of the individual briefing bindings.
@@ -75,8 +73,28 @@ read grant before platform connector execution. Source failures and limited
 results are explicit, and provider text is treated as untrusted data. Sidebar
 read outputs are excluded from durable thread tool-result storage (`store:false`).
 
-The sidebar cannot submit downloads or change service state. Existing download
-recommendations remain behind the owner's explicit review. The demo uses the
+`dione_movie_lookup` resolves exact movie identities and approved Radarr quality
+profiles/root folders; `dione_movie_progress` reads current movie/search/import
+state and downloader progress. The assistant must ask for disambiguation when a
+title has multiple matches, and for a profile/root choice when verified defaults
+are absent. Non-null defaults reflect verified existing-library usage rather than a configured Radarr default and remain subject to owner review. `dione_movie_request` prepares a **private proposal** displaying the
+exact title, year, TMDb ID, profile and root. Existing unmonitored movies show
+**Monitor and search**, including the explicit monitoring change. Existing movies retain their verified actual profile/root; this action cannot move them or change their quality profile. No provider
+write occurs until the owner clicks **Approve changes** in that proposal.
+The model-facing tool only prepares the review; apps and OAuth actors cannot
+confirm it. Every preparation and approval rechecks saved bindings and current
+grants, and a changed movie, connection or option requires a new review.
+
+Provider receipts are stored by the standard proposal store; repeated approval
+returns the saved receipt. Lost responses remain **unconfirmed** and require
+progress inspection, with no automatic retry. A search receipt does not establish
+a transfer. Progress joins Radarr download IDs and attributed client names to
+SABnzbd or Transmission IDs, never filenames. It preserves unavailable/limited
+sources and distinguishes search/queue evidence from imported files; speed and
+ETA are shown only when the client actually reports them. Unrelated clients and
+jobs are excluded. Movie lookup/progress also publish read-only app actions;
+the write action is available only through the private sidebar proposal flow.
+Existing Recommendations reviews continue unchanged. The demo uses the
 shared scripted sidebar and makes no inference, platform-thread or provider calls.
 Operational conversations require an installed package with `threads.use`,
 `threads.provide`, workflow-host bindings and the app's `0001` migration.
@@ -99,7 +117,7 @@ regenerating the fixture requires no live credentials, inference or provider cal
 ### Operator movie requests and downloader progress
 
 `scripts/movie-download.mjs` runs inside the trusted Ocean webapp Pod using its
-existing service credentials. It does not grant write access to the sidebar.
+existing service credentials. It is independent of the sidebar's owner-reviewed proposal flow.
 Adding a new title requires an exact TMDb ID, a verified existing quality profile
 and movie root, and explicit confirmation. For example, Silent Running (1972) is
 TMDb 811:

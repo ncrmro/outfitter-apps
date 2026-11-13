@@ -1,3 +1,13 @@
+Fix sidebar API routing under mounted personal app paths so context, shared
+threads and owner confirmation remain inside the installation CSP scope.
+
+Add sidebar movie lookup, private add/search and monitor/search proposals, and
+live movie/download progress. Every proposal displays verified identity and
+options and pins the approved connection; only the owner's browser approval
+writes. Standard proposal receipts prevent duplicate approvals, and uncertain
+provider effects require inspection. Progress joins exact attributed download
+IDs, preserves source limitations, and excludes unrelated jobs and clients.
+
 Initial Dione personal media briefing app, with approved connections, daily scheduling,
 source freshness, owner-confirmed requests, and read-only graph collections.
 Requires self-hosted runtime and approved multi-connection schedule support.

@@ -1,9 +1,11 @@
 import type { APIRoute } from "astro";
 import { installationDatabase } from "@ai-outfitter/app-sdk/cloudflare/database";
+import { workflowHost } from "@ai-outfitter/app-sdk/workflow-host";
+import { movieReads } from "../../../../../server/movies";
 import { actionAPI } from "@ai-outfitter/app-sdk/actions";
 import { graphqlAction } from "@ai-outfitter/app-sdk/app-graphql";
 import { requestIdentity, respond } from "@ai-outfitter/app-sdk/server";
 import { owner } from "../../../../../server/model";
 import { graphqlSchema } from "../../../../../server/graphql";
-const actions = { "graph.graphql": graphqlAction(graphqlSchema) };
-export const ALL: APIRoute = ({ request, params }) => respond(() => { owner(requestIdentity(request)); return actionAPI(request, params.operation ?? "", actions, () => ({ db: installationDatabase })); });
+const actions = { "graph.graphql": graphqlAction(graphqlSchema), ...movieReads };
+export const ALL: APIRoute = ({ request, params, locals }) => respond(() => { owner(requestIdentity(request)); return actionAPI(request, params.operation ?? "", actions, () => ({ db: installationDatabase, host: () => workflowHost<"interactive">(locals as never) })); });

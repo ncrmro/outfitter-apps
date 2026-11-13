@@ -133,7 +133,7 @@ test("MCP settings persist only a currently approved resource and do not require
   } finally { h.close(); }
 });
 
-test("shared thread callbacks expose only read tools and reject another owner's thread or an expired turn", async () => {
+test("shared thread callbacks expose reads and private proposal preparation and reject another owner's thread or an expired turn", async () => {
   const h = await setup();
   try {
     const batch = {
@@ -152,8 +152,8 @@ test("shared thread callbacks expose only read tools and reject another owner's 
     const prepared = await callback("prepare", { thread, entry, submissionId: "turn", retry: false });
     assert.equal(prepared.status, 200);
     const context = await prepared.json() as any;
-    assert.deepEqual(context.tools.map((t: any) => t.name), ["dione_media_read", "dione_stack_read"]);
-    assert.ok(context.tools.every((t: any) => t.store === false));
+    assert.deepEqual(context.tools.map((t: any) => t.name), ["dione_movie_request", "dione_media_read", "dione_stack_read", "dione_movie_lookup", "dione_movie_progress"]);
+    assert.ok(context.tools.filter((t: any) => t.name !== "dione_movie_request").every((t: any) => t.store === false));
     assert.ok(!JSON.stringify(context.context).includes("approved-radarr"));
     const input = { thread, submissionId: "turn", call: { id: "call", name: "dione_media_read", input: { provider: "radarr", view: "library" } } };
     const response = await callback("tool", input);

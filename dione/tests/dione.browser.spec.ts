@@ -126,3 +126,54 @@ test("agent sidebar hydrates under CSP and the demo replies without a provider o
         expect(errors).toEqual([]);
     } finally { await worker.dispose(); }
 });
+
+test("mounted operational sidebar keeps context, threads and owner approval inside its CSP scope", async ({ page }) => {
+    test.setTimeout(120000);
+    const mount = "/apps/dione";
+    const apiRequests: string[] = [];
+    const { movieHarness } = await import("./movies.fixture");
+    const h = await movieHarness();
+    const worker = await appWorker("dione", appArtifact(new URL("..", import.meta.url), "operational"));
+    const proposed = await h.propose();
+    const entry = { id: crypto.randomUUID(), thread: { id: h.thread.id }, role: "assistant", parts: proposed.parts, status: "complete", submissionId: "turn", sourceKey: null, attribution: { actor: h.context.actor, origin: h.context.originActor, userId: "owner", installationId: "dione-test" }, metadata: null, createdAt: Date.now(), recordedAt: null };
+    let approvalCalls = 0;
+    await page.route(`${origin}/**`, async route => {
+        const request = route.request(); const url = new URL(request.url());
+        if (url.pathname.includes("/api/")) { expect(url.pathname.startsWith(`${mount}/api/`)).toBe(true); apiRequests.push(url.pathname); }
+        const path = url.pathname.startsWith(mount + "/") ? url.pathname.slice(mount.length) : url.pathname;
+        if (path.startsWith("/api/apps/dione/agent/")) {
+            const operation = path.slice("/api/apps/dione/agent/".length);
+            if (operation.endsWith("/approve")) approvalCalls++;
+            try { return route.fulfill({ json: await h.agent.browser(new Request(request.url(), { method: request.method(), headers: { "Content-Type": "application/json" }, ...(request.postData() ? { body: request.postData() } : {}) }), operation) }); }
+            catch (error) { if (error instanceof Response) return fulfillFrom(route, error); throw error; }
+        }
+        if (path === "/api/platform/threads") return route.fulfill({ json: { thread: h.thread, entries: [entry], before: null } });
+        if (path === `/api/platform/threads/${h.thread.id}/entries`) return route.fulfill({ json: { entries: [entry], before: null, after: null } });
+        if (path === "/api/apps/dione/overview") return route.fulfill({ json: fixtures.overview });
+        expect(path.startsWith("/api/")).toBe(false);
+        url.pathname = path;
+        const response = await worker.fetch(url.toString());
+        if (response.headers.get("content-type")?.includes("text/html")) return route.fulfill({ status: response.status, headers: { ...Object.fromEntries(response.headers), "Content-Security-Policy": `default-src 'self'; connect-src ${origin}${mount}/; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;` }, body: await response.text() });
+        await fulfillFrom(route, response);
+    });
+    try {
+        await page.goto(`${origin}${mount}/`);
+        await page.getByRole("button", { name: "Ask Dione", exact: true }).click();
+        const review = page.getByRole("region", { name: "Review proposed change" });
+        await expect(review).toBeVisible();
+        await expect(review.getByLabel("Movie title", { exact: true })).toHaveValue("Fictional Moonrise");
+        await expect(review.getByLabel("Release year", { exact: true })).toHaveValue("2026");
+        await expect(review.getByLabel("TMDb ID", { exact: true })).toHaveValue("42");
+        await expect(review.getByLabel("Quality profile", { exact: true })).toHaveValue("HD fictional profile");
+        await expect(review.getByLabel("Root folder", { exact: true })).toHaveValue("/movies");
+        await expect(review.getByLabel("Confirm operation", { exact: true })).toHaveValue("Add and search");
+        expect(h.state.writes).toBe(0);
+        await review.getByRole("button", { name: "Approve changes", exact: true }).click();
+        await expect(review).toContainText("Approved changes saved.");
+        expect(h.state.writes).toBe(1); expect(approvalCalls).toBe(1);
+        expect(apiRequests.some(path => path.startsWith(`${mount}/api/apps/dione/agent/context`))).toBe(true);
+        expect(apiRequests).toContain(`${mount}/api/platform/threads`);
+        expect(apiRequests.some(path => path.endsWith("/approve"))).toBe(true);
+        await expect(review.getByRole("button", { name: "Approve changes", exact: true })).toHaveCount(0);
+    } finally { h.close(); await worker.dispose(); }
+});

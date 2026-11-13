@@ -14,6 +14,8 @@ Requires self-hosted runtime and approved multi-connection schedule support.
 
 Keep sidebar API requests inside personal/organization app mounts in both
 operational and scripted demo builds, without widening the platform CSP.
+Movie reviews show the title and release year and omit internal connection/replay
+bookkeeping from the browser's review fields; the server retains those guards.
 
 Add a trusted operator movie-request and progress command. New movies require
 an exact TMDb ID, explicit folder/profile selection and write confirmation.

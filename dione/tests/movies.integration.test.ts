@@ -4,6 +4,7 @@ import { lookupMovie, movieActions, movieProgress, prepareMovieRequest, applyMov
 import { settings } from "../src/server/schema";
 import { identity } from "./helpers";
 import { movieHarness } from "./movies.fixture";
+import { presentAgentResult } from "../src/server/agent-presentation";
 
 const refused = (code: number) => (error: unknown) => error instanceof Response && error.status === code;
 
@@ -17,7 +18,13 @@ test("normal SDK write tool creates a private verified review; only the owner br
     const changes = JSON.parse(row.data).changes;
     assert.equal(changes.title, "Fictional Moonrise"); assert.equal(changes.year, 2026); assert.equal(changes.intent, "Add and search"); assert.equal(changes.qualityProfileId, 7); assert.equal(changes.rootFolderPath, "/movies");
     assert.ok(!JSON.stringify(changes).includes("radarr-approved"));
-    const approved = await h.approve(proposalId) as any;
+    const reviewed = presentAgentResult(await h.agent.browser(new Request(`https://dione.example/api/apps/dione/agent/proposals?thread=${h.thread.id}`), "proposals")) as any;
+    const publicProposal = reviewed.proposals[0];
+    assert.equal(publicProposal.changes.bindingDigest, undefined);
+    assert.equal(publicProposal.changes.requestId, undefined);
+    assert.equal(publicProposal.targetLabel, "Fictional Moonrise (2026)");
+    assert.equal(JSON.parse((await h.store.get(proposalId)).data).changes.bindingDigest, changes.bindingDigest);
+    const approved = await h.approve(publicProposal.id, publicProposal.revision) as any;
     assert.equal(approved.proposal.status, "applied"); assert.equal(approved.receipt.tmdbId, 42); assert.equal(h.state.writes, 1);
     await h.approve(proposalId); assert.equal(h.state.writes, 1);
     assert.equal((await h.store.forThread(h.thread.id)).length, 1);

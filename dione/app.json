@@ -1,0 +1,73 @@
+{
+  "id": "outfitter/dione",
+  "version": "0.1.0",
+  "runtime": "cloudflare-workers-for-platforms",
+  "dataLocation": "installation-database",
+  "modes": {
+    "demo": {
+      "capabilities": []
+    },
+    "operational": {
+      "capabilities": [
+        "graph.serve",
+        "workflow.host",
+        "workflow.dione-briefing.start",
+        "connector.radarr.briefing.read",
+        "connector.sonarr.briefing.read",
+        "connector.lidarr.briefing.read",
+        "connector.jellyfin.briefing.read",
+        "connector.transmission.briefing.read",
+        "connector.sabnzbd.briefing.read",
+        "connector.radarr.request.search",
+        "connector.sonarr.request.search",
+        "connector.lidarr.request.search",
+        "connector.radarr.missing.list",
+        "connector.radarr.queue.list",
+        "connector.sonarr.missing.list",
+        "connector.sonarr.queue.list",
+        "connector.lidarr.missing.list",
+        "connector.lidarr.queue.list",
+        "threads.use",
+        "threads.provide",
+        "connector.radarr.status.get",
+        "connector.radarr.calendar.list",
+        "connector.radarr.library.list",
+        "connector.sonarr.status.get",
+        "connector.sonarr.calendar.list",
+        "connector.sonarr.library.list",
+        "connector.lidarr.status.get",
+        "connector.lidarr.calendar.list",
+        "connector.lidarr.library.list",
+        "connector.jellyfin.status.get",
+        "connector.jellyfin.library.list",
+        "connector.transmission.status.get",
+        "connector.transmission.queue.list",
+        "connector.sabnzbd.status.get",
+        "connector.sabnzbd.queue.list",
+        "connector.sabnzbd.history.list",
+        "connector.arr-mcp.read.call",
+        "connector.radarr.movie.lookup",
+        "connector.radarr.movie.options",
+        "connector.radarr.movie.progress",
+        "connector.radarr.movie.request",
+        "connector.sabnzbd.download.status",
+        "connector.transmission.download.status"
+      ]
+    }
+  },
+  "catalog": {
+    "access": "admin-only",
+    "personal": true,
+    "operational": {
+      "slug": "dione",
+      "name": "Dione",
+      "description": "Upcoming releases, recent library additions and things needing attention, with a sidebar agent for media queries."
+    },
+    "demo": {
+      "slug": "dione",
+      "name": "Dione",
+      "description": "A synthetic daily media briefing."
+    }
+  },
+  "initialize": true
+}

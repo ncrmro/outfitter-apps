@@ -1,0 +1,5 @@
+---
+import Layout from "../components/Layout.astro";
+---
+<Layout title="Settings" page="settings"><form id="settings"><h2>Agent connection</h2><p>A full-stack media MCP connection lets the agent search and inspect your services. Select an approved connection; credentials stay in Outfitter.</p><label>Media MCP <select id="arr-mcp"><option value="">Not connected</option></select></label><h2>Briefing connections</h2><p>Select approved service connections for daily reports and direct agent reads. Manage credentials in Outfitter’s connections settings.</p><div id="connections"></div><h2>Daily report</h2><label>Time zone <input id="timezone" required value="America/Chicago" /></label><label>Hour (0–23) <input id="hour" type="number" min="0" max="23" required value="8" /></label><label><input id="enabled" type="checkbox" /> Generate a daily briefing</label><button type="submit">Save settings</button></form><h2>Schedule health</h2><p id="schedule-health"></p><h2>Local events</h2><p>Location and event providers are not configured. Media reports work independently.</p></Layout>
+<script>import "../scripts/app";</script>

@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1794268800000,
+      "tag": "0000_dione",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1794355200000,
+      "tag": "0001_agent_proposals",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794441600000,
+      "tag": "0002_report_sections",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794512251345,
+      "tag": "0003_operator_capture",
+      "breakpoints": true
+    }
+  ]
+}

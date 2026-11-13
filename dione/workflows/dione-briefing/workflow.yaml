@@ -1,0 +1,35 @@
+version: beta
+id: dione-briefing
+summary: Collect approved media observations and prepare a personal daily briefing.
+actors: {}
+triggers:
+  - on: manual
+  - on: schedule
+    cron: "0 8 * * *"
+steps:
+  - id: collect
+    outputs:
+      observations:
+        connector: database
+        record: media.observations
+        schema:
+          type: object
+          properties:
+            count: { type: integer, minimum: 0 }
+          required: [count]
+          additionalProperties: false
+  - id: briefing
+    inputs:
+      observations: collect.outputs.observations
+    outputs:
+      briefing:
+        connector: database
+        record: media.briefing
+        schema:
+          type: object
+          properties:
+            reportId: { type: string }
+          required: [reportId]
+          additionalProperties: false
+outputs:
+  briefing: briefing.outputs.briefing

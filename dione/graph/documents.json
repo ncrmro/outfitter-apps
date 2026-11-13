@@ -1,0 +1,98 @@
+[
+  {
+    "name": "DioneItems",
+    "kind": "query",
+    "story": "As an owner, I want to inspect media observations and their sources, so that I can verify recommendations.",
+    "query": "query DioneItems($first: Int, $after: String) {\n  dioneItems(first: $first, after: $after) {\n    nodes {\n      id\n      reportId\n      source\n      sourceId\n      title\n      kind\n      date\n      detail\n      url\n      section\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "d72cb99798822e3f40defea0ab17b164d6d430c10f15904d067804bed2a1ec16",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "integer",
+          "description": "GraphQL Int"
+        },
+        "after": {
+          "type": "string",
+          "description": "GraphQL String"
+        }
+      },
+      "required": []
+    },
+    "mcp": {
+      "description": "As an owner, I want to inspect media observations and their sources, so that I can verify recommendations."
+    }
+  },
+  {
+    "name": "DioneRecommendations",
+    "kind": "query",
+    "story": "As an owner, I want to read proposed and submitted media requests, so that I can review their status without triggering a download.",
+    "query": "query DioneRecommendations($first: Int, $after: String) {\n  dioneRecommendations(first: $first, after: $after) {\n    nodes {\n      id\n      source\n      sourceId\n      title\n      status\n      receipt\n      createdAt\n      updatedAt\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "f2ff4e3d661f7de08d1d5f627dd3aa092b97e03db391e31342090f4ff44ce615",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "integer",
+          "description": "GraphQL Int"
+        },
+        "after": {
+          "type": "string",
+          "description": "GraphQL String"
+        }
+      },
+      "required": []
+    },
+    "mcp": {
+      "description": "As an owner, I want to read proposed and submitted media requests, so that I can review their status without triggering a download."
+    }
+  },
+  {
+    "name": "DioneReports",
+    "kind": "query",
+    "story": "As an owner, I want to read my media briefings, so that I can decide what to watch or listen to.",
+    "query": "query DioneReports($first: Int, $after: String) {\n  dioneReports(first: $first, after: $after) {\n    nodes {\n      id\n      day\n      status\n      summary\n      generatedAt\n      completedAt\n      timezone\n      origin\n      capturedAt\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "440c8aeb80f1eb0e5dedd87023a82127c0c00b10d3735a7ee2238e993441b136",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "integer",
+          "description": "GraphQL Int"
+        },
+        "after": {
+          "type": "string",
+          "description": "GraphQL String"
+        }
+      },
+      "required": []
+    },
+    "mcp": {
+      "description": "As an owner, I want to read my media briefings, so that I can decide what to watch or listen to."
+    }
+  },
+  {
+    "name": "DioneSourceFreshness",
+    "kind": "query",
+    "story": "As an owner, I want to inspect connection freshness, so that I know when a briefing is partial or stale.",
+    "query": "query DioneSourceFreshness($first: Int, $after: String) {\n  dioneSources(first: $first, after: $after) {\n    nodes {\n      id\n      reportId\n      source\n      observedAt\n      status\n      error\n      count\n      truncated\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "f91f07ab96bbb0acc46ed32e2a5c1017f2b699b52ea12d38be99b8b805597876",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "first": {
+          "type": "integer",
+          "description": "GraphQL Int"
+        },
+        "after": {
+          "type": "string",
+          "description": "GraphQL String"
+        }
+      },
+      "required": []
+    },
+    "mcp": {
+      "description": "As an owner, I want to inspect connection freshness, so that I know when a briefing is partial or stale."
+    }
+  }
+]

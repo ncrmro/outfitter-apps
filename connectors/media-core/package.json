@@ -1,0 +1,24 @@
+{
+  "name": "@ncrmro/connector-media-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node24 --outfile=dist/runtime.mjs"
+  },
+  "dependencies": {
+    "@ai-outfitter/connector-core": "0.1.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "tsx": "^4.23.15",
+    "@types/node": "^26.6.3",
+    "esbuild": "^0.28.2"
+  }
+}

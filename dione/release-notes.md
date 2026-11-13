@@ -12,6 +12,9 @@ Initial Dione personal media briefing app, with approved connections, daily sche
 source freshness, owner-confirmed requests, and read-only graph collections.
 Requires self-hosted runtime and approved multi-connection schedule support.
 
+Keep sidebar API requests inside personal/organization app mounts in both
+operational and scripted demo builds, without widening the platform CSP.
+
 Add a trusted operator movie-request and progress command. New movies require
 an exact TMDb ID, explicit folder/profile selection and write confirmation.
 Existing movies and active searches are reused. Radarr download receipts join

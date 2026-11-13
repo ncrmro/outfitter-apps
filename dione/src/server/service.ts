@@ -14,7 +14,7 @@ export type BriefingHost = {
     call<K extends Exclude<Operations, "snapshot" | "schedules" | "schedule.save">>(operation: K, input: OperationInput<K>): Promise<OperationOutput<K>>;
 };
 export const workflow = "dione-briefing";
-const reportFields = {id: reports.id, day: reports.day, status: reports.status, summary: reports.summary, generatedAt: reports.generatedAt, completedAt: reports.completedAt, timezone: reports.timezone};
+const reportFields = {id: reports.id, day: reports.day, status: reports.status, summary: reports.summary, generatedAt: reports.generatedAt, completedAt: reports.completedAt, timezone: reports.timezone, origin: reports.origin, capturedAt: reports.capturedAt, captureDigest: reports.captureDigest, operatorActor: reports.operatorActor};
 const itemFields = {id: items.id, reportId: items.reportId, source: items.source, sourceId: items.sourceId, title: items.title, kind: items.kind, date: items.date, detail: items.detail, url: items.url, section: items.section};
 export async function loadSettings(db: Database) {
     const [row] = await db.select().from(settings).where(eq(settings.id, "default"));
@@ -65,6 +65,10 @@ export async function readReport(db: Database, id: string) {
     const sections = reportSections(rows, report.generatedAt, report.timezone ?? "UTC", report.day);
     return {report: {...report, summary: reportSummary(sections)}, items: rows, sections, sources: await db.select().from(sources).where(eq(sources.reportId, id))};
 }
+/** Canonical storage projection shared by live collection and a verified capture. */
+export function collectedItem(item: z.infer<typeof briefingRead>["items"][number], source: typeof providers[number], runId: string, now: number, timezone: string, operation: string, day: string) {
+    return { id: `${runId}:${source}:${item.kind}:${item.id}`, reportId: runId, source, sourceId: item.id, title: plain(item.title, 500), kind: item.kind, date: item.date, detail: plain(item.detail, 2000), url: safeURL(item.url), section: observationSection({...item, source}, now, timezone, operation, !!item.request, day) };
+}
 /** Collecting is bounded to three pages per service; one failed source never erases another. */
 async function collect(db: Database, host: BriefingHost, bindings: Binding[], runId: string, now: number, timezone: string, day: string) {
     let count = 0;
@@ -88,10 +92,10 @@ async function collect(db: Database, host: BriefingHost, bindings: Binding[], ru
                                 continue;
                             seen.add(itemKey);
                             read++;
-                            const title = plain(item.title, 500);
-                            await db.insert(items).values({ id: `${runId}:${source}:${itemKey}`, reportId: runId, source, sourceId: item.id, title, kind: item.kind, date: item.date, detail: plain(item.detail, 2000), url: safeURL(item.url), section: observationSection({...item, source}, now, timezone, operation, !!item.request, day) }).onConflictDoNothing();
+                            const row = collectedItem(item, source, runId, now, timezone, operation, day);
+                            await db.insert(items).values(row).onConflictDoNothing();
                             if (item.request && ["radarr", "sonarr", "lidarr"].includes(source))
-                                await db.insert(recommendations).values({ id: crypto.randomUUID(), source, sourceId: item.id, title, operation: item.request.operation, input: JSON.stringify(item.request.input), connectionId: b.connectionId, resource: b.resource, status: "proposed", createdAt: now, updatedAt: now }).onConflictDoNothing();
+                                await db.insert(recommendations).values({ id: crypto.randomUUID(), source, sourceId: item.id, title: row.title, operation: item.request.operation, input: JSON.stringify(item.request.input), connectionId: b.connectionId, resource: b.resource, status: "proposed", createdAt: now, updatedAt: now }).onConflictDoNothing();
                         }
                         truncated = truncated || value.truncated;
                         cursor = value.cursor;
@@ -133,7 +137,7 @@ export async function generateReport(db: Database, host: BriefingHost, options: 
     }
     if (!state)
         await host.call("workflow.start", { workflow, id: runId, inputs: {} });
-    await db.insert(reports).values({ id: runId, day, timezone, status: "collecting", generatedAt: now }).onConflictDoNothing();
+    await db.insert(reports).values({ id: runId, day, timezone, origin: "workflow", status: "collecting", generatedAt: now }).onConflictDoNothing();
     const readiness = state?.readiness.steps ?? { collect: "ready" };
     if (readiness.collect === "ready") {
         const count = await collect(db, host, config.bindings, runId, now, timezone, day);

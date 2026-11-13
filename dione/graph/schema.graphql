@@ -19,6 +19,8 @@ type DioneReport {
   generatedAt: DateTime!
   completedAt: DateTime
   timezone: String
+  origin: String
+  capturedAt: DateTime
 }
 
 """ISO-8601 date or date-time; as input also "NOW"."""

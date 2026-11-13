@@ -50,7 +50,12 @@ function itemCard(item: Report["items"][number]) {
 }
 function showReport(value: Report) {
     const report = document.getElementById("briefing");
-    if (report) report.replaceChildren(node("h2", `${value.report.day} · ${value.report.status}`), node("p", value.report.summary), node("small", `Generated ${new Date(value.report.generatedAt).toLocaleString()}`));
+    if (report) {
+        report.replaceChildren(node("h2", `${value.report.day} · ${value.report.status}`), node("p", value.report.summary), node("small", `Generated ${new Date(value.report.generatedAt).toLocaleString()}`));
+        if (value.report.origin === "operator-capture" && value.report.capturedAt !== null)
+            report.append(node("p", `Live service snapshot captured ${new Date(value.report.capturedAt).toLocaleString()}. Use your connected services for a newer report.`));
+        else if (value.report.origin === "workflow") report.append(node("p", "Collected from connected services."));
+    }
     for (const section of sectionNames) {
         const rows = value.sections[section];
         document.getElementById(`${section}-items`)?.replaceChildren(...rows.map(itemCard));

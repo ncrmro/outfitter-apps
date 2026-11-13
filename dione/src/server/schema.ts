@@ -4,7 +4,8 @@ export const { proposals: agentProposals, guard: agentGuard } = proposalTables("
 export const reports = sqliteTable("reports", {
     id: text().primaryKey(), day: text().notNull(), status: text().notNull(), summary: text().notNull().default(""),
     generatedAt: integer().notNull(), completedAt: integer(), timezone: text(), inferenceError: text(),
-});
+    origin: text(), capturedAt: integer(), captureDigest: text(), operatorActor: text(),
+}, t => [uniqueIndex("reports_capture_digest").on(t.captureDigest)]);
 // Legacy reason/rank and inferenceError columns remain for database upgrades only.
 // Report generation and the public graph no longer use them.
 export const items = sqliteTable("items", {

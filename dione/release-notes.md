@@ -48,3 +48,11 @@ remain only for safe upgrades and are omitted from report APIs and the graph.
 The production baseline collector/replay no longer contacts an inference provider.
 
 Save report timezones for stable history; migration removes old AI summaries while retaining observations. Active downloads remain visible even when progress rounds to 100%. Date-only releases keep their provider calendar date.
+
+Allow trusted platform setup to import a fresh, sanitized capture from the real
+media services into a personal installation. Imports keep their capture time,
+source revision, digest and operator attribution; they never simulate a workflow
+run or submit requests. Setup is atomic and idempotent, cannot overwrite saved
+owner settings, and rejects ordinary members, foreign owners, stale captures,
+invalid digests, credentials and URLs. The dashboard identifies these records as
+live-service snapshots; later owner refreshes use the normal live connections.

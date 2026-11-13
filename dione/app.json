@@ -62,5 +62,6 @@
       "name": "Dione",
       "description": "A synthetic daily media briefing."
     }
-  }
+  },
+  "initialize": true
 }

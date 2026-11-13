@@ -148,3 +148,19 @@ npm run baseline:prod --workspace dione -- --capture /private/path/capture.json
 
 Replay uses the original capture window and the current factual section logic;
 it makes no Kubernetes, media-provider or model calls.
+
+### Real-data initialization on Ocean
+
+The reserved operational initializer accepts only a trusted platform setup actor
+for this personal installation. `prepareOperatorCapture` prepares a fresh private
+capture with the owner's real approved connection UUIDs, strips external URLs and
+request operations, and binds the sanitized payload to a digest. Setup imports
+source observations atomically and records `operator-capture`, observed time,
+digest and operator attribution. It creates no workflow or human session, makes
+no provider calls and never overwrites existing owner settings. Ordinary members
+cannot invoke this setup route. All captures and initialization payloads stay
+outside Git and the public synthetic demo.
+
+The owner then opens the installed operational app using their existing Ocean
+login. Sidebar queries and Refresh briefing use the normal approved connections;
+initial imported reports explicitly show their source capture time.

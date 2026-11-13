@@ -185,6 +185,7 @@ test("section migration removes legacy AI summaries while retaining observations
         await client.execute({sql:"INSERT INTO reports (id,day,status,summary,generatedAt,inferenceError) VALUES (?,?,?,?,?,?)",args:["pre-upgrade","2026-11-09","partial","AI says this is your favorite",demoNow,"Old ranking error"]});
         await client.execute({sql:"INSERT INTO items (id,reportId,source,sourceId,title,kind,date,detail,rank,reason) VALUES (?,?,?,?,?,?,?,?,?,?)",args:["preserved","pre-upgrade","radarr","1","Preserved movie","movie","2026-11-10T14:00:00Z","In library",1,"Old personalized explanation"]});
         await client.executeMultiple(await readFile(new URL("../migrations/0002_report_sections.sql",import.meta.url),"utf8"));
+        await client.executeMultiple(await readFile(new URL("../migrations/0003_operator_capture.sql",import.meta.url),"utf8"));
         const db=drizzle(client);
         const graph=await serveGraphql({schema:graphqlSchema,query:"{ dioneReports(first:10) { nodes { summary timezone } } dioneItems(first:10) { nodes { title } } }",context:{identity,db:()=>db}});
         assert.equal(graph.errors,undefined);

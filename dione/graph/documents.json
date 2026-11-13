@@ -51,8 +51,8 @@
     "name": "DioneReports",
     "kind": "query",
     "story": "As an owner, I want to read my media briefings, so that I can decide what to watch or listen to.",
-    "query": "query DioneReports($first: Int, $after: String) {\n  dioneReports(first: $first, after: $after) {\n    nodes {\n      id\n      day\n      status\n      summary\n      generatedAt\n      completedAt\n      timezone\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
-    "hash": "5ff8f420c3bbbc03c799b3082d20f13aa58b7c3e776922aa1b04ad3a13c1132e",
+    "query": "query DioneReports($first: Int, $after: String) {\n  dioneReports(first: $first, after: $after) {\n    nodes {\n      id\n      day\n      status\n      summary\n      generatedAt\n      completedAt\n      timezone\n      origin\n      capturedAt\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
+    "hash": "440c8aeb80f1eb0e5dedd87023a82127c0c00b10d3735a7ee2238e993441b136",
     "variables": {
       "type": "object",
       "properties": {

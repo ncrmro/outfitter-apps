@@ -1,6 +1,10 @@
 import { connectorManifestSchema } from '@ai-outfitter/connector-core/manifest';
 import type { ConnectorOperationContext, RuntimeConnector } from '@ai-outfitter/connector-core/runtime';
 import { z } from 'zod';
+import { movieOperations } from './movies';
+import { sabDownloadStatus, transmissionDownloadStatus } from './downloads';
+export type { MovieIdentity, MovieLookupResult, MovieOptions, MovieRequestReceipt, MovieProgress } from './movies';
+export type { DownloadStatusResult } from './downloads';
 
 export type MediaProvider = 'radarr' | 'sonarr' | 'lidarr' | 'jellyfin' | 'transmission' | 'sabnzbd';
 export type MediaItem = {
@@ -50,7 +54,7 @@ function key(context: ConnectorOperationContext): string {
  * SABnzbd's API key is a query argument: request URLs must never be logged. */
 async function readJson(fetcher: typeof fetch, url: URL, init: RequestInit = {}): Promise<unknown> {
   let response: Response;
-  try { response = await fetcher(url, { ...init, redirect: 'error', signal: AbortSignal.timeout(15000) }); }
+  try { response = await fetcher(url, { ...init, redirect: 'error', signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000) }); }
   catch { return denied('Media service unavailable'); }
   if (!response.ok) { await response.body?.cancel(); return denied(`Media service HTTP ${response.status}`); }
   if (Number(response.headers.get('content-length') ?? 0) > 4 * 1024 * 1024) { await response.body?.cancel(); return denied('Media service response too large'); }
@@ -85,10 +89,11 @@ function itemUrl(context: ConnectorOperationContext, path: string): string | nul
   const { publicUrl } = config(context); return publicUrl ? target(publicUrl, path).href : null;
 }
 const arrVersion = (provider: MediaProvider) => provider === 'lidarr' ? 'v1' : 'v3';
-async function arrRequest(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, path: string, query = {}, body?: unknown) {
+async function arrRequest(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, path: string, query = {}, body?: unknown, method?: string, signal?: AbortSignal) {
   return readJson(fetcher, target(config(context).baseUrl, `api/${arrVersion(provider)}/${path}`, query), {
     headers: { 'X-Api-Key': key(context), ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    ...(body ? { method: 'POST', body: JSON.stringify(body) } : {}),
+    signal,
+    ...(body ? { method: method ?? 'POST', body: JSON.stringify(body) } : {}),
   });
 }
 function arrItem(provider: MediaProvider, context: ConnectorOperationContext, raw: Row, calendar: boolean, window?: { start: string; end: string }): MediaItem {
@@ -165,7 +170,7 @@ async function jellyfinRead(fetcher: typeof fetch, context: ConnectorOperationCo
   const total = typeof data.TotalRecordCount === 'number' ? data.TotalRecordCount : offset + items.length;
   return page(items, offset, input.limit, total);
 }
-async function transmissionRpc(fetcher: typeof fetch, context: ConnectorOperationContext, method: string, args: Row) {
+async function transmissionRpc(fetcher: typeof fetch, context: ConnectorOperationContext, method: string, args: Row, signal?: AbortSignal) {
   const base = config(context).baseUrl;
   const headers = new Headers({ 'Content-Type': 'application/json' });
   if (context.credentials.username !== undefined || context.credentials.password !== undefined) {
@@ -173,7 +178,7 @@ async function transmissionRpc(fetcher: typeof fetch, context: ConnectorOperatio
     headers.set('Authorization', `Basic ${Buffer.from(`${context.credentials.username}:${context.credentials.password}`).toString('base64')}`);
   }
   const url = target(base, 'transmission/rpc'); const body = JSON.stringify({ method, arguments: args });
-  const send = () => fetcher(url, { method: 'POST', headers, body, redirect: 'error', signal: AbortSignal.timeout(15000) });
+  const send = () => fetcher(url, { method: 'POST', headers, body, redirect: 'error', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000) });
   let response: Response;
   try {
     response = await send();
@@ -212,6 +217,9 @@ export function createMediaConnector(provider: MediaProvider, transport: MediaTr
   const arr = ['radarr', 'sonarr', 'lidarr'].includes(provider);
   const read = (input: unknown, context: ConnectorOperationContext): Promise<MediaPage> => arr ? arrRead(provider, fetcher, context, input, true) : provider === 'jellyfin' ? jellyfinRead(fetcher, context, input, true) : provider === 'transmission' ? transmissionRead(fetcher, context, input, true) : sabRead(fetcher, context, input, true);
   const operations: RuntimeConnector['operations'] = {
+    ...(provider === 'radarr' ? movieOperations((context, path, query, body, method, signal) => arrRequest('radarr', fetcher, context, path, query, body, method, signal)) : {}),
+    ...(provider === 'transmission' ? { 'download.status': transmissionDownloadStatus((context, method, args, signal) => transmissionRpc(fetcher, context, method, args, signal)) } : {}),
+    ...(provider === 'sabnzbd' ? { 'download.status': sabDownloadStatus((context, mode, query = {}, signal) => readJson(fetcher, target(config(context).baseUrl, 'api', { mode, output: 'json', apikey: key(context), ...query }), { signal })) } : {}),
     'briefing.read': { input: briefingInput, execute: read },
     'status.get': { input: emptyInput, async execute(_input, context) {
       let result: Row;

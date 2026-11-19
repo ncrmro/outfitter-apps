@@ -217,3 +217,10 @@ outside Git and the public synthetic demo.
 The owner then opens the installed operational app using their existing Ocean
 login. Sidebar queries and Refresh briefing use the normal approved connections;
 initial imported reports explicitly show their source capture time.
+
+The shared MCP catalog exposes DioneMovieLookup and DioneMovieProgress through
+graph_query. DioneStageMovieRequest runs through graph_mutate with a stable UUID
+requestKey and a TMDb ID. The mutation creates a private review in Dione’s
+Movie requests conversation. Open that conversation in Ask Dione to approve
+the selected movie and verified options. The connector receives the write only
+after approval. Ask Dione also supports its existing app-local thread tools.

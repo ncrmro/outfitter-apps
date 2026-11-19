@@ -20,7 +20,8 @@ export async function movieHarness() {
   const call = async (name: string, input: any): Promise<any> => {
     calls.push({ name, input });
     if (name === "snapshot") return { connections: state.approved ? bindings.map(binding => ({ id: binding.connectionId, provider: binding.provider, resource: binding.resource, operations: ["movie.lookup", "movie.options", "movie.request", "movie.progress", "download.status"] })) : [] };
-    if (name === "threads.get") return thread;
+    if (name === "threads.create") return Object.assign(thread, input);
+    if (name === "threads.get") return input.ref.id === thread.id ? thread : null;
     if (name === "threads.submission") return { state: "running" };
     if (name === "threads.append") return { id: crypto.randomUUID() };
     assert.equal(name, "connector.execute");

@@ -53,6 +53,50 @@
     }
   },
   {
+    "name": "DioneMovieLookup",
+    "kind": "query",
+    "story": "As an owner, I want exact movie matches and verified request options, so that I can select a movie.",
+    "query": "query DioneMovieLookup($query: String!) {\n  dioneMovieLookup(query: $query)\n}",
+    "hash": "eddb41b5f708879b066c78d32fa3769be1bc2bfe5dc5dcdf29ff1700b61e353f",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "GraphQL String!"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "mcp": {
+      "description": "As an owner, I want exact movie matches and verified request options, so that I can select a movie."
+    }
+  },
+  {
+    "name": "DioneMovieProgress",
+    "kind": "query",
+    "story": "As an owner, I want current download and import progress, so that I can track one movie.",
+    "query": "query DioneMovieProgress($tmdbId: Int!) {\n  dioneMovieProgress(tmdbId: $tmdbId)\n}",
+    "hash": "c806ba0554890f129faa49f0d6543ef84e49617a51321407a0eb55645bae5497",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "tmdbId": {
+          "type": "integer",
+          "description": "GraphQL Int!"
+        }
+      },
+      "required": [
+        "tmdbId"
+      ]
+    },
+    "mcp": {
+      "description": "As an owner, I want current download and import progress, so that I can track one movie."
+    }
+  },
+  {
     "name": "DioneRecommendations",
     "kind": "query",
     "story": "As an owner, I want to read proposed and submitted media requests, so that I can review their status without triggering a download.",
@@ -122,6 +166,27 @@
     },
     "mcp": {
       "description": "As an owner, I want to inspect connection freshness, so that I know when a briefing is partial or stale."
+    }
+  },
+  {
+    "name": "DioneStageMovieRequest",
+    "kind": "mutation",
+    "story": "As an owner, I want to stage a private movie request using a stable request key, so that I can review it in Dione’s Movie requests conversation.",
+    "query": "mutation DioneStageMovieRequest($input: StageMovieRequestInput!) {\n  stageMovieRequest(input: $input)\n}",
+    "hash": "e5437e6eff14271d8481ef585b9e10519cbf8a71444f146e2ad8a594cb04a8c7",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "description": "GraphQL StageMovieRequestInput!"
+        }
+      },
+      "required": [
+        "input"
+      ]
+    },
+    "mcp": {
+      "description": "As an owner, I want to stage a private movie request using a stable request key, so that I can review it in Dione’s Movie requests conversation."
     }
   }
 ]

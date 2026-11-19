@@ -91,3 +91,30 @@ test("progress joins exact IDs and attributed clients, omits unrelated jobs/clie
     assert.equal((await movieProgress(h.context, { tmdbId: 42 })).status, "unavailable");
   } finally { h.close(); }
 });
+
+test("published GraphQL movie request stages a replayable private review without a provider write", async () => {
+  const h = await movieHarness();
+  try {
+    const { graphql } = await import("graphql");
+    const { graphqlSchema } = await import("../src/server/graphql");
+    const { documents } = await import("../src/server/documents");
+    const requestKey = crypto.randomUUID();
+    const context = { ...h.context, proposals: () => h.store };
+    const dispatch = (source: string, variableValues: Record<string, unknown>) =>
+      graphql({schema: graphqlSchema, source, variableValues, contextValue: context});
+    const lookup = await dispatch(documents.DioneMovieLookup.document, {query:"Moonrise"});
+    assert.equal((lookup.data?.dioneMovieLookup as any).matches[0].tmdbId, 42);
+    const propose = () => dispatch(documents.DioneStageMovieRequest.document, {input:{tmdbId:42,requestKey}});
+    const first = await propose();
+    assert.equal(first.errors, undefined);
+    const receipt = first.data?.stageMovieRequest as {proposalId:string;threadId:string;status:string};
+    assert.equal(receipt.status, "pending");
+    assert.equal(receipt.threadId, h.thread.id);
+    assert.deepEqual((await propose()).data, first.data);
+    assert.equal(JSON.parse((await h.store.get(receipt.proposalId)).data).changes.title, "Fictional Moonrise");
+    assert.equal(h.state.writes, 0);
+    await h.approve(receipt.proposalId);
+    await h.approve(receipt.proposalId);
+    assert.equal(h.state.writes, 1);
+  } finally {h.close();}
+});

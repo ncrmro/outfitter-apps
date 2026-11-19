@@ -81,3 +81,6 @@ live-service snapshots; later owner refreshes use the normal live connections.
 Dione publishes a live media library query through Outfitter MCP. It uses the owner’s selected Radarr, Sonarr, Lidarr or Jellyfin connection directly.
 
 Clarify which saved media connections Dione uses for live library reads.
+
+Expose movie lookup and progress through graph_query. Use graph_mutate to
+stage a private movie request for review in Dione's Movie requests conversation.

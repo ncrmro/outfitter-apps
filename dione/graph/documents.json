@@ -24,6 +24,35 @@
     }
   },
   {
+    "name": "DioneMediaLibrary",
+    "kind": "query",
+    "story": "As an owner, I want to read my live media library, so that I can see which titles are available now.",
+    "query": "query DioneMediaLibrary($provider: DioneLibraryProvider!, $limit: Int, $cursor: String) {\n  dioneMediaLibrary(provider: $provider, limit: $limit, cursor: $cursor) {\n    status\n    observedAt\n    items {\n      id\n      title\n      kind\n    }\n    cursor\n    truncated\n  }\n}",
+    "hash": "8f7c590190f8402320ba0ad41caace20bd535687533695c4900ea3a1ec800c7f",
+    "variables": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "description": "GraphQL DioneLibraryProvider!"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "GraphQL Int"
+        },
+        "cursor": {
+          "type": "string",
+          "description": "GraphQL String"
+        }
+      },
+      "required": [
+        "provider"
+      ]
+    },
+    "mcp": {
+      "description": "As an owner, I want to read my live media library, so that I can see which titles are available now."
+    }
+  },
+  {
     "name": "DioneRecommendations",
     "kind": "query",
     "story": "As an owner, I want to read proposed and submitted media requests, so that I can review their status without triggering a download.",

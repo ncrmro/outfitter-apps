@@ -32,6 +32,7 @@ jobs:
         with:
           name: dione
           path: dione/.outfitter/packages/operational.json
+          include-hidden-files: true
           if-no-files-found: error
   deploy:
     needs: build

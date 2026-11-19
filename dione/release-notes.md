@@ -79,3 +79,5 @@ invalid digests, credentials and URLs. The dashboard identifies these records as
 live-service snapshots; later owner refreshes use the normal live connections.
 
 Dione publishes a live media library query through Outfitter MCP. It uses the owner’s selected Radarr, Sonarr, Lidarr or Jellyfin connection directly.
+
+Clarify which saved media connections Dione uses for live library reads.

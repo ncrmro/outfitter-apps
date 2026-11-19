@@ -1,3 +1,6 @@
+import { graphql } from "graphql";
+import { graphqlSchema } from "../src/server/graphql";
+import { documents } from "../src/server/documents";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { ProposalStore } from "@ai-outfitter/app-sdk/proposal-store";
@@ -29,6 +32,21 @@ async function setup() {
   };
   return { ...databaseHandle, context, calls, revoke: () => { approved = false; }, fail: () => { fail = true; }, value: (next: unknown) => { value = next; } };
 }
+
+test("DioneMediaLibrary reads the saved direct binding and observes revocation", async () => {
+  const h = await setup();
+  try {
+    const query = () => graphql({ schema: graphqlSchema, source: documents.DioneMediaLibrary.document,
+      variableValues: { provider: "radarr", limit: 1 }, contextValue: h.context });
+    const first = await query();
+    assert.equal(first.errors, undefined);
+    assert.equal((first.data?.dioneMediaLibrary as {items: {title: string}[]}).items[0].title, "A movie");
+    assert.deepEqual(h.calls[1].input, { connectionId: "approved-radarr", resource: "ocean-radarr", operation: "library.list", input: { limit: 1 } });
+    h.revoke();
+    assert.equal(((await query()).data?.dioneMediaLibrary as {status:string}).status, "access-unavailable");
+    assert.equal(h.calls.filter(call => call.name === "connector.execute").length, 1);
+  } finally { h.close(); }
+});
 
 test("sidebar reads only the saved approved binding and rechecks a revoked grant on the next call", async () => {
   const h = await setup();

@@ -1,5 +1,9 @@
 import { defineDocuments } from "@ai-outfitter/app-sdk/app-documents";
 export const documents = defineDocuments({
+    DioneMediaLibrary: {
+        story: "As an owner, I want to read my live media library, so that I can see which titles are available now.",
+        document: "query DioneMediaLibrary($provider: DioneLibraryProvider!, $limit: Int, $cursor: String) { dioneMediaLibrary(provider: $provider, limit: $limit, cursor: $cursor) { status observedAt items { id title kind } cursor truncated } }",
+    },
     DioneReports: { story: "As an owner, I want to read my media briefings, so that I can decide what to watch or listen to.", document: "query DioneReports($first: Int, $after: String) { dioneReports(first: $first, after: $after) { nodes { id day status summary generatedAt completedAt timezone origin capturedAt } pageInfo { hasNextPage endCursor } } }" },
     DioneItems: { story: "As an owner, I want to inspect media observations and their sources, so that I can verify recommendations.", document: "query DioneItems($first: Int, $after: String) { dioneItems(first: $first, after: $after) { nodes { id reportId source sourceId title kind date detail url section } pageInfo { hasNextPage endCursor } } }" },
     DioneSourceFreshness: { story: "As an owner, I want to inspect connection freshness, so that I know when a briefing is partial or stale.", document: "query DioneSourceFreshness($first: Int, $after: String) { dioneSources(first: $first, after: $after) { nodes { id reportId source observedAt status error count truncated } pageInfo { hasNextPage endCursor } } }" },

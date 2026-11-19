@@ -1,8 +1,30 @@
 type Query {
+  dioneMediaLibrary(provider: DioneLibraryProvider!, limit: Int, cursor: String): DioneMediaPage
   dioneReports(first: Int = 100, after: String, ids: [ID!], day: [String!], status: [String!]): DioneReportConnection!
   dioneItems(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!], kind: [String!], section: [String!]): DioneItemConnection!
   dioneSources(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!]): DioneSourceConnection!
   dioneRecommendations(first: Int = 100, after: String, ids: [ID!], source: [String!], status: [String!]): DioneRecommendationConnection!
+}
+
+type DioneMediaPage {
+  status: String!
+  observedAt: String!
+  items: [DioneMediaItem]
+  cursor: String
+  truncated: Boolean
+}
+
+type DioneMediaItem {
+  id: String
+  title: String
+  kind: String
+}
+
+enum DioneLibraryProvider {
+  radarr
+  sonarr
+  lidarr
+  jellyfin
 }
 
 type DioneReportConnection {

@@ -77,3 +77,5 @@ run or submit requests. Setup is atomic and idempotent, cannot overwrite saved
 owner settings, and rejects ordinary members, foreign owners, stale captures,
 invalid digests, credentials and URLs. The dashboard identifies these records as
 live-service snapshots; later owner refreshes use the normal live connections.
+
+Dione publishes a live media library query through Outfitter MCP. It uses the owner’s selected Radarr, Sonarr, Lidarr or Jellyfin connection directly.

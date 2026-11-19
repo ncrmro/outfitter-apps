@@ -1,0 +1,55 @@
+name: Update Dione on Ocean
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dione/**"
+      - "connectors/**"
+      - "package*.json"
+      - ".outfitter/apps.json"
+      - ".forgejo/workflows/deploy-ocean.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ocean-personal-apps
+    container: node:24-bookworm
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install the reviewed SDK
+        run: |
+          set -eu
+          sha=$(node -p "require('./.outfitter/apps.json').sdkSha")
+          echo "$sha" | grep -Eq '^[0-9a-f]{40}$'
+          git init -q .outfitter-sdk
+          git -C .outfitter-sdk fetch -q --depth=1 https://github.com/ai-outfitter/apps.git "$sha"
+          git -C .outfitter-sdk checkout -q --detach FETCH_HEAD
+          npm ci
+      - run: npm run check -w dione && npm test -w dione && npm run build -w dione
+      - uses: https://github.com/actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5
+        with:
+          name: dione
+          path: dione/.outfitter/packages/operational.json
+          include-hidden-files: true
+          if-no-files-found: error
+  deploy:
+    needs: build
+    runs-on: ocean-personal-apps
+    enable-openid-connect: true
+    steps:
+      - uses: https://github.com/actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a
+        with:
+          name: dione
+          path: package
+      - name: Activate the tested package
+        env:
+          OCEAN: https://outfitter.ncrmro.com
+          MIRROR_READER: ${{ forgejo.token }}
+        run: |
+          set -eu
+          jwt=$(curl -fsS -G -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" --data-urlencode "audience=$OCEAN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -er .value)
+          curl -fsS -H "Authorization: Bearer $jwt" -H "X-Forgejo-Read-Token: $MIRROR_READER" \
+            -H "Content-Type: application/json" --data-binary @package/operational.json \
+            "$OCEAN/api/app-repositories/forgejo/dione"

@@ -114,3 +114,12 @@ self-hosted app/connector runtime changes before live installation. Ocean media
 migration manifests and the cutover runbook belong to `ncrmro/ks-config` under
 `k8s-cluster/apps/media-stack/`. A packaged app and passing fixtures do not mean
 those services have migrated or Dione is active.
+
+### Dione on Ocean
+
+Ocean follows the private Forgejo pull mirror of this repository. A mirrored
+main-branch change to Dione, its connectors, or the SDK pin triggers
+`.forgejo/workflows/deploy-ocean.yml`. Forgejo builds and tests Dione, then a
+separate job uses OIDC to update the existing Ocean installation. The workflow
+prints the active revision and package hash. The installation grants and media
+connections are managed on Ocean.

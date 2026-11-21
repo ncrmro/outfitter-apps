@@ -1,3 +1,5 @@
+Page through large Radarr, Sonarr and Lidarr libraries during live media reads. Ocean receives personal app updates through Forgejo.
+
 Fix sidebar API routing under mounted personal app paths so context, shared
 threads and owner confirmation remain inside the installation CSP scope.
 

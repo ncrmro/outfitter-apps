@@ -212,3 +212,14 @@ test('SABnzbd status refuses HTTP 200 invalid-key and malformed responses withou
     }
   }
 });
+
+test('large libraries return a bounded page and a usable cursor', async () => {
+  const rows = Array.from({length: 50}, (_, i) => ({id:i+1, title:'Movie '+i, overview:'x'.repeat(90000)}));
+  const fetcher = response(rows);
+  const read = (cursor?: string) => invoke('radarr', fetcher, 'library.list', {limit: 1, cursor}, context('radarr',['library.list'])) as Promise<MediaPage>;
+  const first = await read();
+  assert.equal(first.items[0].id,'1');
+  assert.equal(first.cursor,'1');
+  assert.equal((await read(first.cursor!)).items[0].id,'2');
+  assert.equal((await read('49')).cursor,null);
+});

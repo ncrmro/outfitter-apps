@@ -27,7 +27,7 @@ jobs:
           git -C .outfitter-sdk fetch -q --depth=1 https://github.com/ai-outfitter/apps.git "$sha"
           git -C .outfitter-sdk checkout -q --detach FETCH_HEAD
           npm ci
-      - run: npm run check -w dione && npm test -w dione && npm run build -w dione
+      - run: npm run connectors:check && npm run connectors:test && npm run check -w dione && npm test -w dione && npm run build -w dione
       - uses: https://github.com/actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5
         with:
           name: dione

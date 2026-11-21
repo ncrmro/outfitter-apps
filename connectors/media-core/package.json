@@ -13,12 +13,13 @@
   },
   "dependencies": {
     "@ai-outfitter/connector-core": "0.1.1",
+    "@streamparser/json": "^0.0.22",
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "typescript": "^6.0.3",
-    "tsx": "^4.23.15",
     "@types/node": "^26.6.3",
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
   }
 }

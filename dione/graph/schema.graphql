@@ -1,10 +1,15 @@
 type Query {
+  dioneMovieLookup(query: String!): JSON
+  dioneMovieProgress(tmdbId: Int!): JSON
   dioneMediaLibrary(provider: DioneLibraryProvider!, limit: Int, cursor: String): DioneMediaPage
   dioneReports(first: Int = 100, after: String, ids: [ID!], day: [String!], status: [String!]): DioneReportConnection!
   dioneItems(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!], kind: [String!], section: [String!]): DioneItemConnection!
   dioneSources(first: Int = 100, after: String, ids: [ID!], reportId: [String!], source: [String!]): DioneSourceConnection!
   dioneRecommendations(first: Int = 100, after: String, ids: [ID!], source: [String!], status: [String!]): DioneRecommendationConnection!
 }
+
+"""Any JSON value."""
+scalar JSON
 
 type DioneMediaPage {
   status: String!
@@ -108,4 +113,16 @@ type DioneRecommendation {
   receipt: String
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+type Mutation {
+  """Prepare a private movie request for owner review in Dione."""
+  stageMovieRequest(input: StageMovieRequestInput!): JSON
+}
+
+input StageMovieRequestInput {
+  tmdbId: Float!
+  qualityProfileId: Float
+  rootFolderPath: String
+  requestKey: ID!
 }

@@ -1,5 +1,8 @@
 import { defineDocuments } from "@ai-outfitter/app-sdk/app-documents";
 export const documents = defineDocuments({
+    DioneMovieLookup: { story: "As an owner, I want exact movie matches and verified request options, so that I can select a movie.", document: "query DioneMovieLookup($query: String!) { dioneMovieLookup(query: $query) }" },
+    DioneMovieProgress: { story: "As an owner, I want current download and import progress, so that I can track one movie.", document: "query DioneMovieProgress($tmdbId: Int!) { dioneMovieProgress(tmdbId: $tmdbId) }" },
+    DioneStageMovieRequest: { story: "As an owner, I want to stage a private movie request using a stable request key, so that I can review it in Dione’s Movie requests conversation.", document: "mutation DioneStageMovieRequest($input: StageMovieRequestInput!) { stageMovieRequest(input: $input) }" },
     DioneMediaLibrary: {
         story: "As an owner, I want to read my live media library, so that I can see which titles are available now.",
         document: "query DioneMediaLibrary($provider: DioneLibraryProvider!, $limit: Int, $cursor: String) { dioneMediaLibrary(provider: $provider, limit: $limit, cursor: $cursor) { status observedAt items { id title kind } cursor truncated } }",

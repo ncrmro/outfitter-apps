@@ -1,0 +1,59 @@
+{
+  "id": "outfitter/autodidact",
+  "version": "0.1.0",
+  "runtime": "cloudflare-workers-for-platforms",
+  "dataLocation": "installation-database",
+  "modes": {
+    "demo": {
+      "capabilities": []
+    },
+    "operational": {
+      "capabilities": [
+        "workflow.host",
+        "threads.use",
+        "threads.provide",
+        "entities.read",
+        "actions.invoke",
+        "actions.publish"
+      ]
+    }
+  },
+  "catalog": {
+    "access": "admin-only",
+    "personal": true,
+    "operational": {
+      "slug": "autodidact",
+      "name": "Autodidact",
+      "description": "A Socratic tutor that finds the gaps in what you know and helps you close them yourself, toward your Wiki goals or anything you want to learn."
+    },
+    "demo": {
+      "slug": "autodidact",
+      "name": "Autodidact",
+      "description": "A sample learning topic with its concept map, the gaps a Socratic dialogue found and the questions that probed them. Nothing is saved and no model runs."
+    },
+    "presentation": {
+      "outcome": "Learn what your goals need: know exactly what you understand, what is shaky and what is missing, and close each gap by reasoning it out.",
+      "connectors": [],
+      "steps": [
+        [
+          "Pick an aim",
+          "Start from a goal in your Wiki, or describe what you want to be able to do."
+        ],
+        [
+          "Map the concepts",
+          "Your tutor breaks the aim into the concepts it depends on, foundations first."
+        ],
+        [
+          "Find the gaps",
+          "It asks one open question at a time: explain, predict, apply. Each answer marks a concept solid, shaky or a gap."
+        ],
+        [
+          "Fill them by questioning",
+          "For each gap it leads you with questions from what you already know, explains only after you have tried, and checks again later."
+        ]
+      ],
+      "access": "A personal app: only you open it. Topics, concepts and checks live in this installation's own database. Your tutor reads your Wiki's goals and proposes every change for you to approve; it never edits your Wiki. It uses your own inference provider. Demo data is synthetic and read-only."
+    },
+    "cover": "catalog/cover.svg"
+  }
+}

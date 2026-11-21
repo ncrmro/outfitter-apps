@@ -1,0 +1,82 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import Layout from "../components/Layout.astro";
+import { stateLabels, statusLabels } from "../lib/learning";
+import { overviewState } from "../server/page-state";
+
+const { topics, goals, canEdit, demo, signedOut } = await overviewState(Astro.request, Astro.locals);
+const active = topics.filter((topic) => topic.status === "active");
+const started = new Set(topics.map((topic) => topic.goalId).filter(Boolean));
+const summary = topics.length
+  ? `The member's learning topics. ${topics.slice(0, 10).map((topic) => `${topic.title} (${statusLabels[topic.status].toLowerCase()}): ${topic.progress}.`).join(" ")}`
+  : "The member has no learning topics yet.";
+---
+<Layout title="Topics" description="What you are learning, what you already understand and where the gaps are. Start from a goal or from anything you want to learn." page="overview">
+  <div data-agent-summary={summary}>
+    <p id="notice" class="muted" role="status"></p>
+    {signedOut && <p class="muted">Open Autodidact from your apps to see your topics.</p>}
+
+    <Section id="topics-heading" title="Your topics">
+      {topics.length === 0 ? (
+        <p class="muted">No topics yet. Start one below, or ask your tutor what to learn toward.</p>
+      ) : (
+        <ol class="cards" aria-label="Topics">
+          {topics.map((topic) => (
+            <li class:list={["card", { "card--quiet": topic.status !== "active" }]}>
+              <div class="card-heading">
+                <h3><a href={`./topic?id=${encodeURIComponent(topic.id)}`}>{topic.title}</a></h3>
+                <span class="badge">{statusLabels[topic.status]}</span>
+              </div>
+              <p class="muted">{topic.goalTitle ? `Toward your goal: ${topic.goalTitle}` : "From your own prompt"}</p>
+              {topic.aim && <p>{topic.aim}</p>}
+              <p>{topic.progress}</p>
+              {topic.next && <p class="muted">Next: {topic.next.title} ({stateLabels[topic.next.state].toLowerCase()})</p>}
+            </li>
+          ))}
+        </ol>
+      )}
+      {active.length > 0 && <p class="muted">Open a topic and ask your tutor to quiz you on the next concept.</p>}
+    </Section>
+
+    <Section id="goals-heading" title="Learn toward a goal">
+      {goals.available ? (
+        goals.goals.length === 0 ? (
+          <p class="muted">Your Wiki has no goals yet. Add one there, or start from a prompt below.</p>
+        ) : (
+          <ul class="goal-list" aria-label="Your goals">
+            {goals.goals.map((goal) => (
+              <li class="goal">
+                <div>
+                  <strong>{goal.title}</strong>
+                  {goal.summary && <p class="muted">{goal.summary}</p>}
+                  {(goal.status || goal.due) && <p class="muted">{[goal.status, goal.due && `due ${goal.due}`].filter(Boolean).join(" · ")}</p>}
+                </div>
+                {started.has(goal.id) ? (
+                  <span class="muted">Topic started</span>
+                ) : (
+                  canEdit && !demo && (
+                    <Button variant="secondary" data-start-goal={JSON.stringify({ id: goal.id, title: goal.title, summary: goal.summary })}>Learn toward this</Button>
+                  )
+                )}
+              </li>
+            ))}
+          </ul>
+        )
+      ) : (
+        <p class="muted">{goals.reason}</p>
+      )}
+    </Section>
+
+    {canEdit && !demo && (
+      <Section id="prompt-heading" title="Learn something else">
+        <form id="topic-form" class="stack">
+          <label>What do you want to learn? <input name="title" required maxlength="160" placeholder="Bayesian statistics" /></label>
+          <label>What do you want to be able to do with it? <textarea name="aim" rows="2" maxlength="1000" placeholder="Read an A/B test result and say how confident we should be."></textarea></label>
+          <div><Button type="submit">Start topic</Button></div>
+        </form>
+      </Section>
+    )}
+  </div>
+</Layout>
+<script>import "../scripts/forms.ts";</script>

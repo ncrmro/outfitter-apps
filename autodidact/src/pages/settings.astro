@@ -1,0 +1,28 @@
+---
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import SettingsRow from "@ai-outfitter/ui/astro/SettingsRow.astro";
+import Layout from "../components/Layout.astro";
+import { stateHints, stateLabels, outcomes } from "../lib/learning";
+---
+<Layout title="Settings" description="How your tutor finds and fills gaps, and what it can access." page="settings">
+  <Section id="method-heading" title="The method">
+    <SettingsRow title="Finding gaps">
+      <p>Your tutor breaks each topic into the concepts its aim depends on, foundations first, then asks one open question at a time: explain it, predict what happens, apply it to a new case. It judges only from what you said:</p>
+      <ul>{outcomes.map((outcome) => <li><strong>{stateLabels[outcome]}</strong>: {stateHints[outcome].toLowerCase()}</li>)}</ul>
+    </SettingsRow>
+    <SettingsRow title="Filling them">
+      <p>For a gap it does not lecture. It asks for an example, tests your idea against a counterexample, tries a simpler case, and explains directly only after you have tried twice or ask. Then it asks you to restate and apply it, and checks again later with a fresh question.</p>
+    </SettingsRow>
+  </Section>
+  <Section id="access-heading" title="Access">
+    <SettingsRow title="Your data">
+      <p>This is your personal app: only you open it. Topics, concepts and checks live in this installation's own database.</p>
+    </SettingsRow>
+    <SettingsRow title="Your Wiki">
+      <p>Goals come from your own Wiki, read as you. Autodidact never writes to the Wiki; a topic keeps the goal's name so it still reads without it.</p>
+    </SettingsRow>
+    <SettingsRow title="Your tutor">
+      <p>The tutor uses your own inference provider. Every change it suggests, a new topic, concepts or a check, is a proposal you approve in the panel.</p>
+    </SettingsRow>
+  </Section>
+</Layout>

@@ -1,0 +1,102 @@
+---
+import Button from "@ai-outfitter/ui/astro/Button.astro";
+import Section from "@ai-outfitter/ui/astro/Section.astro";
+import Layout from "../components/Layout.astro";
+import { conceptStates, stateHints, stateLabels, statusLabels, topicStatuses } from "../lib/learning";
+import { topicState } from "../server/page-state";
+
+const id = Astro.url.searchParams.get("id") ?? "";
+const { detail, canEdit, demo } = await topicState(Astro.request, id);
+if (!detail) Astro.response.status = 404;
+const editable = canEdit && !demo;
+const titles = new Map(detail?.concepts.map((concept) => [concept.id, concept.title]));
+const lastInsight = new Map<string, string>();
+for (const check of detail?.checks ?? []) if (check.insight && !lastInsight.has(check.conceptId)) lastInsight.set(check.conceptId, check.insight);
+const summary = detail
+  ? `Topic "${detail.topic.title}"${detail.topic.aim ? `, aim: ${detail.topic.aim}` : ""}. ${detail.progress}.${detail.next ? ` Next concept: ${detail.next.title}.` : ""}`
+  : "A topic that does not exist.";
+const when = (time: number) => new Date(time).toISOString().slice(0, 10);
+---
+<Layout title={detail?.topic.title ?? "Topic not found"} description={detail ? detail.topic.aim || "What this topic depends on, and what your checks found." : "This topic does not exist or was removed."} page="topic">
+  <div data-agent-summary={summary} data-topic-id={detail?.topic.id}>
+    <p id="notice" class="muted" role="status"></p>
+    {!detail ? (
+      <p><a href="./">Back to your topics</a></p>
+    ) : (
+      <>
+        <p class="muted">
+          {detail.topic.goalTitle ? `Toward your goal: ${detail.topic.goalTitle}` : "From your own prompt"} · {statusLabels[detail.topic.status]}
+        </p>
+        <dl class="tiles" aria-label="Progress">
+          {conceptStates.map((state) => (
+            <div class={`tile tile--${state}`}>
+              <dt>{stateLabels[state]}</dt>
+              <dd class="tile-value">{detail.concepts.filter((concept) => concept.state === state).length}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="next">
+          {detail.next
+            ? <>Next up: <strong>{detail.next.title}</strong>. Ask your tutor to question you on it.</>
+            : detail.concepts.length ? "Every concept is solid. Ask your tutor for a harder case, or mark the topic done." : "No concepts yet. Ask your tutor to map what this topic depends on, or add them below."}
+        </p>
+
+        <Section id="map-heading" title="Concept map">
+          {detail.concepts.length > 0 && (
+            <ol class="concepts" aria-label="Concepts, foundations first">
+              {detail.concepts.map((concept) => (
+                <li class={`concept concept--${concept.state}`}>
+                  <div class="card-heading">
+                    <h3>{concept.title}</h3>
+                    <span class={`badge badge--${concept.state}`} title={stateHints[concept.state]}>{stateLabels[concept.state]}</span>
+                  </div>
+                  {concept.summary && <p>{concept.summary}</p>}
+                  {lastInsight.get(concept.id) && <p class="muted">Last check: {lastInsight.get(concept.id)}</p>}
+                </li>
+              ))}
+            </ol>
+          )}
+          {editable && (
+            <form id="concepts-form" class="stack" data-topic={detail.topic.id}>
+              <label>Add concepts, one per line, foundations first <textarea name="concepts" rows="3" required></textarea></label>
+              <div><Button type="submit" variant="secondary">Add concepts</Button></div>
+            </form>
+          )}
+        </Section>
+
+        <Section id="checks-heading" title="Checks">
+          {detail.checks.length === 0 ? (
+            <p class="muted">No checks yet. Your tutor records each question it asks, your answer and what it showed.</p>
+          ) : (
+            <ol class="checks" aria-label="Checks, newest first">
+              {detail.checks.map((check) => (
+                <li class="check">
+                  <div class="card-heading">
+                    <strong>{titles.get(check.conceptId)}</strong>
+                    <span class={`badge badge--${check.outcome}`}>{stateLabels[check.outcome]}</span>
+                  </div>
+                  <p class="check-question">{check.question}</p>
+                  <blockquote>{check.answer}</blockquote>
+                  {check.insight && <p class="muted">{check.insight}</p>}
+                  <p class="muted"><time datetime={new Date(check.createdAt).toISOString()}>{when(check.createdAt)}</time></p>
+                </li>
+              ))}
+            </ol>
+          )}
+        </Section>
+
+        {editable && (
+          <Section id="status-heading" title="Topic">
+            <form id="status-form" class="row" data-topic={detail.topic.id} data-revision={detail.topic.revision}>
+              <label>Status
+                <select name="status">{topicStatuses.map((status) => <option value={status} selected={status === detail.topic.status}>{statusLabels[status]}</option>)}</select>
+              </label>
+              <Button type="submit" variant="secondary">Save</Button>
+            </form>
+          </Section>
+        )}
+      </>
+    )}
+  </div>
+</Layout>
+<script>import "../scripts/forms.ts";</script>

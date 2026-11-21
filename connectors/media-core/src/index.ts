@@ -1,3 +1,4 @@
+import { JSONParser } from "@streamparser/json";
 import { connectorManifestSchema } from '@ai-outfitter/connector-core/manifest';
 import type { ConnectorOperationContext, RuntimeConnector } from '@ai-outfitter/connector-core/runtime';
 import { z } from 'zod';
@@ -52,11 +53,15 @@ function key(context: ConnectorOperationContext): string {
 
 /** Reject redirects, bound runtime and response size, and discard all provider error text.
  * SABnzbd's API key is a query argument: request URLs must never be logged. */
-async function readJson(fetcher: typeof fetch, url: URL, init: RequestInit = {}): Promise<unknown> {
+async function openResponse(fetcher: typeof fetch, url: URL, init: RequestInit = {}): Promise<Response> {
   let response: Response;
   try { response = await fetcher(url, { ...init, redirect: 'error', signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000) }); }
   catch { return denied('Media service unavailable'); }
   if (!response.ok) { await response.body?.cancel(); return denied(`Media service HTTP ${response.status}`); }
+  return response;
+}
+async function readJson(fetcher: typeof fetch, url: URL, init: RequestInit = {}): Promise<unknown> {
+  const response = await openResponse(fetcher, url, init);
   if (Number(response.headers.get('content-length') ?? 0) > 4 * 1024 * 1024) { await response.body?.cancel(); return denied('Media service response too large'); }
   if (!response.body) return denied('Invalid media service response');
   const reader = response.body.getReader();
@@ -115,12 +120,45 @@ function arrItem(provider: MediaProvider, context: ConnectorOperationContext, ra
     ...(positiveId && monitored && missing ? { request: { operation: 'request.search' as const, input: { id: positiveId } } } : {}),
   };
 }
-async function arrRead(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, raw: unknown, calendar: boolean): Promise<MediaPage> {
-  const input = calendar ? briefingInput.parse(raw) : pageInput.parse(raw);
-  const path = calendar ? 'calendar' : provider === 'radarr' ? 'movie' : provider === 'sonarr' ? 'series' : 'album';
-  const query = calendar ? { start: (input as z.infer<typeof briefingInput>).start, end: (input as z.infer<typeof briefingInput>).end } : {};
-  const rows = await validatedList(await arrRequest(provider, fetcher, context, path, query));
-  return fullPage(rows.map(value => arrItem(provider, context, value, calendar, calendar ? input as z.infer<typeof briefingInput> : undefined)).filter(value => value.id && value.title), input);
+/** These endpoints return the whole library. Stop after one page plus a
+ * lookahead item, retaining only the current JSON row and selected items. */
+async function arrLibrary(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, raw: unknown): Promise<MediaPage> {
+  const { cursor, limit } = pageInput.parse(raw);
+  const offset = Number(cursor ?? 0);
+  const path = provider === 'radarr' ? 'movie' : provider === 'sonarr' ? 'series' : 'album';
+  const response = await openResponse(fetcher, target(config(context).baseUrl, `api/${arrVersion(provider)}/${path}`), { headers: { 'X-Api-Key': key(context) } });
+  if (!response.body) return denied('Invalid media service response');
+  const reader = response.body.getReader();
+  const parser = new JSONParser({ paths: ['$', '$.*'], keepStack: false, stringBufferSize: 8192 });
+  const items: MediaItem[] = [];
+  let seen = 0, bytes = 0;
+  parser.onValue = ({ value, key, parent }) => {
+    if (key === undefined) {
+      if (!Array.isArray(value)) denied('Invalid media service response');
+      return;
+    }
+    if (!Array.isArray(parent)) denied('Invalid media service response');
+    const item = arrItem(provider, context, rowSchema.parse(value), false);
+    if (item.id && item.title && ++seen > offset && items.length < limit) items.push(item);
+  };
+  try {
+    while (seen <= offset + limit) {
+      const chunk = await reader.read();
+      if (chunk.done) { if (!parser.isEnded) parser.end(); break; }
+      bytes += chunk.value.length;
+      if (bytes > 64 * 1024 * 1024) denied('Media library scan too large');
+      parser.write(chunk.value);
+    }
+    return page(items, offset, limit, seen);
+  } catch (error) {
+    if (error instanceof Response) throw error;
+    return denied('Invalid media service response');
+  } finally { await reader.cancel().catch(() => {}); reader.releaseLock(); }
+}
+async function arrCalendar(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, raw: unknown): Promise<MediaPage> {
+  const input = briefingInput.parse(raw);
+  const rows = await validatedList(await arrRequest(provider, fetcher, context, 'calendar', { start: input.start, end: input.end }));
+  return fullPage(rows.map(value => arrItem(provider, context, value, true, input)).filter(value => value.id && value.title), input);
 }
 async function arrMissing(provider: MediaProvider, fetcher: typeof fetch, context: ConnectorOperationContext, raw: unknown): Promise<MediaPage> {
   const input = pageInput.parse(raw), pageNumber = Number(input.cursor ?? 1);
@@ -215,7 +253,7 @@ async function sabRead(fetcher: typeof fetch, context: ConnectorOperationContext
 export function createMediaConnector(provider: MediaProvider, transport: MediaTransport = {}, implementationVersion = "0.1.0"): RuntimeConnector {
   const fetcher = transport.fetch ?? fetch;
   const arr = ['radarr', 'sonarr', 'lidarr'].includes(provider);
-  const read = (input: unknown, context: ConnectorOperationContext): Promise<MediaPage> => arr ? arrRead(provider, fetcher, context, input, true) : provider === 'jellyfin' ? jellyfinRead(fetcher, context, input, true) : provider === 'transmission' ? transmissionRead(fetcher, context, input, true) : sabRead(fetcher, context, input, true);
+  const read = (input: unknown, context: ConnectorOperationContext): Promise<MediaPage> => arr ? arrCalendar(provider, fetcher, context, input) : provider === 'jellyfin' ? jellyfinRead(fetcher, context, input, true) : provider === 'transmission' ? transmissionRead(fetcher, context, input, true) : sabRead(fetcher, context, input, true);
   const operations: RuntimeConnector['operations'] = {
     ...(provider === 'radarr' ? movieOperations((context, path, query, body, method, signal) => arrRequest('radarr', fetcher, context, path, query, body, method, signal)) : {}),
     ...(provider === 'transmission' ? { 'download.status': transmissionDownloadStatus((context, method, args, signal) => transmissionRpc(fetcher, context, method, args, signal)) } : {}),
@@ -236,7 +274,7 @@ export function createMediaConnector(provider: MediaProvider, transport: MediaTr
     } },
     ...(arr ? {
       'calendar.list': { input: briefingInput, execute: read },
-      'library.list': { input: pageInput, execute: (input, context) => arrRead(provider, fetcher, context, input, false) },
+      'library.list': { input: pageInput, execute: (input, context) => arrLibrary(provider, fetcher, context, input) },
       'queue.list': { input: pageInput, execute: (input, context) => arrQueue(provider, fetcher, context, input) },
       'missing.list': { input: pageInput, execute: (input, context) => arrMissing(provider, fetcher, context, input) },
       'request.search': { input: requestInput, initiation: 'member', execute: (input, context) => arrSearch(provider, fetcher, context, input) },

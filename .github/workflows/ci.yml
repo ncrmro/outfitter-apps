@@ -18,7 +18,7 @@ jobs:
       config-path: .outfitter/apps.json
   deploy:
     needs: [apps, connectors]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.apps.outputs.has_apps == 'true' && vars.OUTFITTER_URL != 'https://outfitter.ncrmro.com' && vars.OUTFITTER_DEPLOY_RUNNER != 'ocean-outfitter-apps'
     permissions:
       contents: read
       id-token: write

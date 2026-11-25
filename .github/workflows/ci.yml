@@ -31,7 +31,7 @@ jobs:
     name: Media connectors and Dione browser
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - id: sdk
@@ -41,7 +41,7 @@ jobs:
           sdk_sha=$(jq -r .sdkSha .outfitter/apps.json)
           [[ "$sdk_sha" =~ ^[a-f0-9]{40}$ ]]
           echo "sha=$sdk_sha" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: ai-outfitter/apps
           ref: ${{ steps.sdk.outputs.sha }}

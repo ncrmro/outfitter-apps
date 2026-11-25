@@ -8,6 +8,6 @@ permissions:
   pull-requests: write
 jobs:
   release:
-    uses: ai-outfitter/apps/.github/workflows/release.yml@c00a16233a232e1d56a92f18960c3014dce5262d
+    uses: ai-outfitter/apps/.github/workflows/release.yml@5b00772ac934f67e65451b76eff551b2ef42271f
     secrets:
       release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

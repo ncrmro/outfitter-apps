@@ -59,7 +59,7 @@ jobs:
       - run: npm run test:e2e --workspace dione
       - name: Browser evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dione-browser-${{ github.run_id }}-${{ github.run_attempt }}
           path: dione/test-results/
